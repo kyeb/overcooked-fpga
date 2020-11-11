@@ -4,7 +4,7 @@
 
 Julia Arnold, Lacthu Vu, and Kye Burchard
 
-## Organizaton
+## Organization
 
 All the files necessary to run the ESP32 modules is in the `esp32/` directory.
 This is compiled using the Arduino IDE with the correct libraries. [This
