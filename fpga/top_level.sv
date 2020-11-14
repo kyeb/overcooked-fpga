@@ -12,11 +12,27 @@ module top_level(
    output logic[7:0] an    // Display location 0-7
    );
    
-   //using sw0, 1, 15
-   assign local_player_type = sw[0]; //1 = primary, 0 = secondary
-   assign reset = sw[1];  //reset = 1
+   //sw[1:0] = player ID
+   //sw[3:2] = num_players
+   //sw[4] = reset
+   //sw[15] = carry
+   assign local_player_ID = sw[1:0]; //indicate player number, will need coordination for enough
+                                     // player 0 will be the primary, will do controls
+   assign reset = sw[4];  //reset = 1
    assign local_carry = sw[15]; //is carrying = 1, put down = 0
    assign led = sw; //check switch is actually on
+   
+   //figure out number of players
+   logic [1:0] num_players;
+   always_comb begin    
+        //if the fpga is primary, designate # of players
+        if (local_player_ID == 0) begin
+            num_players = sw[3:2];
+        // else get number from internet
+        end else begin
+            num_players = 2'b00; // ADD LATER
+        end
+   end
    
    //local button inputs
    logic local_left, local_right, local_up, local_down, local_chop;
@@ -30,22 +46,11 @@ module top_level(
    
    //game logic
    
-   logic [1:0] num_players;
-   always_comb begin    
-        //if the fpga is primary, designate # of players
-        if (local_player_type) begin
-            num_players = sw[3:2];
-        // else get number from internet
-        end else begin
-            num_players = 2'b01; // ADD LATER
-        end
-   end
-   
-        //inputs: reset, clock, player_type, num_players
+        //inputs: reset, clock, player_ID, num_players
         //inputs for each player: left, right, up, down, chop, carry
         
         //output: game state, grid of objects, grid of object times, time left, point total, orders, order times, team_name
-        //output for each player:  player_direction, player_location, player_state
+        //output for each player:  player_direction, player_loc_x, player_loc_y, player_state
    
    //graphics
    //communication
