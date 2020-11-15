@@ -21,6 +21,26 @@ module game_logic(input reset,
                   output logic [1:0] player_direction,
                   output logic player_loc_x, player_loc_y,
                   output logic player_state );
-                  
+    
+// 0 - Welcome Menu
+// Select how many players
+// Designate FPGA to be primary/secondary
+// Generate team name
+// Start game
+// 1 - Game Introduction
+// Wait 5 seconds so players can view map, players can't move
+// Start game
+// 2 - Start Game - Timer starts, players can move
+// 3 - Pause Game - Timer pauses, all objects freeze
+// 4 - Finish Game - Once timer runs out
+// Save point total to server
+// Display most recent score and top scores      
+
+//modules
+    //player_move
+    //action
+    //time_remaining
+    //pixel_to_grid
+    //orders_and_points        
                   
 endmodule
