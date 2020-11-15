@@ -27,7 +27,9 @@ someone else makes changes and you `git pull` them, use the TCL console in
 Vivado to `cd` into this project directory, then run `source
 generate_vivado.tcl`.
 
-Any time you add files to the project, change project settings, or do other
+When you start a new file in Vivado you have to create it independently (via touch or just right click) at the same level as vivado_project. Then you go to Vivado, click "Add Sources" on the right, and make sure to unselect the "Copy from source" box so that this file is the one that is updated.
+
+Any time you edit files in the project, change project settings, or do other
 things within Vivado that aren't just Verilog changes, you can save them to Git
 by using the TCL console to `cd` into the project directory, then running
 `write_project_tcl -force generate_vivado.tcl`. This writes the entire Vivado
