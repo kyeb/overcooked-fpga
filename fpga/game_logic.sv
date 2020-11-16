@@ -21,15 +21,121 @@ module game_logic(input reset,
                   output logic [8:0] player_loc_x,
                   output logic [8:0] player_loc_y,
                   output logic [3:0] player_state );
+                  
+    logic [3:0] w_state;
     
-    always_ff @(posedge clock) begin   
-// 0 - Welcome Menu
+    always_ff @(posedge clock) begin
         if (reset) begin
             game_state <= 0;
             team_name[0]<=8'h41;
             team_name[1]<=8'h41;
             team_name[2]<=8'h41;
-        end else if (game_state == 0) begin      
+            w_state = 0;   
+// 0 - Welcome Menu
+        end else if (game_state == 0) begin 
+            //state 0: letter 1
+            if (w_state == 0) begin      
+                if (chop == 1) begin
+                    w_state <= 4'd11;
+                end else if (up == 1) begin //decrease letter
+                    w_state <= 4'd1;
+                    if (team_name[2] == 8'h41) begin
+                        team_name[2] <= 8'h5A;
+                    end else begin
+                        team_name[2] <= team_name[2]-1;
+                    end
+                end else if (down == 1) begin //increase letter
+                    w_state <= 4'd2;
+                    if (team_name[2] == 8'h5A) begin
+                        team_name[2] <= 8'h41;
+                    end else begin
+                        team_name[2] <= team_name[2]+1;
+                    end
+                end else if (right == 1) begin
+                    w_state <= 4'd3;
+                end
+            //state 1: decrease
+            end else if ((w_state == 4'd1)&&(up==0)) begin
+                w_state <= 4'd0; 
+            //state 2: increase
+            end else if ((w_state == 4'd2)&&(down==0)) begin
+                w_state <= 4'd0; 
+            //state 3: transition 1 forward
+            end else if ((w_state == 3)&&(right == 0)) begin
+                w_state <= 4'd4;
+            //state 12: transition 1 backward
+            end else if ((w_state == 4'd12)&&(left == 0)) begin
+                w_state <= 0;
+            //state 4: letter 2
+            end else if (w_state == 4) begin
+                if (chop == 1) begin
+                    w_state <= 4'd11;
+                end else if (up == 1) begin //decrease letter
+                    w_state <= 4'd5;
+                    if (team_name[1] == 8'h41) begin
+                        team_name[1] <= 8'h5A;
+                    end else begin
+                        team_name[0] <= team_name[1]-1;
+                    end
+                end else if (down == 1) begin //increase letter
+                    w_state <= 4'd6;
+                    if (team_name[1] == 8'h5A) begin
+                        team_name[1] <= 8'h41;
+                    end else begin
+                        team_name[1] <= team_name[1]+1;
+                    end
+                end else if (right == 1) begin
+                    w_state <= 4'd7;
+                end else if (left == 1) begin
+                    w_state <= 4'd12;
+                end
+            //state 5: decrease
+            end else if ((w_state == 4'd5)&&(up==0)) begin
+                w_state <= 4'd4;
+            //state 6
+            end else if ((w_state == 4'd6)&&(down==0)) begin
+                w_state <= 4'd4;
+            //state 7: transition 2
+            end else if (w_state == 7) begin
+                if (right == 0) begin
+                    w_state <= 4'd8;
+                end else if (left == 0) begin
+                    w_state <= 4'd4;
+                end
+            //state 8: third letter
+            end else if (w_state == 8) begin
+                if (chop == 1) begin
+                    w_state <= 4'd11;
+                end else if (up == 1) begin //decrease letter
+                    w_state <= 4'd9;
+                    if (team_name[0] == 8'h41) begin
+                        team_name[0] <= 8'h5A;
+                    end else begin
+                        team_name[0] <= team_name[0]-1;
+                    end
+                end else if (down == 1) begin //increase letter
+                    w_state <= 4'd10;
+                    if (team_name[0] == 8'h5A) begin
+                        team_name[0] <= 8'h41;
+                    end else begin
+                        team_name[0] <= team_name[0]+1;
+                    end
+                end else if (right == 1) begin
+                    w_state <= 4'd11;
+                end else if (left == 1) begin
+                    w_state <= 4'd7;
+                end
+            //state 9: decrease
+            end else if ((w_state == 4'd9)&&(up==0)) begin
+                w_state <= 4'd8;
+            //state 10: increase
+            end else if  ((w_state == 4'd10)&&(down==0)) begin
+                w_state <= 4'd8;
+            //state 11: going to next state
+            end else if ((w_state == 4'd11)&&(chop==0)) begin
+                game_state <= 3'b1;
+                w_state <= 4'd0;
+            end     
 // Generate team name
 // Start game
         

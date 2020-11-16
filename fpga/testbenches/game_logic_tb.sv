@@ -51,8 +51,46 @@ game_logic uut (.reset(reset), .clock(clock), .local_player_ID(local_player_ID),
     #10
     reset = 0;
     
+    up = 1;
+    #20
+    up = 0;
+    #20
     
+    up = 1;
+    #20
+    up = 0;
+    #20
     
+    right = 1;
+    #20
+    right = 0;
+    #20
+    
+    down = 1;
+    #20
+    down = 0;
+    #20
+    
+    down = 1;
+    #20
+    down = 0;
+    #20
+    
+    right = 1;
+    #20
+    right = 0;
+    #20
+    
+    up = 1;
+    #20
+    up = 0;
+    #20
+    
+    chop = 1;
+    #20
+    chop = 0;
+    
+
     end
    
 endmodule          
