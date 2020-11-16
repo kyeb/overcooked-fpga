@@ -51,6 +51,23 @@ module top_level(
         
         //output: game state, grid of objects, grid of object times, time left, point total, orders, order times, team_name
         //output for each player:  player_direction, player_loc_x, player_loc_y, player_state
+        
+        //game_logic gl (.reset(),.clock(),
+//                  input [1:0] local_player_ID,
+//                  input [1:0] num_players,
+//                  input left, right, up, down, chop, carry,
+//                  output logic [2:0] game_state,
+//                  output logic [7:0][12:0][3:0] object_grid, //need dimensions
+//                  output logic [7:0][12:0][3:0] time_grid, //need dimensions
+//                  output logic [7:0] time_left, //size?
+//                  output logic [9:0] point_total, //size?
+//                  output logic [3:0] orders,
+//                  output logic [3:0][4:0] order_times,
+//                  output logic [2:0][7:0] team_name, 
+//                  output logic [1:0] player_direction,
+//                  output logic [8:0] player_loc_x,
+//                  output logic [8:0] player_loc_y,
+//                  output logic [3:0] player_state );
    
    //graphics
    //communication
