@@ -10,10 +10,10 @@ module game_logic(input reset,
                   input [1:0] num_players,
                   input left, right, up, down, chop, carry,
                   output logic [2:0] game_state,
-                  output logic [7:0][12:0][3:0] object_grid, //need dimensions
-                  output logic [7:0][12:0][3:0] time_grid, //need dimensions
-                  output logic [7:0] time_left, //size?
-                  output logic [9:0] point_total, //size?
+                  output logic [7:0][12:0][3:0] object_grid,
+                  output logic [7:0][12:0][3:0] time_grid,
+                  output logic [7:0] time_left,
+                  output logic [9:0] point_total, 
                   output logic [3:0] orders,
                   output logic [3:0][4:0] order_times,
                   output logic [2:0][7:0] team_name, 
@@ -24,9 +24,12 @@ module game_logic(input reset,
     
     always_ff @(posedge clock) begin   
 // 0 - Welcome Menu
-        if (game_state == 0) begin      
-// Select how many players
-// Designate FPGA to be primary/secondary
+        if (reset) begin
+            game_state <= 0;
+            team_name[0]<=8'h41;
+            team_name[1]<=8'h41;
+            team_name[2]<=8'h41;
+        end else if (game_state == 0) begin      
 // Generate team name
 // Start game
         
