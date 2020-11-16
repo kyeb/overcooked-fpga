@@ -51,6 +51,7 @@ game_logic uut (.reset(reset), .clock(clock), .local_player_ID(local_player_ID),
     #10
     reset = 0;
     
+    //move left letter 2
     up = 1;
     #20
     up = 0;
@@ -61,6 +62,7 @@ game_logic uut (.reset(reset), .clock(clock), .local_player_ID(local_player_ID),
     up = 0;
     #20
     
+    //move middle letter 2
     right = 1;
     #20
     right = 0;
@@ -76,6 +78,7 @@ game_logic uut (.reset(reset), .clock(clock), .local_player_ID(local_player_ID),
     down = 0;
     #20
     
+    //move right letter 1
     right = 1;
     #20
     right = 0;

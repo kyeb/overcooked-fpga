@@ -32,6 +32,7 @@ module game_logic(input reset,
             team_name[2]<=8'h41;
             w_state = 0;   
 // 0 - Welcome Menu
+// Generate team name
         end else if (game_state == 0) begin 
             //state 0: letter 1
             if (w_state == 0) begin      
@@ -65,7 +66,7 @@ module game_logic(input reset,
                 w_state <= 4'd4;
             //state 12: transition 1 backward
             end else if ((w_state == 4'd12)&&(left == 0)) begin
-                w_state <= 0;
+                w_state <= 4'd0;
             //state 4: letter 2
             end else if (w_state == 4) begin
                 if (chop == 1) begin
@@ -95,13 +96,14 @@ module game_logic(input reset,
             //state 6
             end else if ((w_state == 4'd6)&&(down==0)) begin
                 w_state <= 4'd4;
-            //state 7: transition 2
+            //state 7: transition 2 forward
             end else if (w_state == 7) begin
                 if (right == 0) begin
                     w_state <= 4'd8;
-                end else if (left == 0) begin
-                    w_state <= 4'd4;
                 end
+            //state 13: transition 2 backward
+            end else if ((w_state == 4'd13)&&(left == 0)) begin
+                w_state <= 4'd4;
             //state 8: third letter
             end else if (w_state == 8) begin
                 if (chop == 1) begin
@@ -123,7 +125,7 @@ module game_logic(input reset,
                 end else if (right == 1) begin
                     w_state <= 4'd11;
                 end else if (left == 1) begin
-                    w_state <= 4'd7;
+                    w_state <= 4'd13;
                 end
             //state 9: decrease
             end else if ((w_state == 4'd9)&&(up==0)) begin
@@ -136,8 +138,7 @@ module game_logic(input reset,
                 game_state <= 3'b1;
                 w_state <= 4'd0;
             end     
-// Generate team name
-// Start game
+// Start game -> press chop to start
         
 // 1 - Game Introduction
         end else if (game_state==1) begin
