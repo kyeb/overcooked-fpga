@@ -17,12 +17,14 @@ module game_logic(input reset,
                   output logic [3:0] orders,
                   output logic [3:0][4:0] order_times,
                   output logic [2:0][7:0] team_name, 
-                  output logic [1:0] player_direction,
+                  output logic [1:0] player_direction, //up, down, left, right
                   output logic [8:0] player_loc_x,
                   output logic [8:0] player_loc_y,
                   output logic [3:0] player_state );
                   
+    parameter START = 5*100_000_000;//5*clock
     logic [3:0] w_state;
+    logic [10:0] start_counter;
     
     always_ff @(posedge clock) begin
         if (reset) begin
@@ -30,9 +32,21 @@ module game_logic(input reset,
             team_name[0]<=8'h41;
             team_name[1]<=8'h41;
             team_name[2]<=8'h41;
-            w_state = 0;   
+            w_state = 0; 
+            object_grid <= {{8{{13{{4'h0}}}}}};
+            time_grid <= {{8{{13{4'hf}}}}};
+            time_left <= 8'd150;
+            point_total <= 10'd0;
+            orders <= 4'b0;
+            order_times <= {{4{5'b11111}}};
+            player_direction <= 2'b1;
+            player_loc_x <= 9'd304;
+            player_loc_y <= 9'd208;
+            player_state <= 0;
+              
 // 0 - Welcome Menu
 // Generate team name
+// Start game -> press chop to start
         end else if (game_state == 0) begin 
             //state 0: letter 1
             if (w_state == 0) begin      
@@ -137,13 +151,35 @@ module game_logic(input reset,
             end else if ((w_state == 4'd11)&&(chop==0)) begin
                 game_state <= 3'b1;
                 w_state <= 4'd0;
+                object_grid <= {{8{{13{{4'h0}}}}}};
             end     
-// Start game -> press chop to start
+
         
 // 1 - Game Introduction
-        end else if (game_state==1) begin
 // Wait 5 seconds so players can view map, players can't move
 // Start game
+        end else if (game_state==1) begin
+            if (start_counter == START) begin
+                game_state <= 2;
+                start_counter <= 0;
+                
+                //initial conditions
+                object_grid[2][0] <= 4'b1; //initial onions
+                object_grid[3][0] <= 4'b1;
+                object_grid[6][12] <= 4'd3;//initial bowl
+                time_grid <= {{8{{13{4'hf}}}}};
+                time_left <= 8'd150;
+                point_total <= 10'd0;
+                orders <= 4'b0;
+                order_times <= {{4{5'b11111}}};
+                player_direction <= 2'b1;
+                player_loc_x <= 9'd304;
+                player_loc_y <= 9'd208;
+                player_state <= 0;
+            end else begin
+                start_counter <= start_counter+1;
+            end
+            
 // 2 - Start Game - Timer starts, players can move
         end else if (game_state==2) begin
 // 3 - Pause Game - Timer pauses, all objects freeze

@@ -51,6 +51,7 @@ game_logic uut (.reset(reset), .clock(clock), .local_player_ID(local_player_ID),
     #10
     reset = 0;
     
+    //Welcome menu test
     //move left letter 2
     up = 1;
     #20
