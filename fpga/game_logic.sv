@@ -25,6 +25,7 @@ module game_logic(input reset,
     parameter START = 5*100_000_000;//5*clock
     logic [3:0] w_state;
     logic [10:0] start_counter;
+    logic timer_go;
     
     always_ff @(posedge clock) begin
         if (reset) begin
