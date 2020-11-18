@@ -15,6 +15,7 @@ module top_level(
    //sw[1:0] = player ID
    //sw[3:2] = num_players
    //sw[4] = reset
+   //sw[14] = pause
    //sw[15] = carry
    assign local_player_ID = sw[1:0]; //indicate player number, will need coordination for enough
                                      // player 0 will be the primary, will do controls
