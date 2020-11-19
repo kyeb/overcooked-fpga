@@ -48,6 +48,6 @@ module player_blob
         // use MSB 4 bits
         pixel_out <= {red_mapped[7:4], green_mapped[7:4], green_mapped[7:4]}; // greyscale
         // pixel_out <= {red_mapped[7:4], 8h'0}; // only red hues
-        else pixel_out <= 0;
+        else pixel_out <= 12'hFFF;
     end
 endmodule
