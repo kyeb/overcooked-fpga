@@ -6,7 +6,7 @@
 
 module game_logic(input reset,
                   input clock,
-                  input frame_update,
+                  input vsync,
                   input [1:0] local_player_ID,
                   input [1:0] num_players,
                   input left, right, up, down, chop, carry,
@@ -23,17 +23,17 @@ module game_logic(input reset,
                   output logic [8:0] player_loc_y,
                   output logic [3:0] player_state);
                   
-    parameter START = 5*25_175_000;//5*clock
+    parameter START = 5*60;//5*clock
     logic [3:0] w_state;
     logic [30:0] start_counter;
     logic timer_go;
     
-    player_move pm (.clock(clock),.reset(reset),.frame_update(frame_update),.left(left), 
+    player_move pm (.reset(reset),.vsync(vsync),.left(left), 
                     .right(right), .up(up), .down(down), .chop(chop), .carry(carry),
                     .player_direction(player_direction), .player_loc_x(player_loc_x),
                     .player_loc_y(player_loc_y),.player_state(player_state));
     
-    always_ff @(posedge clock) begin
+    always_ff @(negedge vsync) begin
         if (reset) begin
             game_state <= 0;
             team_name[0]<=8'h41;
