@@ -25,16 +25,16 @@ module xvga(input vclock_in,
             output logic vsync_out, hsync_out,
             output logic blank_out);
 
-   parameter DISPLAY_WIDTH  = 1024;      // display width
-   parameter DISPLAY_HEIGHT = 768;       // number of lines
+   parameter DISPLAY_WIDTH  = 640;      // display width
+   parameter DISPLAY_HEIGHT = 480;       // number of lines
 
-   parameter  H_FP = 24;                 // horizontal front porch
-   parameter  H_SYNC_PULSE = 136;        // horizontal sync
-   parameter  H_BP = 160;                // horizontal back porch
+   parameter  H_FP = 16;                 // horizontal front porch
+   parameter  H_SYNC_PULSE = 96;        // horizontal sync
+   parameter  H_BP = 48;                // horizontal back porch
 
-   parameter  V_FP = 3;                  // vertical front porch
-   parameter  V_SYNC_PULSE = 6;          // vertical sync 
-   parameter  V_BP = 29;                 // vertical back porch
+   parameter  V_FP = 11;                  // vertical front porch
+   parameter  V_SYNC_PULSE = 2;          // vertical sync 
+   parameter  V_BP = 31;                 // vertical back porch
 
    // horizontal: 1344 pixels total
    // display 1024 pixels per line
