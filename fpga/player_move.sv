@@ -19,26 +19,24 @@ module player_move(input reset,
             player_loc_x <= 9'd304;
             player_loc_y <= 9'd208;
             player_state <= 4'b0;
-        end else begin
             //y direction
-            if(up && (player_loc_y>148)) begin //up button
-                player_loc_y <= player_loc_y-4;  //move 4 pixels up
-                player_direction <= UP;
-            end else if (down && (player_loc_y<300)) begin //down button
-                player_loc_y <= player_loc_y+4; //move 4 pixel down
-                player_direction <= DOWN;
-                
-            //x direction
-            end else if (left && (player_loc_x<148)) begin //left button
-                player_loc_x <= player_loc_x-4; //move 4 pixel left
-                player_direction <= LEFT;
-            end else if (right && (player_loc_x<460)) begin //right button
-                player_loc_x <= player_loc_x+4; //move 4 pixel right
-                player_direction <= RIGHT;
-            end else begin //else same position
-                player_loc_y <= player_loc_y;
-                player_loc_x <= player_loc_x;
-            end
+        end else if(up && (player_loc_y>148)) begin //up button
+            player_loc_y <= player_loc_y-4;  //move 4 pixels up
+            player_direction <= UP;
+        end else if (down && (player_loc_y<300)) begin //down button
+            player_loc_y <= player_loc_y+4; //move 4 pixel down
+            player_direction <= DOWN;
+            
+        //x direction
+        end else if (left && (player_loc_x<148)) begin //left button
+            player_loc_x <= player_loc_x-4; //move 4 pixel left
+            player_direction <= LEFT;
+        end else if (right && (player_loc_x<460)) begin //right button
+            player_loc_x <= player_loc_x+4; //move 4 pixel right
+            player_direction <= RIGHT;
+        end else begin //else same position
+            player_loc_y <= player_loc_y;
+            player_loc_x <= player_loc_x;
         end
     
     end             

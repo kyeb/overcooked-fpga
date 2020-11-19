@@ -175,10 +175,6 @@ module game_logic(input reset,
                 point_total <= 10'd0;
                 orders <= 4'b0;
                 order_times <= {{4{5'b11111}}};
-                player_direction <= 2'b1;
-                player_loc_x <= 9'd304;
-                player_loc_y <= 9'd208;
-                player_state <= 0;
             end else begin
                 start_counter <= start_counter+1;
             end
