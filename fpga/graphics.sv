@@ -23,28 +23,96 @@ module graphics(
     input [8:0] player_y,
     input [3:0] player_state,
     
-    input [10:0] hcount_in, // horizontal index of current pixel (0..1023)
-    input [9:0]  vcount_in, // vertical index of current pixel (0..767)
-    input hsync_in,         // XVGA horizontal sync signal (active low)
-    input vsync_in,         // XVGA vertical sync signal (active low)
-    input blank_in,         // XVGA blanking (1 means output black pixel)
+    input [10:0] hcount, // horizontal index of current pixel (0..1023)
+    input [9:0]  vcount, // vertical index of current pixel (0..767)
+    input hsync,         // XVGA horizontal sync signal (active low)
+    input vsync,         // XVGA vertical sync signal (active low)
+    input blank,         // XVGA blanking (1 means output black pixel)
     
     output logic hsync_out,
     output logic vsync_out,
     output logic blank_out,
     output [11:0] pixel_out);              
-    
-    always_comb begin
-        hsync_out = hsync_in;
-        vsync_out = vsync_in;
-        blank_out = blank_in;
-    end
+
+    // player states
+    parameter P_NOTHING = 0;
+    parameter P_CHOPPING = 1;
+    parameter P_ONION_WHOLE = 2;
+    parameter P_ONION_CHOPPED = 3;
+    parameter P_POT_EMPTY = 4;
+    parameter P_POT_SOUP = 5;
+    parameter P_BOWL_EMPTY = 6;
+    parameter P_BOWL_FULL = 7;
+    parameter P_EXT_OFF = 8;
+    parameter P_EXT_ON = 9;
+
+    // grid object parameters
+    parameter G_EMPTY = 0;
+    parameter G_ONION_WHOLE = 1;
+    parameter G_ONION_CHOPPED = 2;
+    parameter G_BOWL_EMPTY = 3;
+    parameter G_BOWL_FULL = 4;
+    parameter G_POT_EMPTY = 5;
+    parameter G_POT_RAW = 6;
+    parameter G_POT_COOKED = 7;
+    parameter G_POT_FIRE = 8;
+    parameter G_FIRE = 9;
+    parameter G_EXTINGUISHER = 10;
 
     logic [11:0] player_pixel;
     picture_blob player1 (.pixel_clk_in(clock), .x_in(player_x), .y_in(player_y), .hcount_in(hcount_in), 
         .vcount_in(vcount_in), .pixel_out(player_pixel));
 
-    assign pixel_out = player_pixel;
+    logic [2:0] grid_x;
+    logic [4:0] grid_y;
+    logic [3:0] state;
+    pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(vcount), .grid_x(grid_x), .grid_y(grid_y));
+
+    always_comb begin
+        // bounds of game grid
+        if (hcount > 111 && hcount < 367) begin
+
+            // update 
+            if ((hcount - 112) % 32 == 0 && (vcount - 112) % 32 == 0) begin
+                grid_state = object_grid[grid_x][grid_y];
+            end 
+        end        
+    
+        case (grid_state)
+        
+            G_EMPTY: object_pixel = 0;
+            G_ONION_WHOLE: object_pixel = whole_onion;
+            G_ONION_CHOPPED: object_pixel = chopped_onion;
+            G_BOWL_EMPTY: object_pixel = empty_bowl;
+            G_BOWL_FULL: object_pixel = full_bowl;
+            G_POT_EMPTY: object_pixel = empty_pot;
+            G_POT_RAW: object_pixel = raw_pot;
+            G_POT_COOKED: object_pixel = cooked_pot;
+            G_POT_FIRE: object_pixel = fire_pot;
+            G_FIRE: object_pixel = fire;
+            G_EXTINGUISHER: object_pixel = extinguisher;
+            default: object_pixel = 0;
+            
+        endcase
+    
+        hsync_out = hsync;
+        vsync_out = vsync;
+        blank_out = blank;
+
+    end
+
+    assign pixel_out = player_pixel + object_pixel;
+
+endmodule
+
+module pixel_to_grid(
+    input [9:0] pixel_x,
+    input [8:0] pixel_y,
+    output logic [2:0] grid_x,
+    output logic [4:0] grid_y);
+    
+    assign grid_x = (pixel_x - 112) >> 5;
+    assign grid_y = (pixel_y - 112) >> 5;
 
 endmodule
 
@@ -72,7 +140,7 @@ module picture_blob
 
     // calculate rom address and read the location
     assign image_addr = (hcount_in-x_in) + (vcount_in-y_in) * WIDTH;
-    image_rom  rom1(.clka(pixel_clk_in), .addra(image_addr), .douta(image_bits));
+    image_rom rom1(.clka(pixel_clk_in), .addra(image_addr), .douta(image_bits));
 
     // use color map to create 4 bits R, 4 bits G, 4 bits B
     // since the image is greyscale, just replicate the red pixels
@@ -82,11 +150,11 @@ module picture_blob
     blue_coe bcm (.clka(pixel_clk_in), .addra(image_bits), .douta(blue_mapped));
     // note the one clock cycle delay in pixel!
     always_ff @ (posedge pixel_clk_in) begin
-     if ((hcount_in >= x_in && hcount_in < (x_in+WIDTH)) &&
+    if ((hcount_in >= x_in && hcount_in < (x_in+WIDTH)) &&
           (vcount_in >= y_in && vcount_in < (y_in+HEIGHT)))
         // use MSB 4 bits
-        pixel_out <= {red_mapped[7:4], red_mapped[7:4], red_mapped[7:4]}; // greyscale
-        //pixel_out <= {red_mapped[7:4], 8h'0}; // only red hues
+        pixel_out <= {red_mapped[7:4], green_mapped[7:4], green_mapped[7:4]}; // greyscale
+        // pixel_out <= {red_mapped[7:4], 8h'0}; // only red hues
         else pixel_out <= 0;
     end
 endmodule
