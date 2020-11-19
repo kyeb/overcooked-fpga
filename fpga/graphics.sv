@@ -74,7 +74,7 @@ module graphics(
     logic [2:0] current_grid_x, grid_object_x;
     logic [4:0] current_grid_y, grid_object_y;
     logic [3:0] grid_state;
-    pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(vcount), .current_(current_grid_x), .grid_y(current_grid_y));
+    pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(vcount), .grid_x(current_grid_x), .grid_y(current_grid_y));
 
     // more grid logic
     always_comb begin
@@ -87,23 +87,6 @@ module graphics(
                 grid_object_y = hcount;
             end 
         end        
-    
-//        case (grid_state)
-        
-//            G_EMPTY: object_pixel = 0;
-//            G_ONION_WHOLE: object_pixel = whole_onion;
-//            G_ONION_CHOPPED: object_pixel = chopped_onion;
-//            G_BOWL_EMPTY: object_pixel = empty_bowl;
-//            G_BOWL_FULL: object_pixel = full_bowl;
-//            G_POT_EMPTY: object_pixel = empty_pot;
-//            G_POT_RAW: object_pixel = raw_pot;
-//            G_POT_COOKED: object_pixel = cooked_pot;
-//            G_POT_FIRE: object_pixel = fire_pot;
-//            G_FIRE: object_pixel = fire;
-//            G_EXTINGUISHER: object_pixel = extinguisher;
-//            default: object_pixel = 0;
-            
-//        endcase
     
         hsync_out = hsync;
         vsync_out = vsync;
@@ -147,3 +130,21 @@ endmodule
 
 //    picture_blob extinguisher (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
 //        .vcount_in(vcount), .pixel_out(extinguisher));
+
+//        case (grid_state)
+        
+//            G_EMPTY: object_pixel = 0;
+//            G_ONION_WHOLE: object_pixel = whole_onion;
+//            G_ONION_CHOPPED: object_pixel = chopped_onion;
+//            G_BOWL_EMPTY: object_pixel = empty_bowl;
+//            G_BOWL_FULL: object_pixel = full_bowl;
+//            G_POT_EMPTY: object_pixel = empty_pot;
+//            G_POT_RAW: object_pixel = raw_pot;
+//            G_POT_COOKED: object_pixel = cooked_pot;
+//            G_POT_FIRE: object_pixel = fire_pot;
+//            G_FIRE: object_pixel = fire;
+//            G_EXTINGUISHER: object_pixel = extinguisher;
+//            default: object_pixel = 0;
+            
+//        endcase
+    

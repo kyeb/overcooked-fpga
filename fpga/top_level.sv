@@ -66,7 +66,7 @@ module top_level(
                    .left(left), .right(right), .up(up), .down(down), .chop(chop), .carry(carry),.game_state(game_state),
                    .object_grid(object_grid), .time_grid(time_grid), .time_left(time_left), .point_total(point_total), 
                    .orders(orders), .order_times(order_times), .team_name(team_name), .player_direction(player_direction), 
-                   .player_loc_x(player_loc_x), .player_loc_y(player_loc_y), .player_state(player_state) );
+                   .player_loc_x(player_loc_x), .player_loc_y(player_loc_y), .player_state(player_state));
                    
     
    //graphics
@@ -79,34 +79,19 @@ module top_level(
     
    graphics game(.clock(clock), .reset(reset), .team_name(team_name), .local_player_ID(local_player_ID), .num_players(num_players),
       .game_state(game_state), .time_left(time_left), .point_total(point_total), .object_grid(object_grid),
-      .time_grid(time_grid), .orders(orders), .order_times(order_times), .player_direction(player_direction), .player_x(player_x),
-      .player_state(player_state), .hcount(hcount_in), .vcount(vcount_in), .hsync(hsync_in), .vsync(vsync_in),
+      .time_grid(time_grid), .orders(orders), .order_times(order_times), .player_direction(player_direction), .player_x(player_loc_x),
+      .player_y(player_loc_y), .player_state(player_state), .hcount(hcount_in), .vcount(vcount_in), .hsync(hsync_in), .vsync(vsync_in),
       .blank(blank_in), .hsync_out(hsync), .vsync_out(vsync), .blank_out(blank), .pixel_out(pixel));
     
     logic b,hs,vs;
     always_ff @(posedge clock) begin
-      if (sw[1:0] == 2'b01) begin
-         // 1 pixel outline of visible area (white)
-         hs <= hsync;
-         vs <= vsync;
-         b <= blank;
-         rgb <= {12{border}};
-      end else if (sw[1:0] == 2'b10) begin
-         // color bars
-         hs <= hsync;
-         vs <= vsync;
-         b <= blank;
-         rgb <= {{4{hcount[8]}}, {4{hcount[7]}}, {4{hcount[6]}}} ;
-      end else begin
-         // default: pong
-         hs <= hsync;
-         vs <= vsync;
-         b <= blank;
-         rgb <= pixel;
-      end
+        hs <= hsync;
+        vs <= vsync;
+        b <= blank;
+        rgb <= pixel;
     end
 
-    assign rgb = sw[0] ? {12{border}} : pixel ; //{{4{hcount[7]}}, {4{hcount[6]}}, {4{hcount[5]}}};
+  //  assign rgb = sw[0] ? {12{border}} : pixel ; //{{4{hcount[7]}}, {4{hcount[6]}}, {4{hcount[5]}}};
 
     // the following lines are required for the Nexys4 VGA circuit - do not change
     assign vga_r = ~b ? rgb[11:8]: 0;
