@@ -112,29 +112,29 @@ module graphics(
             end 
         end        
 
-        case (num_players)
-            0: pixel_out = player1_pixel;
-            1: pixel_out = player1_pixel + player2_pixel;
-            2: pixel_out = player1_pixel + player2_pixel + player3_pixel;
-            3: pixel_out = player1_pixel + player2_pixel + player3_pixel + player4_pixel;
-        endcase
+//        case (num_players)
+//            0: pixel_out = player1_pixel;
+//            1: pixel_out = player1_pixel + player2_pixel;
+//            2: pixel_out = player1_pixel + player2_pixel + player3_pixel;
+//            3: pixel_out = player1_pixel + player2_pixel + player3_pixel + player4_pixel;
+//        endcase
 
-        logic [11:0] whole_onion, chopped_onion, empty_bowl, full_bowl, empty_pot, raw_pot, cooked_pot, fire_pot, fire, extinguisher;
+//        logic [11:0] whole_onion, chopped_onion, empty_bowl, full_bowl, empty_pot, raw_pot, cooked_pot, fire_pot, fire, extinguisher;
 
-        case (grid_state)
-           G_EMPTY: object_pixel = 0;
-           G_ONION_WHOLE: object_pixel = whole_onion;
-           G_ONION_CHOPPED: object_pixel = chopped_onion;
-           G_BOWL_EMPTY: object_pixel = empty_bowl;
-           G_BOWL_FULL: object_pixel = full_bowl;
-           G_POT_EMPTY: object_pixel = empty_pot;
-           G_POT_RAW: object_pixel = raw_pot;
-           G_POT_COOKED: object_pixel = cooked_pot;
-           G_POT_FIRE: object_pixel = fire_pot;
-           G_FIRE: object_pixel = fire;
-           G_EXTINGUISHER: object_pixel = extinguisher;
-           default: object_pixel = 0;
-        endcase
+//        case (grid_state)
+//           G_EMPTY: object_pixel = 0;
+//           G_ONION_WHOLE: object_pixel = whole_onion;
+//           G_ONION_CHOPPED: object_pixel = chopped_onion;
+//           G_BOWL_EMPTY: object_pixel = empty_bowl;
+//           G_BOWL_FULL: object_pixel = full_bowl;
+//           G_POT_EMPTY: object_pixel = empty_pot;
+//           G_POT_RAW: object_pixel = raw_pot;
+//           G_POT_COOKED: object_pixel = cooked_pot;
+//           G_POT_FIRE: object_pixel = fire_pot;
+//           G_FIRE: object_pixel = fire;
+//           G_EXTINGUISHER: object_pixel = extinguisher;
+//           default: object_pixel = 0;
+//        endcase
 
         hsync_out = hsync;
         vsync_out = vsync;
