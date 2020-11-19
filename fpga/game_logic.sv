@@ -20,7 +20,7 @@ module game_logic(input reset,
                   output logic [1:0] player_direction, //up, down, left, right
                   output logic [8:0] player_loc_x,
                   output logic [8:0] player_loc_y,
-                  output logic [3:0] player_state );
+                  output logic [3:0] player_state);
                   
     parameter START = 5*100_000_000;//5*clock
     logic [3:0] w_state;
