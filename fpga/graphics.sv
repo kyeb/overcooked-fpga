@@ -68,7 +68,7 @@ module graphics(
     // player displays
     logic [11:0] player_pixel;
     player_blob player1 (.pixel_clk_in(clock), .x_in(player_x), .y_in(player_y), .hcount_in(hcount), 
-        .vcount_in(vcount), .player_direction(player_direction), .pixel_out(player_pixel));
+        .vcount_in(vcount), .player_direction(player_direction), .player_state(player_state), .pixel_out(player_pixel));
 
     // grid logic
     logic [2:0] current_grid_x, grid_object_x;

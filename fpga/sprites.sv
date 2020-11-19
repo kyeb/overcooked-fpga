@@ -5,6 +5,7 @@ module player_blob
     input [10:0] x_in,hcount_in,
     input [9:0] y_in,vcount_in,
     input [1:0] player_direction,
+    input [3:0] player_state,
     output logic [11:0] pixel_out);
 
     // player directions

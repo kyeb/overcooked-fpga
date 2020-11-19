@@ -55,7 +55,7 @@ module top_level(
    assign  dp = 1'b1;  // turn off the period
    
    //game logic
-   
+
         //inputs: reset, clock, player_ID, num_players
         //inputs for each player: left, right, up, down, chop, carry
         
