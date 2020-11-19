@@ -13,7 +13,7 @@ module top_level(
    );
    
    logic clock;
-   clk_wiz_25 clk25 (.clk_out1(clk_100mhz), .clk_in1(clock));
+   clk_wiz_25 clk25 (.clk_in1(clk_100mhz), .clk_out1(clock));
    
    logic [10:0] hcount_in;
    logic [9:0] vcount_in;
@@ -90,8 +90,8 @@ module top_level(
    graphics game(.clock(clock), .reset(reset), .team_name(team_name), .local_player_ID(local_player_ID), .num_players(num_players),
       .game_state(game_state), .time_left(time_left), .point_total(point_total), .object_grid(object_grid),
       .time_grid(time_grid), .orders(orders), .order_times(order_times), .player_direction(player_direction), .player_x(player_x),
-      .player_state(player_state), .hcount_in(hcount_in), .vcount_in(vcount_in), .hsync_in(hsync_in), .vsync_in(vsync_in),
-      .blank_in(blank_in), .hsync_out(hsync), .vsync_out(vsync), .blank_out(blank), .pixel_out(pixel));
+      .player_state(player_state), .hcount(hcount_in), .vcount(vcount_in), .hsync(hsync_in), .vsync(vsync_in),
+      .blank(blank_in), .hsync_out(hsync), .vsync_out(vsync), .blank_out(blank), .pixel_out(pixel));
     
     logic b,hs,vs;
     always_ff @(posedge clock) begin
