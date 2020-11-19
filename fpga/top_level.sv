@@ -70,7 +70,6 @@ module top_level(
                    
     
    //graphics
-   logic border = (hcount==0 | hcount==639 | vcount==0 | vcount==479);
    logic [10:0] hcount;    // pixel on current line
    logic [9:0] vcount;     // line number
    logic hsync, vsync, blank;
