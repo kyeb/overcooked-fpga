@@ -61,26 +61,16 @@ module top_level(
         
         //output: game state, grid of objects, grid of object times, time left, point total, orders, order times, team_name
         //output for each player:  player_direction, player_loc_x, player_loc_y, player_state
-        
-        //game_logic gl (.reset(),.clock(),
-//                  input [1:0] local_player_ID,
-//                  input [1:0] num_players,
-//                  input left, right, up, down, chop, carry,
-//                  output logic [2:0] game_state,
-//                  output logic [7:0][12:0][3:0] object_grid, //need dimensions
-//                  output logic [7:0][12:0][3:0] time_grid, //need dimensions
-//                  output logic [7:0] time_left, //size?
-//                  output logic [9:0] point_total, //size?
-//                  output logic [3:0] orders,
-//                  output logic [3:0][4:0] order_times,
-//                  output logic [2:0][7:0] team_name, 
-//                  output logic [1:0] player_direction,
-//                  output logic [8:0] player_loc_x,
-//                  output logic [8:0] player_loc_y,
-//                  output logic [3:0] player_state );
-   
-   //graphics
-   logic border = (hcount==0 | hcount==639 | vcount==0 | vcount==479);
+    assign frame_update = (hcount_in==0)&&(vcount_in==0);
+    game_logic gl (.reset(reset),.clock(clock), .frame_update(frame_update), .local_player_ID(local_player_ID), .num_players(num_players),
+                   .left(left), .right(right), .up(up), .down(down), .chop(chop), .carry(carry),.game_state(game_state),
+                   .object_grid(object_grid), .time_grid(time_grid), .time_left(time_left), .point_total(point_total), 
+                   .orders(orders), .order_times(order_times), .team_name(team_name), .player_direction(player_direction), 
+                   .player_loc_x(player_loc_x), .player_loc_y(player_loc_y), .player_state(player_state) );
+                   
+    
+    //graphics
+    logic border = (hcount==0 | hcount==639 | vcount==0 | vcount==479);
    logic [10:0] hcount;    // pixel on current line
    logic [9:0] vcount;     // line number
    logic hsync, vsync, blank;

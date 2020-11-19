@@ -6,6 +6,7 @@
 
 module game_logic(input reset,
                   input clock,
+                  input frame_update,
                   input [1:0] local_player_ID,
                   input [1:0] num_players,
                   input left, right, up, down, chop, carry,
