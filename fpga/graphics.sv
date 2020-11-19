@@ -59,22 +59,57 @@ module graphics(
     parameter G_FIRE = 9;
     parameter G_EXTINGUISHER = 10;
 
+    // player displays
     logic [11:0] player_pixel;
-    picture_blob player1 (.pixel_clk_in(clock), .x_in(player_x), .y_in(player_y), .hcount_in(hcount_in), 
-        .vcount_in(vcount_in), .pixel_out(player_pixel));
+    picture_blob player1 (.pixel_clk_in(clock), .x_in(player_x), .y_in(player_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(player_pixel));
 
-    logic [2:0] grid_x;
-    logic [4:0] grid_y;
-    logic [3:0] state;
-    pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(vcount), .grid_x(grid_x), .grid_y(grid_y));
+    // grid logic
+    logic [2:0] current_grid_x, grid_object_x;
+    logic [4:0] current_grid_y, grid_object_y;
+    logic [3:0] grid_state;
+    pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(vcount), .current_(current_grid_x), .grid_y(current_grid_y));
 
+    // TODO: UPDATE THIS ONCE IMAGES UP
+    picture_blob whole_onion (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(whole_onion));
+
+    picture_blob chopped_onion (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(chopped_onion));
+
+    picture_blob empty_bowl (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(empty_bowl));
+
+    picture_blob full_bowl (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(full_bowl));
+
+    picture_blob empty_pot (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(empty_pot));
+
+    picture_blob raw_pot (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(raw_pot));
+
+    picture_blob cooked_pot (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(cooked_pot));
+
+    picture_blob fire_pot (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(fire_pot));
+
+    picture_blob fire (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(fire));
+
+    picture_blob extinguisher (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .pixel_out(extinguisher));
+
+    // more grid logic
     always_comb begin
         // bounds of game grid
         if (hcount > 111 && hcount < 367) begin
-
-            // update 
+            // update the grid state if we end up on a new square of the grid
             if ((hcount - 112) % 32 == 0 && (vcount - 112) % 32 == 0) begin
-                grid_state = object_grid[grid_x][grid_y];
+                grid_state = object_grid[current_grid_x][current_grid_y];
+                grid_object_x = vcount;
+                grid_object_y = hcount;
             end 
         end        
     
