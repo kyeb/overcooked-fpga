@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 
 module graphics(
-    input reset,
     input clock,
+    input reset,
     
     // some global stuff
     input [1:0] local_player_ID,
