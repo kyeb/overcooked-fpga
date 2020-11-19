@@ -7,7 +7,8 @@ logic restart;
 //outputs
 logic [7:0] time_left;
 
-time_remaining uut (.clock(clock), .timer_go(timer_go), .restart(restart), .time_left(time_left));
+time_remaining #(.GIVEN_TIME(150), .ONE_SEC(10)) 
+                uut (.clock(clock), .timer_go(timer_go), .restart(restart), .time_left(time_left));
 
 always #5 clock = !clock;
    
