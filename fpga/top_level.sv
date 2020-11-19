@@ -13,7 +13,12 @@ module top_level(
    );
    
    logic clock;
-   clk_25mhz_clk_wiz clk25 (.clk_out1(clk_100mhz), .clk_in1(clock));
+   clk_wiz_25 clk25 (.clk_out1(clk_100mhz), .clk_in1(clock));
+   
+   logic [10:0] hcount;
+   logic [9:0] vcount;
+   logic vsync, hsync, blank;
+   xvga vga(.vclock_in(clock), .hcount_out(hcount), .vcount_out(vcount), .vsync_out(vsync), .hsync_out(hsync), .blank_out(blank));
    
    //sw[1:0] = player ID
    //sw[3:2] = num_players
@@ -74,7 +79,43 @@ module top_level(
 //                  output logic [3:0] player_state );
    
    //graphics
-   //communication
+//    logic border = (hcount==0 | hcount==639 | vcount==0 | vcount==479 |
+//                   hcount == 512 | vcount == 384);
+
+//    logic b,hs,vs;
+//    always_ff @(posedge clk_65mhz) begin
+//      if (sw[1:0] == 2'b01) begin
+//         // 1 pixel outline of visible area (white)
+//         hs <= hsync;
+//         vs <= vsync;
+//         b <= blank;
+//         rgb <= {12{border}};
+//      end else if (sw[1:0] == 2'b10) begin
+//         // color bars
+//         hs <= hsync;
+//         vs <= vsync;
+//         b <= blank;
+//         rgb <= {{4{hcount[8]}}, {4{hcount[7]}}, {4{hcount[6]}}} ;
+//      end else begin
+//         // default: pong
+//         hs <= phsync;
+//         vs <= pvsync;
+//         b <= pblank;
+//         rgb <= pixel;
+//      end
+//    end
+
+//    assign rgb = sw[0] ? {12{border}} : pixel ; //{{4{hcount[7]}}, {4{hcount[6]}}, {4{hcount[5]}}};
+
+//    // the following lines are required for the Nexys4 VGA circuit - do not change
+//    assign vga_r = ~b ? rgb[11:8]: 0;
+//    assign vga_g = ~b ? rgb[7:4] : 0;
+//    assign vga_b = ~b ? rgb[3:0] : 0;
+
+//    assign vga_hs = ~hs;
+//    assign vga_vs = ~vs;
+   
+//   //communication
 
 endmodule
 

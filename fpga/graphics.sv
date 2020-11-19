@@ -23,6 +23,21 @@ module graphics(
     input [8:0] player_y,
     input [3:0] player_state,
     
-    output pixel);              
+    input [10:0] hcount_in, // horizontal index of current pixel (0..1023)
+    input [9:0]  vcount_in, // vertical index of current pixel (0..767)
+    input hsync_in,         // XVGA horizontal sync signal (active low)
+    input vsync_in,         // XVGA vertical sync signal (active low)
+    input blank_in,         // XVGA blanking (1 means output black pixel)
     
+    output logic hsync_out,
+    output logic vsync_out,
+    output logic blank_out,
+    output [11:0] pixel_out);              
+    
+    always_comb begin
+        hsync_out = hsync_in;
+        vsync_out = vsync_in;
+        blank_out = blank_in;
+    end
+
 endmodule

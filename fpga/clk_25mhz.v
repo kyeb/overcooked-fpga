@@ -1,5 +1,5 @@
 
-// file: clk_25mhz.v
+// file: clk_wiz_0.v
 // 
 // (c) Copyright 2008 - 2013 Xilinx, Inc. All rights reserved.
 // 
@@ -56,7 +56,7 @@
 //  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 //   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 //----------------------------------------------------------------------------
-// clk_out1__25.00000______0.000______50.0______181.828____104.359
+// clk_out1__25.17301______0.000______50.0______319.783____246.739
 //
 //----------------------------------------------------------------------------
 // Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -65,7 +65,7 @@
 
 `timescale 1ps/1ps
 
-module clk_25mhz_clk_wiz 
+module clk_wiz_25 
 
  (// Clock in ports
   // Clock out ports
@@ -74,11 +74,14 @@ module clk_25mhz_clk_wiz
  );
   // Input buffering
   //------------------------------------
-wire clk_in1_clk_25mhz;
-wire clk_in2_clk_25mhz;
+wire clk_in1_clk_wiz_0;
+wire clk_in2_clk_wiz_0;
   IBUF clkin1_ibufg
-   (.O (clk_in1_clk_25mhz),
+   (.O (clk_in1_clk_wiz_0),
     .I (clk_in1));
+
+
+
 
   // Clocking PRIMITIVE
   //------------------------------------
@@ -87,20 +90,20 @@ wire clk_in2_clk_25mhz;
   //    * Unused inputs are tied off
   //    * Unused outputs are labeled unused
 
-  wire        clk_out1_clk_25mhz;
-  wire        clk_out2_clk_25mhz;
-  wire        clk_out3_clk_25mhz;
-  wire        clk_out4_clk_25mhz;
-  wire        clk_out5_clk_25mhz;
-  wire        clk_out6_clk_25mhz;
-  wire        clk_out7_clk_25mhz;
+  wire        clk_out1_clk_wiz_0;
+  wire        clk_out2_clk_wiz_0;
+  wire        clk_out3_clk_wiz_0;
+  wire        clk_out4_clk_wiz_0;
+  wire        clk_out5_clk_wiz_0;
+  wire        clk_out6_clk_wiz_0;
+  wire        clk_out7_clk_wiz_0;
 
   wire [15:0] do_unused;
   wire        drdy_unused;
   wire        psdone_unused;
   wire        locked_int;
-  wire        clkfbout_clk_25mhz;
-  wire        clkfbout_buf_clk_25mhz;
+  wire        clkfbout_clk_wiz_0;
+  wire        clkfbout_buf_clk_wiz_0;
   wire        clkfboutb_unused;
     wire clkout0b_unused;
    wire clkout1_unused;
@@ -120,11 +123,11 @@ wire clk_in2_clk_25mhz;
     .CLKOUT4_CASCADE      ("FALSE"),
     .COMPENSATION         ("ZHOLD"),
     .STARTUP_WAIT         ("FALSE"),
-    .DIVCLK_DIVIDE        (1),
-    .CLKFBOUT_MULT_F      (9.125),
+    .DIVCLK_DIVIDE        (4),
+    .CLKFBOUT_MULT_F      (36.375),
     .CLKFBOUT_PHASE       (0.000),
     .CLKFBOUT_USE_FINE_PS ("FALSE"),
-    .CLKOUT0_DIVIDE_F     (36.500),
+    .CLKOUT0_DIVIDE_F     (36.125),
     .CLKOUT0_PHASE        (0.000),
     .CLKOUT0_DUTY_CYCLE   (0.500),
     .CLKOUT0_USE_FINE_PS  ("FALSE"),
@@ -132,9 +135,9 @@ wire clk_in2_clk_25mhz;
   mmcm_adv_inst
     // Output clocks
    (
-    .CLKFBOUT            (clkfbout_clk_25mhz),
+    .CLKFBOUT            (clkfbout_clk_wiz_0),
     .CLKFBOUTB           (clkfboutb_unused),
-    .CLKOUT0             (clk_out1_clk_25mhz),
+    .CLKOUT0             (clk_out1_clk_wiz_0),
     .CLKOUT0B            (clkout0b_unused),
     .CLKOUT1             (clkout1_unused),
     .CLKOUT1B            (clkout1b_unused),
@@ -146,8 +149,8 @@ wire clk_in2_clk_25mhz;
     .CLKOUT5             (clkout5_unused),
     .CLKOUT6             (clkout6_unused),
      // Input clock control
-    .CLKFBIN             (clkfbout_buf_clk_25mhz),
-    .CLKIN1              (clk_in1_clk_25mhz),
+    .CLKFBIN             (clkfbout_buf_clk_wiz_0),
+    .CLKIN1              (clk_in1_clk_wiz_0),
     .CLKIN2              (1'b0),
      // Tied to always select the primary input clock
     .CLKINSEL            (1'b1),
@@ -177,11 +180,19 @@ wire clk_in2_clk_25mhz;
   //-----------------------------------
 
   BUFG clkf_buf
-   (.O (clkfbout_buf_clk_25mhz),
-    .I (clkfbout_clk_25mhz));
+   (.O (clkfbout_buf_clk_wiz_0),
+    .I (clkfbout_clk_wiz_0));
+
+
+
+
+
 
   BUFG clkout1_buf
    (.O   (clk_out1),
-    .I   (clk_out1_clk_25mhz));
+    .I   (clk_out1_clk_wiz_0));
+
+
+
 
 endmodule
