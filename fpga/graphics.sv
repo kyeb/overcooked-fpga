@@ -18,11 +18,26 @@ module graphics(
     input [3:0][4:0] order_times,
     
     // player input
-    input [1:0] player_direction,
-    input [8:0] player_x,
-    input [8:0] player_y,
-    input [3:0] player_state,
+    input [1:0] player1_direction,
+    input [8:0] player1_x,
+    input [8:0] player1_y,
+    input [3:0] player1_state,
     
+    input [1:0] player2_direction,
+    input [8:0] player2_x,
+    input [8:0] player2_y,
+    input [3:0] player2_state,
+
+    input [1:0] player3_direction,
+    input [8:0] player3_x,
+    input [8:0] player3_y,
+    input [3:0] player3_state,
+
+    input [1:0] player4_direction,
+    input [8:0] player4_x,
+    input [8:0] player4_y,
+    input [3:0] player4_state,
+
     input [10:0] hcount, // horizontal index of current pixel (0..1023)
     input [9:0]  vcount, // vertical index of current pixel (0..767)
     input hsync,         // XVGA horizontal sync signal (active low)
@@ -66,9 +81,18 @@ module graphics(
     parameter G_EXTINGUISHER = 10;
 
     // player displays
-    logic [11:0] player_pixel;
-    player_blob player1 (.pixel_clk_in(clock), .x_in(player_x), .y_in(player_y), .hcount_in(hcount), 
-        .vcount_in(vcount), .player_direction(player_direction), .player_state(player_state), .pixel_out(player_pixel));
+    logic [11:0] player1_pixel, player2_pixel, player3_pixel, player4_pixel;
+    player_blob player1 (.pixel_clk_in(clock), .x_in(player1_x), .y_in(player1_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .player_direction(player1_direction), .player_state(player1_state), .pixel_out(player1_pixel));
+
+    player_blob player2 (.pixel_clk_in(clock), .x_in(player2_x), .y_in(player2_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .player_direction(player2_direction), .player_state(player2_state), .pixel_out(player2_pixel));
+
+    player_blob player3 (.pixel_clk_in(clock), .x_in(player3_x), .y_in(player3_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .player_direction(player3_direction), .player_state(player3_state), .pixel_out(player3_pixel));
+
+    player_blob player4 (.pixel_clk_in(clock), .x_in(player4_x), .y_in(player4_y), .hcount_in(hcount), 
+        .vcount_in(vcount), .player_direction(player4_direction), .player_state(player4_state), .pixel_out(player4_pixel));
 
     // grid logic
     logic [2:0] current_grid_x, grid_object_x;
@@ -87,15 +111,36 @@ module graphics(
                 grid_object_y = hcount;
             end 
         end        
-    
+
+        case (num_players)
+            0: pixel_out = player1_pixel;
+            1: pixel_out = player1_pixel + player2_pixel;
+            2: pixel_out = player1_pixel + player2_pixel + player3_pixel;
+            3: pixel_out = player1_pixel + player2_pixel + player3_pixel + player4_pixel;
+        endcase
+
+        logic [11:0] whole_onion, chopped_onion, empty_bowl, full_bowl, empty_pot, raw_pot, cooked_pot, fire_pot, fire, extinguisher;
+
+        case (grid_state)
+           G_EMPTY: object_pixel = 0;
+           G_ONION_WHOLE: object_pixel = whole_onion;
+           G_ONION_CHOPPED: object_pixel = chopped_onion;
+           G_BOWL_EMPTY: object_pixel = empty_bowl;
+           G_BOWL_FULL: object_pixel = full_bowl;
+           G_POT_EMPTY: object_pixel = empty_pot;
+           G_POT_RAW: object_pixel = raw_pot;
+           G_POT_COOKED: object_pixel = cooked_pot;
+           G_POT_FIRE: object_pixel = fire_pot;
+           G_FIRE: object_pixel = fire;
+           G_EXTINGUISHER: object_pixel = extinguisher;
+           default: object_pixel = 0;
+        endcase
+
         hsync_out = hsync;
         vsync_out = vsync;
         blank_out = blank;
 
     end
-
-    assign pixel_out = player_pixel;
-    // object_pixel;
 
 endmodule
 
@@ -130,21 +175,3 @@ endmodule
 
 //    picture_blob extinguisher (.pixel_clk_in(clock), .x_in(grid_object_x), .y_in(grid_object_y), .hcount_in(hcount), 
 //        .vcount_in(vcount), .pixel_out(extinguisher));
-
-//        case (grid_state)
-        
-//            G_EMPTY: object_pixel = 0;
-//            G_ONION_WHOLE: object_pixel = whole_onion;
-//            G_ONION_CHOPPED: object_pixel = chopped_onion;
-//            G_BOWL_EMPTY: object_pixel = empty_bowl;
-//            G_BOWL_FULL: object_pixel = full_bowl;
-//            G_POT_EMPTY: object_pixel = empty_pot;
-//            G_POT_RAW: object_pixel = raw_pot;
-//            G_POT_COOKED: object_pixel = cooked_pot;
-//            G_POT_FIRE: object_pixel = fire_pot;
-//            G_FIRE: object_pixel = fire;
-//            G_EXTINGUISHER: object_pixel = extinguisher;
-//            default: object_pixel = 0;
-            
-//        endcase
-    

@@ -28,7 +28,7 @@ module player_move(input reset,
             player_direction <= DOWN;
             
         //x direction
-        end else if (left && (player_loc_x<148)) begin //left button
+        end else if (left && (player_loc_x>148)) begin //left button
             player_loc_x <= player_loc_x-4; //move 4 pixel left
             player_direction <= LEFT;
         end else if (right && (player_loc_x<460)) begin //right button
