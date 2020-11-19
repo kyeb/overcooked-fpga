@@ -12,6 +12,9 @@ module top_level(
    output logic[7:0] an    // Display location 0-7
    );
    
+   logic clock;
+   clk_25mhz_clk_wiz clk25 (.clk_out1(clk_100mhz), .clk_in1(clock));
+   
    //sw[1:0] = player ID
    //sw[3:2] = num_players
    //sw[4] = reset

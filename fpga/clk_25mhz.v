@@ -80,7 +80,6 @@ wire clk_in2_clk_25mhz;
    (.O (clk_in1_clk_25mhz),
     .I (clk_in1));
 
-
   // Clocking PRIMITIVE
   //------------------------------------
 
