@@ -25,18 +25,13 @@ module player_blob
     right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(right_bits));
 
     always_comb begin
-    
         case (player_direction)
-        
             P_LEFT: image_bits = left_bits;
             P_RIGHT: image_bits = right_bits;
             P_UP: image_bits = up_bits;
             P_DOWN: image_bits = down_bits;
-        
         endcase
-    
     end
-
 
     // use color map to create 4 bits R, 4 bits G, 4 bits B
     // since the image is greyscale, just replicate the red pixels
@@ -44,6 +39,7 @@ module player_blob
     red_coe rcm (.clka(pixel_clk_in), .addra(image_bits), .douta(red_mapped));
     green_coe gcm (.clka(pixel_clk_in), .addra(image_bits), .douta(green_mapped));
     blue_coe bcm (.clka(pixel_clk_in), .addra(image_bits), .douta(blue_mapped));
+     
     // note the one clock cycle delay in pixel!
     always_ff @ (posedge pixel_clk_in) begin
     if ((hcount_in >= x_in && hcount_in < (x_in+WIDTH)) &&
