@@ -28,6 +28,11 @@ module game_logic(input reset,
     logic [10:0] start_counter;
     logic timer_go;
     
+    player_move pm (.clock(clock),.reset(reset),.frame_update(frame_update),.left(left), 
+                    .right(right), .up(up), .down(down), .chop(chop), .carry(carry),
+                    .player_direction(player_direction), .player_loc_x(player_loc_x),
+                    .player_loc_y(player_loc_y),.player_state(player_state));
+    
     always_ff @(posedge clock) begin
         if (reset) begin
             game_state <= 0;
