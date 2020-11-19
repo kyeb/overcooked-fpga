@@ -23,9 +23,9 @@ module game_logic(input reset,
                   output logic [8:0] player_loc_y,
                   output logic [3:0] player_state);
                   
-    parameter START = 5*100_000_000;//5*clock
+    parameter START = 5*25_175_000;//5*clock
     logic [3:0] w_state;
-    logic [10:0] start_counter;
+    logic [30:0] start_counter;
     logic timer_go;
     
     player_move pm (.clock(clock),.reset(reset),.frame_update(frame_update),.left(left), 

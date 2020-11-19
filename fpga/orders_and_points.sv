@@ -58,11 +58,13 @@ module orders_and_points (input clock,
         //if no orders, add an order
         end else if (orders == 0) begin
             add_order_counter <= 1;
+            second_counter <= 1;
             
             orders <= 4'b1;
         //add order every 20 seconds unless already 4 
         end else if (add_order_counter == ORDER_TIME) begin
             add_order_counter <= 1;
+            second_counter <= second_counter+1;
             
             if (orders == 4'b0001) begin
                 orders <= 4'b0011;
