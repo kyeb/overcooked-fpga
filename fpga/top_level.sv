@@ -81,8 +81,8 @@ module top_level(
     
    graphics game(.clock(clock), .reset(reset), .team_name(team_name), .local_player_ID(local_player_ID), .num_players(num_players),
       .game_state(game_state), .time_left(time_left), .point_total(point_total), .object_grid(object_grid),
-      .time_grid(time_grid), .orders(orders), .order_times(order_times), .player_direction(player_direction), .player_x(player_loc_x),
-      .player_y(player_loc_y), .player_state(player_state), .hcount(hcount_in), .vcount(vcount_in), .hsync(hsync_in), .vsync(vsync_in),
+      .time_grid(time_grid), .orders(orders), .order_times(order_times), .player1_direction(player_direction), .player1_x(player_loc_x),
+      .player1_y(player_loc_y), .player1_state(player_state), .hcount(hcount_in), .vcount(vcount_in), .hsync(hsync_in), .vsync(vsync_in),
       .blank(blank_in), .hsync_out(hsync), .vsync_out(vsync), .blank_out(blank), .pixel_out(pixel));
     
     logic b,hs,vs;
