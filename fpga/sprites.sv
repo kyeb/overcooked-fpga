@@ -34,64 +34,64 @@ module player_blob
     assign image_addr = (hcount_in-x_in) + (vcount_in-y_in) * WIDTH;
 
     // move coes
-    up_coe up(.clka(pixel_clk_in), .addra(image_addr), .douta(move_up_bits));
-    down_coe down(.clka(pixel_clk_in), .addra(image_addr), .douta(move_down_bits));
-    left_coe left(.clka(pixel_clk_in), .addra(image_addr), .douta(move_left_bits));
-    right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(move_right_bits));
+    move_up_coe move_up(.clka(pixel_clk_in), .addra(image_addr), .douta(move_up_bits));
+    move_down_coe move_down(.clka(pixel_clk_in), .addra(image_addr), .douta(move_down_bits));
+    move_left_coe move_left(.clka(pixel_clk_in), .addra(image_addr), .douta(move_left_bits));
+    move_right_coe move_right(.clka(pixel_clk_in), .addra(image_addr), .douta(move_right_bits));
 
     // chop coes
-    up_coe up(.clka(pixel_clk_in), .addra(image_addr), .douta(chop_up_bits));
-    down_coe down(.clka(pixel_clk_in), .addra(image_addr), .douta(chop_down_bits));
-    left_coe left(.clka(pixel_clk_in), .addra(image_addr), .douta(chop_left_bits));
-    right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(chop_right_bits));
+    chop_up_coe chop_up(.clka(pixel_clk_in), .addra(image_addr), .douta(chop_up_bits));
+    chop_down_coe chop_down(.clka(pixel_clk_in), .addra(image_addr), .douta(chop_down_bits));
+    chop_left_coe chop_left(.clka(pixel_clk_in), .addra(image_addr), .douta(chop_left_bits));
+    chop_right_coe chop_right(.clka(pixel_clk_in), .addra(image_addr), .douta(chop_right_bits));
 
     // whole onion coes
-    up_coe up(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_up_bits));
-    down_coe down(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_down_bits));
-    left_coe left(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_left_bits));
-    right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_right_bits));
+    whole_onion_up_coe whole_onion_up(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_up_bits));
+    whole_onion_down_coe whole_onion_down(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_down_bits));
+    whole_onion_left_coe whole_onion_left(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_left_bits));
+    whole_onion_right_coe whole_onion_right(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_right_bits));
 
     // chopped onion coes
-    up_coe up(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_up_bits));
-    down_coe down(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_down_bits));
-    left_coe left(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_left_bits));
-    right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_right_bits));
+    chopped_onion_up_coe chopped_onion_up(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_up_bits));
+    chopped_onion_down_coe chopped_onion_down(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_down_bits));
+    chopped_onion_left_coe chopped_onion_left(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_left_bits));
+    chopped_onion_right_coe chopped_onion_right(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_right_bits));
 
     // empty pot coes
-    up_coe up(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_up_bits));
-    down_coe down(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_down_bits));
-    left_coe left(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_left_bits));
-    right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_right_bits));
+    empty_pot_up_coe empty_pot_up(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_up_bits));
+    empty_pot_down_coe empty_pot_down(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_down_bits));
+    empty_pot_left_coe empty_pot_left(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_left_bits));
+    empty_pot_right_coe empty_pot_right(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_right_bits));
 
     // soup pot coes
-    up_coe up(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_up_bits));
-    down_coe down(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_down_bits));
-    left_coe left(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_left_bits));
-    right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_right_bits));
+    soup_pot_up_coe soup_pot_up(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_up_bits));
+    soup_pot_down_coe soup_pot_down(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_down_bits));
+    soup_pot_left_coe soup_pot_left(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_left_bits));
+    soup_pot_right_coe soup_pot_right(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_right_bits));
 
     // empty_bowl coes
-    up_coe up(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_up_bits));
-    down_coe down(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_down_bits));
-    left_coe left(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_left_bits));
-    right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_right_bits));
+    empty_bowl_up_coe empty_bowl_up(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_up_bits));
+    empty_bowl_down_coe empty_bowl_down(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_down_bits));
+    empty_bowl_left_coe empty_bowl_left(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_left_bits));
+    empty_bowl_right_coe empty_bowl_right(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_right_bits));
 
     // full_bowl coes
-    up_coe up(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_up_bits));
-    down_coe down(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_down_bits));
-    left_coe left(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_left_bits));
-    right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_right_bits));
+    full_bowl_up_coe full_bowl_up(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_up_bits));
+    full_bowl_down_coe full_bowl_down(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_down_bits));
+    full_bowl_left_coe full_bowl_left(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_left_bits));
+    full_bowl_right_coe full_bowl_right(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_right_bits));
 
     // extinguisher_off coes
-    up_coe up(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_up_bits));
-    down_coe down(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_down_bits));
-    left_coe left(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_left_bits));
-    right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_right_bits));
+    extinguisher_off_up_coe extinguisher_off_up(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_up_bits));
+    extinguisher_off_down_coe extinguisher_off_down(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_down_bits));
+    extinguisher_off_left_coe extinguisher_off_left(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_left_bits));
+    extinguisher_off_right_coe extinguisher_off_right(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_right_bits));
 
     // extinguisher_on coes
-    up_coe up(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_up_bits));
-    down_coe down(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_down_bits));
-    left_coe left(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_left_bits));
-    right_coe right(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_right_bits));
+    extinguisher_on_up_coe extinguisher_on_up(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_up_bits));
+    extinguisher_on_down_coe extinguisher_on_down(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_down_bits));
+    extinguisher_on_left_coe extinguisher_on_left(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_left_bits));
+    extinguisher_on_right_coe extinguisher_on_right(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_right_bits));
 
     always_comb begin
         case (player_state)
@@ -178,9 +178,6 @@ module player_blob
         endcase
     end
 
-    // use color map to create 4 bits R, 4 bits G, 4 bits B
-    // since the image is greyscale, just replicate the red pixels
-    // and not bother with the other two color maps.
     red_coe rcm (.clka(pixel_clk_in), .addra(image_bits), .douta(red_mapped));
     green_coe gcm (.clka(pixel_clk_in), .addra(image_bits), .douta(green_mapped));
     blue_coe bcm (.clka(pixel_clk_in), .addra(image_bits), .douta(blue_mapped));
@@ -189,9 +186,7 @@ module player_blob
     always_ff @ (posedge pixel_clk_in) begin
     if ((hcount_in >= x_in && hcount_in < (x_in+WIDTH)) &&
           (vcount_in >= y_in && vcount_in < (y_in+HEIGHT)))
-        // use MSB 4 bits
-        pixel_out <= {red_mapped[7:4], green_mapped[7:4], green_mapped[7:4]}; // greyscale
-        // pixel_out <= {red_mapped[7:4], 8h'0}; // only red hues
-        else pixel_out <= 12'hFFF;
+        pixel_out <= {red_mapped[7:4], green_mapped[7:4], green_mapped[7:4]}; 
+        else pixel_out <= 0;
     end
 endmodule
