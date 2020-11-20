@@ -1,6 +1,7 @@
 module player_move(input reset,
                    input vsync,
                    input left, right, up, down, chop, carry,
+                   input [2:0] state,
                    output logic [1:0] player_direction, //0 left 1 right 2 up 3 down 
                    output logic [8:0] player_loc_x,
                    output logic [8:0] player_loc_y,
@@ -10,6 +11,12 @@ module player_move(input reset,
     parameter RIGHT = 2'd1;
     parameter UP = 2'd2;
     parameter DOWN = 2'd3;
+    
+    parameter WELCOME = 0;
+    parameter START = 1;
+    parameter PLAY = 2;
+    parameter PAUSE = 3;
+    parameter FINISH = 4;
                    
     always_ff @(negedge vsync) begin
         //players move between 144 and 464 pixels x
@@ -19,6 +26,9 @@ module player_move(input reset,
             player_loc_x <= 9'd304;
             player_loc_y <= 9'd208;
             player_state <= 4'b0;
+        end else if ((state == START)||(state == PAUSE)) begin
+            player_loc_y <= player_loc_y;
+            player_loc_x <= player_loc_x;
             //y direction
         end else if(up && (player_loc_y>148)) begin //up button
             player_loc_y <= player_loc_y-4;  //move 4 pixels up

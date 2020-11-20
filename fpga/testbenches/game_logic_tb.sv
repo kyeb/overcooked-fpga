@@ -4,6 +4,7 @@ module game_logic_tb();
 
 logic reset;
 logic clock;
+logic vsync;
 logic [1:0] local_player_ID;
 logic [1:0] num_players;
 logic left, right, up, down, chop, carry;
@@ -25,7 +26,7 @@ logic [3:0] player_state;
 
 
 
-game_logic uut (.reset(reset), .clock(clock), .local_player_ID(local_player_ID), .num_players(num_players), 
+game_logic uut (.reset(reset), .clock(clock), .vsync(vsync), .local_player_ID(local_player_ID), .num_players(num_players), 
                .left(left), .right(right), .up(up), .down(down), .chop(chop), .carry(carry), 
                .game_state(game_state), .object_grid(object_grid), .time_grid(time_grid), .time_left(time_left),
                .point_total(point_total), .orders(orders), .order_times(order_times), .team_name(team_name),
@@ -33,9 +34,11 @@ game_logic uut (.reset(reset), .clock(clock), .local_player_ID(local_player_ID),
                .player_state(player_state));
                
     always #5 clock = !clock;
+    always #5 vsync = !vsync;
    
     initial begin
     reset = 0;
+    vsync = 0;
     clock = 0;
     local_player_ID = 0;
     num_players = 0;

@@ -23,15 +23,40 @@ module game_logic(input reset,
                   output logic [8:0] player_loc_y,
                   output logic [3:0] player_state);
                   
-    parameter START = 5*60;//5*clock
+    parameter WELCOME = 0;
+    parameter START = 1;
+    parameter PLAY = 2;
+    parameter PAUSE = 3;
+    parameter FINISH = 4;
+    
+    parameter START_TIMER = 5*60;//5*clock
+    
     logic [3:0] w_state;
     logic [30:0] start_counter;
     logic timer_go;
+    logic restart_timer;
+    logic clear_space0;
+    logic clear_space1;
+    logic [1:0][3:0] check_spaces;
+    assign check_spaces[1] = object_grid[5][12];
+    assign check_spaces[0] = object_grid[4][12];
+    
+    //modules
+    //action
+    //pixel_to_grid
+    //orders_and_points  
     
     player_move pm (.reset(reset),.vsync(vsync),.left(left), 
-                    .right(right), .up(up), .down(down), .chop(chop), .carry(carry),
+                    .right(right), .up(up), .down(down), .chop(chop), .carry(carry), .state(game_state),
                     .player_direction(player_direction), .player_loc_x(player_loc_x),
                     .player_loc_y(player_loc_y),.player_state(player_state));
+                    
+   time_remaining tr (.clock(clock),.vsync(vsync),.timer_go(timer_go),.restart(restart_timer),
+                      .time_left(time_left));
+    
+   orders_and_points op (.clock(clock), .vsync(vsync),.reset(reset),.check_spaces(check_spaces),
+                         .timer_go(timer_go),.clear_space0(clear_space0), .clear_space1(clear_space1),
+                         .point_total(point_total),.orders(orders),.order_times(order_times));
     
     always_ff @(negedge vsync) begin
         if (reset) begin
@@ -42,15 +67,12 @@ module game_logic(input reset,
             w_state = 0; 
             object_grid <= {{8{{13{{4'h0}}}}}};
             time_grid <= {{8{{13{4'hf}}}}};
-            time_left <= 8'd150;
-            point_total <= 10'd0;
-            orders <= 4'b0;
-            order_times <= {{4{5'b11111}}};
-              
+            restart_timer <= 1;
+            timer_go <= 0;
 // 0 - Welcome Menu
 // Generate team name
 // Start game -> press chop to start
-        end else if (game_state == 0) begin 
+        end else if (game_state == WELCOME) begin 
             //state 0: letter 1
             if (w_state == 0) begin      
                 if (chop == 1) begin
@@ -152,7 +174,9 @@ module game_logic(input reset,
                 w_state <= 4'd8;
             //state 11: going to next state
             end else if ((w_state == 4'd11)&&(chop==0)) begin
-                game_state <= 3'b1;
+                game_state <= START;
+                restart_timer <= 1;
+                timer_go <= 0;
                 w_state <= 4'd0;
                 object_grid <= {{8{{13{{4'h0}}}}}};
             end     
@@ -161,40 +185,40 @@ module game_logic(input reset,
 // 1 - Game Introduction
 // Wait 5 seconds so players can view map, players can't move
 // Start game
-        end else if (game_state==1) begin
-            if (start_counter == START) begin
-                game_state <= 2;
+        end else if (game_state==START) begin
+            if (start_counter == START_TIMER) begin
+                game_state <= PLAY;
                 start_counter <= 0;
-                
+                restart_timer <= 0;
+                timer_go <= 1;
                 //initial conditions
                 object_grid[2][0] <= 4'b1; //initial onions
                 object_grid[3][0] <= 4'b1;
                 object_grid[6][12] <= 4'd3;//initial bowl
                 time_grid <= {{8{{13{4'hf}}}}};
-                time_left <= 8'd150;
-                point_total <= 10'd0;
-                orders <= 4'b0;
-                order_times <= {{4{5'b11111}}};
             end else begin
                 start_counter <= start_counter+1;
             end
             
-// 2 - Start Game - Timer starts, players can move
-        end else if (game_state==2) begin
+// 2 - Play Game - Timer starts, players can move
+        end else if (game_state==PLAY) begin
+            timer_go <= 1;
+            if (time_left == 0) begin
+                game_state <= FINISH;
+            end else if (chop&&carry) begin
+                game_state <= PAUSE;
+            end
 // 3 - Pause Game - Timer pauses, all objects freeze
-        end else if (game_state==3) begin
+        end else if (game_state==PAUSE) begin
+            timer_go <= 0;
+            if (chop && ~carry) begin
+                game_state <= PLAY;
+            end
 // 4 - Finish Game - Once timer runs out
-        end else if (game_state==4) begin
+        end else if (game_state==FINISH) begin
 // Save point total to server
 // Display most recent score and top scores
         end      
-    end
-    
-//modules
-    //player_move
-    //action
-    //time_remaining
-    //pixel_to_grid
-    //orders_and_points        
+    end      
                   
 endmodule
