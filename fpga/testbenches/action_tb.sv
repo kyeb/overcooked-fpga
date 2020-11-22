@@ -13,7 +13,12 @@ logic [8:0] player_loc_y;
 //outputs
 logic [3:0] player_state;
 logic [7:0][12:0][3:0] object_grid;
-logic [7:0][12:0][3:0] time_grid;
+logic [5:0][3:0] time_grid;
+
+parameter LEFT = 2'd0;
+parameter RIGHT = 2'd1;
+parameter UP = 2'd2;
+parameter DOWN = 2'd3;
 
 action uut (.reset(reset),.vsync(vsync),.num_players(num_players),.left(left), 
             .right(right), .up(up), .down(down), .chop(chop), .carry(carry),
@@ -41,6 +46,13 @@ action uut (.reset(reset),.vsync(vsync),.num_players(num_players),.left(left),
     reset = 1;
     #10
     reset = 0;
+    
+    #100
+    player_loc_x = 9'd177;
+    player_loc_y = 9'd305;
+    player_direction = DOWN;
+    object_grid[7][2] == G_ONION_WHOLE;
+    chop = 1;
     
     end
 
