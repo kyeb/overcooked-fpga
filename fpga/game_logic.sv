@@ -1,8 +1,4 @@
-//inputs: reset, clock, player_type, num_players
-        //inputs for each player: left, right, up, down, chop, carry
-        
-        //output: game state, grid of objects, grid of object times, time left, point total, orders, order times, team_name
-        //output for each player:  player_direction, player_location, player_state
+`timescale 1ns / 1ps
 
 module game_logic(input reset,
                   input clock,
@@ -11,17 +7,17 @@ module game_logic(input reset,
                   input [1:0] num_players,
                   input left, right, up, down, chop, carry,
                   output logic [2:0] game_state,
+                  output logic [2:0][7:0] team_name, 
                   output logic [7:0][12:0][3:0] object_grid,
                   output logic [7:0][12:0][3:0] time_grid,
+                  output logic [3:0] player_state,
                   output logic [7:0] time_left,
                   output logic [9:0] point_total, 
                   output logic [3:0] orders,
                   output logic [3:0][4:0] order_times,
-                  output logic [2:0][7:0] team_name, 
                   output logic [1:0] player_direction, //up, down, left, right
                   output logic [8:0] player_loc_x,
-                  output logic [8:0] player_loc_y,
-                  output logic [3:0] player_state);
+                  output logic [8:0] player_loc_y);
                   
     parameter WELCOME = 0;
     parameter START = 1;

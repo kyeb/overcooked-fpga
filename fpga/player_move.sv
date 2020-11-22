@@ -1,11 +1,12 @@
+`timescale 1ns / 1ps
+
 module player_move(input reset,
                    input vsync,
                    input left, right, up, down, chop, carry,
                    input [2:0] state,
                    output logic [1:0] player_direction, //0 left 1 right 2 up 3 down 
                    output logic [8:0] player_loc_x,
-                   output logic [8:0] player_loc_y,
-                   output logic [3:0] player_state);
+                   output logic [8:0] player_loc_y);
      
     parameter LEFT = 2'd0;
     parameter RIGHT = 2'd1;
@@ -25,7 +26,6 @@ module player_move(input reset,
             player_direction <= 2'd3;
             player_loc_x <= 9'd304;
             player_loc_y <= 9'd208;
-            player_state <= 4'b0;
         end else if ((state == START)||(state == PAUSE)) begin
             player_loc_y <= player_loc_y;
             player_loc_x <= player_loc_x;
