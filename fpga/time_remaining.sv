@@ -1,7 +1,6 @@
 module time_remaining #(parameter GIVEN_TIME = 8'd150,
-                                  ONE_SEC = 24'd60) //clock speed
-                      (input clock,
-                       input vsync,
+                                  ONE_SEC = 24'd60) //vsync speed
+                      (input vsync,
                        input timer_go,
                        input restart,
                        output logic [7:0] time_left); //in seconds in hex

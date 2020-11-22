@@ -47,7 +47,7 @@ module game_logic(input reset,
                     .player_direction(player_direction), .player_loc_x(player_loc_x),
                     .player_loc_y(player_loc_y),.player_state(player_state));
                     
-   time_remaining tr (.clock(clock),.vsync(vsync),.timer_go(timer_go),.restart(restart_timer),
+   time_remaining tr (.vsync(vsync),.timer_go(timer_go),.restart(restart_timer),
                       .time_left(time_left));
     
    orders_and_points op (.clock(clock), .vsync(vsync),.reset(reset),.check_spaces(check_spaces),
