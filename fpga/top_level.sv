@@ -57,7 +57,7 @@ module top_level(
    debounce dbdown(.reset_in(reset),.clock_in(clock),.noisy_in(btnd),.clean_out(local_down));
    
    logic [7:0][12:0][3:0] object_grid;
-   logic [7:0][12:0][3:0] time_grid;
+   logic [5:0][3:0] time_grid;
    logic [7:0] time_left;
    logic [9:0] point_total;
    logic [3:0] orders;

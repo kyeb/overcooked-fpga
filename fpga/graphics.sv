@@ -13,7 +13,8 @@ module graphics(
     // overall game
     input [7:0] time_left,
     input [9:0] point_total,
-    input [7:0][12:0][3:0] object_grid, time_grid,
+    input [7:0][12:0][3:0] object_grid, 
+    input [5:0][3:0] time_grid,
     input [3:0] orders, // how many orders are currently on the screen
     input [3:0][4:0] order_times,
     
