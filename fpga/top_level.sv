@@ -34,6 +34,7 @@ module top_level(
                                      // player 0 will be the primary, will do controls
    assign reset = sw[4];  //reset = 1
    assign local_carry = sw[15]; //is carrying = 1, put down = 0
+   assign pause = sw[14];
    assign led = sw; //check switch is actually on
    
    //figure out number of players
@@ -79,6 +80,7 @@ module top_level(
         //output: game state, grid of objects, grid of object times, time left, point total, orders, order times, team_name
         //output for each player:  player_direction, player_loc_x, player_loc_y, player_state
 
+    //add pause
     game_logic gl (.reset(reset),.clock(clock), .vsync(vsync_in), .local_player_ID(local_player_ID), .num_players(num_players),
                    .left(local_left), .right(local_right), .up(local_up), .down(local_down), .chop(local_chop), .carry(local_carry),.game_state(game_state),
                    .object_grid(object_grid), .time_grid(time_grid), .time_left(time_left), .point_total(point_total), 

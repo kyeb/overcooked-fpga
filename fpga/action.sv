@@ -84,6 +84,7 @@ module action(input reset,
             object_grid[0][9] <= G_POT_EMPTY;
             object_grid[0][10] <= G_POT_EMPTY;
             object_grid[0][11] <= G_POT_EMPTY;
+            object_grid[0][7] <= G_EXTINGUISHER;
             go <= 0;
             restart <= 6'b111_111;
         
@@ -150,7 +151,7 @@ module action(input reset,
                 player_state <=P_NOTHING;
                 object_grid[y_front][x_front] <= G_ONION_WHOLE;
         
-        //if playe ris holding whole onion and drops it, put it in pot or put down
+        //if player is holding whole onion and drops it, put it in pot or put down
         end else if ((player_state == P_ONION_CHOPPED)&&(~carry)) begin
             if (object_in_front == G_POT_EMPTY) begin
                 player_state <=P_NOTHING;
@@ -160,28 +161,63 @@ module action(input reset,
                 object_grid[y_front][x_front] <= G_ONION_CHOPPED;;
             end
         
-        end else if (player_state == P_POT_EMPTY) begin
-            player_state <=P_NOTHING;
-            object_grid[y_front][x_front] <= G_POT_EMPTY;
-        end else if (player_state == P_POT_RAW) begin
+        end else if ((player_state == P_POT_EMPTY)&&(~carry)) begin
+            if (object_in_front == G_ONION_CHOPPED) begin
+                player_state <=P_NOTHING;
+                object_grid[y_front][x_front] <= G_POT_RAW;
+            end else if (object_in_front == G_EMPTY) begin
+                player_state <=P_NOTHING;
+                object_grid[y_front][x_front] <= G_POT_EMPTY;
+            end
+   
+        end else if ((player_state == P_POT_EMPTY)&&(chop)&&(object_in_front == G_ONION_CHOPPED)) begin
+            player_state <= P_POT_RAW;
+            object_grid[y_front][x_front] <= G_EMPTY;
+            
+        end else if ((player_state == P_POT_RAW)&&(~carry)&&(object_in_front == G_EMPTY)) begin
             player_state <=P_NOTHING;
             object_grid[y_front][x_front] <= G_POT_RAW;
-        end else if (player_state == P_POT_COOKED) begin
-            player_state <=P_NOTHING;
-            object_grid[y_front][x_front] <= G_POT_COOKED;
-        end else if (player_state == P_BOWL_EMPTY) begin
+            
+        end else if ((player_state == P_POT_COOKED)&&(~carry)) begin
+            if (object_in_front == G_BOWL_EMPTY) begin
+                player_state <=P_POT_EMPTY;
+                object_grid[y_front][x_front] <= G_BOWL_FULL;
+            end else if (object_in_front == G_EMPTY) begin
+                player_state <=P_NOTHING;
+                object_grid[y_front][x_front] <= G_POT_COOKED;
+            end
+            
+        end else if ((player_state == P_BOWL_EMPTY)&&(~carry)&&(object_in_front == G_EMPTY)) begin
             player_state <=P_NOTHING;
             object_grid[y_front][x_front] <= G_BOWL_EMPTY;
-        end else if (player_state == P_BOWL_FULL) begin
+            
+        end else if ((player_state == P_BOWL_EMPTY)&&(chop)&&(object_in_front == G_POT_COOKED)) begin
+            player_state <=P_BOWL_FULL;
+            object_grid[y_front][x_front] <= G_POT_EMPTY;
+            
+        end else if ((player_state == P_BOWL_FULL)&&(~carry)&&(object_in_front == G_EMPTY)) begin
             player_state <=P_NOTHING;
             object_grid[y_front][x_front] <= G_BOWL_FULL;
-        end else if (player_state == P_EXT_OFF) begin
+            
+        end else if ((player_state == P_EXT_OFF)&&(~carry)&&(object_in_front == G_EMPTY)) begin
             player_state <=P_NOTHING;
             object_grid[y_front][x_front] <= G_EXTINGUISHER;
+            
+        end else if ((player_state == P_EXT_OFF)&&(chop)) begin
+            player_state <= P_EXT_ON;
+            
         end else if (player_state == P_EXT_ON) begin
-        
+            if (~chop) begin
+                player_state <= P_EXT_OFF;
+            end else begin
+                object_grid[y_front][x_front] <= G_EMPTY;
+            end
         
         end
+        
+        //replace onions
+        //fire spread
+        //cook pots
     
     
     end
