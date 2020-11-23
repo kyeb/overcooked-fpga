@@ -97,13 +97,13 @@ module top_level(
     logic [11:0] rgb;
     logic border = (hcount>=0 & hcount<639 & vcount>=0 & vcount<479);
         
-//    graphics game(.clock(clock), .reset(reset), .team_name(team_name), .local_player_ID(local_player_ID), .num_players(num_players),
-//        .game_state(game_state), .time_left(time_left), .point_total(point_total), .object_grid(object_grid), .time_grid(time_grid), .orders(orders), .order_times(order_times), 
-//        .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state), 
-//        .player2_direction(player2_direction), .player2_x(player2_loc_x), .player2_y(player2_loc_y), .player2_state(player2_state), 
-//        .player3_direction(player3_direction), .player3_x(player3_loc_x), .player3_y(player3_loc_y), .player3_state(player3_state), 
-//        .player4_direction(player4_direction), .player4_x(player4_loc_x), .player4_y(player4_loc_y), .player4_state(player4_state), 
-//        .hcount(hcount_in), .vcount(vcount_in), .hsync(hsync_in), .vsync(vsync_in), .blank(blank_in), .hsync_out(hsync), .vsync_out(vsync), .blank_out(blank), .pixel_out(pixel));
+    graphics game(.clock(clock), .reset(reset), .team_name(team_name), .local_player_ID(local_player_ID), .num_players(num_players),
+        .game_state(game_state), .time_left(time_left), .point_total(point_total), .object_grid(object_grid), .time_grid(time_grid), .orders(orders), .order_times(order_times), 
+        .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state), 
+        .player2_direction(player2_direction), .player2_x(player2_loc_x), .player2_y(player2_loc_y), .player2_state(player2_state), 
+        .player3_direction(player3_direction), .player3_x(player3_loc_x), .player3_y(player3_loc_y), .player3_state(player3_state), 
+        .player4_direction(player4_direction), .player4_x(player4_loc_x), .player4_y(player4_loc_y), .player4_state(player4_state), 
+        .hcount(hcount_in), .vcount(vcount_in), .hsync(hsync_in), .vsync(vsync_in), .blank(blank_in), .hsync_out(hsync), .vsync_out(vsync), .blank_out(blank), .pixel_out(pixel));
         
     logic b,hs,vs;
     always_ff @(posedge clock) begin

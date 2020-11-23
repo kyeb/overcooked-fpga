@@ -67,6 +67,7 @@ module action(input reset,
     logic [9:0] pot_counter3;
     logic [9:0] pot_counter4;
     logic [1:0] fire_state;
+    logic [4:0] i;
     
     
     pixel_to_grid p2g (.pixel_x({0,(player_loc_x+16)}), .pixel_y((player_loc_y+16)), 
@@ -80,16 +81,17 @@ module action(input reset,
                     
     logic [5:0] go;
     logic [5:0] restart;
-    logic [3:0] c_go;
-    logic [3:0] c_restart;
-    logic [3:0][3:0] c_left;
+    logic [3:0] fire_go;
+    logic [3:0] fire_restart;
+    logic [3:0][3:0] fire_left;
+    logic [3:0] f_space;
     time_remaining #(.GIVEN_TIME(5)) b1 (.vsync(vsync), .timer_go(go[5]), .restart(restart[5]), .time_left(time_grid[5]));
     time_remaining #(.GIVEN_TIME(5)) b2 (.vsync(vsync), .timer_go(go[4]), .restart(restart[4]), .time_left(time_grid[4]));
     time_remaining #(.GIVEN_TIME(10)) p1 (.vsync(vsync), .timer_go(go[3]), .restart(restart[3]), .time_left(time_grid[3]));
     time_remaining #(.GIVEN_TIME(10)) p2 (.vsync(vsync), .timer_go(go[2]), .restart(restart[2]), .time_left(time_grid[2]));
     time_remaining #(.GIVEN_TIME(10)) p3 (.vsync(vsync), .timer_go(go[1]), .restart(restart[1]), .time_left(time_grid[1]));
     time_remaining #(.GIVEN_TIME(10)) p4 (.vsync(vsync), .timer_go(go[0]), .restart(restart[0]), .time_left(time_grid[0]));
-    time_remaining #(.GIVEN_TIME(10)) c3 (.vsync(vsync), .timer_go(c_go[3]), .restart(c_restart[3]), .time_left(c_left[3]));
+    time_remaining #(.GIVEN_TIME(10)) f1 (.vsync(vsync), .timer_go(fire_go[3]), .restart(fire_restart[3]), .time_left(fire_left[3]));
                        
     always_ff @(negedge vsync) begin
         if (reset) begin
@@ -241,10 +243,15 @@ module action(input reset,
             end else begin
                 object_grid[y_front][x_front] <= G_EMPTY;
             end
+              end
         
-        end
-        
-        if ((fire_state == F_NONE)&&(object_grid[0][8] == G_POT_RAW)) begin
+        if (reset) begin
+            fire_state <= F_NONE;
+            go[3] <= 0;
+            restart[3] <= 1;
+            fire_go[3] <= 0;
+            fire_restart[3] <= 1;
+        end else if ((fire_state == F_NONE)&&(object_grid[0][8] == G_POT_RAW)) begin
             fire_state <= F_RAW;
             go[3] <= 0;
             restart[3] <= 1;
@@ -258,45 +265,42 @@ module action(input reset,
             end else if (time_grid[3] == 0) begin
                 fire_state <= F_COOKED;
                 object_grid[0][8] <= G_POT_COOKED;
+                fire_go[3] <= 0;
+                fire_restart[3] <= 1;
             end
         end else if (fire_state == F_COOKED) begin
-            
-        end else if (fire_state == F_FIRE) begin
-        end
-        
-        
-        //fire spread
-        if (fire_counter == 0) begin
-            fire_counter <= 11'd1200;
-            if (object_grid[0][8] == G_FIRE) begin
-                object_grid[0][7] <= G_FIRE;
-                object_grid[0][9] <= G_FIRE;
+            fire_go[3] <= 1;
+            fire_restart[3] <= 0;
+            if (fire_left[3] == 0) begin
+                fire_state <= F_FIRE;
+                object_grid[0][8] <= G_FIRE;
+                fire_go[3] <= 0;
+            fire_restart[3] <= 1;
             end
-        end else begin
-            fire_counter <= fire_counter-1;
+        end else if (fire_state == F_FIRE) begin    
+            fire_go[3] <= 1;
+            fire_restart[3] <= 0;
+            if (fire_left[3] == 0) begin
+                fire_go[3] <= 0;
+                fire_restart[3] <= 1;
+            end else if ((object_grid[0][0]!=G_FIRE)&&(object_grid[0][1]!=G_FIRE)&&(object_grid[0][2]!=G_FIRE)&&
+                         (object_grid[0][3]!=G_FIRE)&&(object_grid[0][4]!=G_FIRE)&&(object_grid[0][5]!=G_FIRE)&&
+                         (object_grid[0][6]!=G_FIRE)&&(object_grid[0][7]!=G_FIRE)&&(object_grid[0][8]!=G_FIRE)&&
+                         (object_grid[0][9]!=G_FIRE)&&(object_grid[0][10]!=G_FIRE)&&(object_grid[0][11]!=G_FIRE)&&
+                         (object_grid[0][12]!=G_FIRE)) begin
+                fire_state <= F_NONE;
+             end
         end
         
-        
-        //cook pots
-        if (object_grid[0][8] == G_POT_RAW) begin
-            go[3] <= 1;
-            restart[3]<= 0;
-        end else if (time_grid[3]==0) begin
-            object_grid[0][8] <= G_POT_COOKED;
-            go[3] <= 0;
-            restart <= 1;
-            pot_counter1 <= 11'd600; //10sec*60 cycles
-        end else if ((pot_counter1==0)&&(object_grid[0][8] == G_POT_COOKED)) begin
-            object_grid[0][8] <= G_FIRE;
-        end else if ((pot_counter1==0)&&(object_grid[0][8] == G_EMPTY)) begin
-            //pass
-        end else begin
-            pot_counter1 <= pot_counter1-1;
-        end
-    
-    
+        for (i = 0; i < 13; i = i + 1) begin
+            if ((object_grid[0][i] == G_FIRE)&&(fire_left[3] == 0)) begin
+                object_grid[0][i+1] <= G_FIRE;
+                object_grid[0][i-1] <= G_FIRE;
+            end
+        end 
     end
 
+    
 endmodule //action
 
 module grid_in_front (input [3:0] grid_x,
