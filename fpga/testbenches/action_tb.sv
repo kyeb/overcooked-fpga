@@ -9,6 +9,7 @@ logic [2:0] game_state;
 logic [1:0] player_direction;
 logic [8:0] player_loc_x;
 logic [8:0] player_loc_y;
+logic [1:0] clear_space;
 
 //outputs
 logic [3:0] player_state;
@@ -23,8 +24,8 @@ parameter DOWN = 2'd3;
 action uut (.reset(reset),.vsync(vsync),.num_players(num_players),.left(left), 
             .right(right), .up(up), .down(down), .chop(chop), .carry(carry),
             .game_state(game_state),.player_direction(player_direction), 
-            .player_loc_x(player_loc_x), .player_loc_y(player_loc_y), .player_state(player_state),
-            .object_grid(object_grid),.time_grid(time_grid));
+            .player_loc_x(player_loc_x), .player_loc_y(player_loc_y), .clear_space(clear_space),
+            .player_state(player_state), .object_grid(object_grid),.time_grid(time_grid));
             
  always #5 vsync = !vsync;
             

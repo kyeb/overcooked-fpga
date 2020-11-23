@@ -8,7 +8,7 @@ module action(input reset,
               input [1:0] player_direction, //up, down, left, right
               input [8:0] player_loc_x,
               input [8:0] player_loc_y,
-              input clear_space1, clear_space2,
+              input [1:0] clear_space,
               output logic [3:0] player_state,
               output logic [7:0][12:0][3:0] object_grid,
               output logic [5:0][3:0] time_grid); //board1, board2, pots1-4
@@ -76,7 +76,7 @@ module action(input reset,
     check_in_front cf (.grid_x(grid_x),.grid_y(grid_y),.player_direction(player_direction),
                     .object_grid(object_grid),.object(object_in_front));
                     
-    grid_in_front (.grid_x(grid_x),.grid_y(grid_y),.player_direction(player_direction),
+    grid_in_front gf (.grid_x(grid_x),.grid_y(grid_y),.player_direction(player_direction),
                    .x_front(x_front),.y_front(y_front));               
                     
     logic [5:0] go;
@@ -107,10 +107,10 @@ module action(input reset,
             object_grid[0][7] <= G_EXTINGUISHER;
             go <= 0;
             restart <= 6'b111_111;
-        end else if (clear_space1) begin
-            object_grid[5][12] <= G_EMPTY;
-        end else if (clear_space2) begin
+        end else if (clear_space[0]) begin
             object_grid[4][12] <= G_EMPTY;
+        end else if (clear_space[1]) begin
+            object_grid[5][12] <= G_EMPTY;
         end else if (player_state == P_NOTHING) begin
             if (chop) begin
                 player_state <= P_CHOPPING;
