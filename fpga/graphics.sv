@@ -1,146 +1,146 @@
-`timescale 1ns / 1ps
+//`timescale 1ns / 1ps
 
-module graphics(
-    input clock,
-    input reset,
+//module graphics(
+//    input clock,
+//    input reset,
     
-    // some global stuff
-    input [1:0] local_player_ID,
-    input [2:0][7:0] team_name,
-    input [1:0] num_players,
-    input logic [2:0] game_state, // welcome, game, etc
+//    // some global stuff
+//    input [1:0] local_player_ID,
+//    input [2:0][7:0] team_name,
+//    input [1:0] num_players,
+//    input logic [2:0] game_state, // welcome, game, etc
    
-    // overall game
-    input [7:0] time_left,
-    input [9:0] point_total,
-    input [7:0][12:0][3:0] object_grid, 
-    input [5:0][3:0] time_grid,
-    input [3:0] orders, // how many orders are currently on the screen
-    input [3:0][4:0] order_times,
+//    // overall game
+//    input [7:0] time_left,
+//    input [9:0] point_total,
+//    input [7:0][12:0][3:0] object_grid, 
+//    input [5:0][3:0] time_grid,
+//    input [3:0] orders, // how many orders are currently on the screen
+//    input [3:0][4:0] order_times,
     
-    // player input
-    input [1:0] player1_direction,
-    input [8:0] player1_x,
-    input [8:0] player1_y,
-    input [3:0] player1_state,
+//    // player input
+//    input [1:0] player1_direction,
+//    input [8:0] player1_x,
+//    input [8:0] player1_y,
+//    input [3:0] player1_state,
     
-   input [1:0] player2_direction,
-   input [8:0] player2_x,
-   input [8:0] player2_y,
-   input [3:0] player2_state,
+//   input [1:0] player2_direction,
+//   input [8:0] player2_x,
+//   input [8:0] player2_y,
+//   input [3:0] player2_state,
 
-   input [1:0] player3_direction,
-   input [8:0] player3_x,
-   input [8:0] player3_y,
-   input [3:0] player3_state,
+//   input [1:0] player3_direction,
+//   input [8:0] player3_x,
+//   input [8:0] player3_y,
+//   input [3:0] player3_state,
 
-   input [1:0] player4_direction,
-   input [8:0] player4_x,
-   input [8:0] player4_y,
-   input [3:0] player4_state,
+//   input [1:0] player4_direction,
+//   input [8:0] player4_x,
+//   input [8:0] player4_y,
+//   input [3:0] player4_state,
 
-    input [10:0] hcount, // horizontal index of current pixel (0..1023)
-    input [9:0]  vcount, // vertical index of current pixel (0..767)
-    input hsync,         // XVGA horizontal sync signal (active low)
-    input vsync,         // XVGA vertical sync signal (active low)
-    input blank,         // XVGA blanking (1 means output black pixel)
+//    input [10:0] hcount, // horizontal index of current pixel (0..1023)
+//    input [9:0]  vcount, // vertical index of current pixel (0..767)
+//    input hsync,         // XVGA horizontal sync signal (active low)
+//    input vsync,         // XVGA vertical sync signal (active low)
+//    input blank,         // XVGA blanking (1 means output black pixel)
     
-    output logic hsync_out,
-    output logic vsync_out,
-    output logic blank_out,
-    output [11:0] pixel_out);              
+//    output logic hsync_out,
+//    output logic vsync_out,
+//    output logic blank_out,
+//    output [11:0] pixel_out);              
 
-    // player states
-    parameter P_NOTHING = 0;
-    parameter P_CHOPPING = 1;
-    parameter P_ONION_WHOLE = 2;
-    parameter P_ONION_CHOPPED = 3;
-    parameter P_POT_EMPTY = 4;
-    parameter P_POT_SOUP = 5;
-    parameter P_BOWL_EMPTY = 6;
-    parameter P_BOWL_FULL = 7;
-    parameter P_EXT_OFF = 8;
-    parameter P_EXT_ON = 9;
+//    // player states
+//    parameter P_NOTHING = 0;
+//    parameter P_CHOPPING = 1;
+//    parameter P_ONION_WHOLE = 2;
+//    parameter P_ONION_CHOPPED = 3;
+//    parameter P_POT_EMPTY = 4;
+//    parameter P_POT_SOUP = 5;
+//    parameter P_BOWL_EMPTY = 6;
+//    parameter P_BOWL_FULL = 7;
+//    parameter P_EXT_OFF = 8;
+//    parameter P_EXT_ON = 9;
 
-    // player directions
-    parameter P_LEFT = 0;
-    parameter P_RIGHT = 1;
-    parameter P_UP = 2;
-    parameter P_DOWN = 3;
+//    // player directions
+//    parameter P_LEFT = 0;
+//    parameter P_RIGHT = 1;
+//    parameter P_UP = 2;
+//    parameter P_DOWN = 3;
 
-    // grid object parameters
-    parameter G_EMPTY = 0;
-    parameter G_ONION_WHOLE = 1;
-    parameter G_ONION_CHOPPED = 2;
-    parameter G_BOWL_EMPTY = 3;
-    parameter G_BOWL_FULL = 4;
-    parameter G_POT_EMPTY = 5;
-    parameter G_POT_RAW = 6;
-    parameter G_POT_COOKED = 7;
-    parameter G_POT_FIRE = 8;
-    parameter G_FIRE = 9;
-    parameter G_EXTINGUISHER = 10;
+//    // grid object parameters
+//    parameter G_EMPTY = 0;
+//    parameter G_ONION_WHOLE = 1;
+//    parameter G_ONION_CHOPPED = 2;
+//    parameter G_BOWL_EMPTY = 3;
+//    parameter G_BOWL_FULL = 4;
+//    parameter G_POT_EMPTY = 5;
+//    parameter G_POT_RAW = 6;
+//    parameter G_POT_COOKED = 7;
+//    parameter G_POT_FIRE = 8;
+//    parameter G_FIRE = 9;
+//    parameter G_EXTINGUISHER = 10;
 
-    // player displays
-    logic [11:0] player_pixel, player1_pixel, player2_pixel, player3_pixel, player4_pixel;
-    player_blob player1 (.pixel_clk_in(clock), .x_in(player1_x), .y_in(player1_y), .hcount_in(hcount), 
-        .vcount_in(vcount), .player_direction(player1_direction), .player_state(player1_state), .pixel_out(pixel_out));
+//    // player displays
+//    logic [11:0] player_pixel, player1_pixel, player2_pixel, player3_pixel, player4_pixel;
+//    player_blob player1 (.pixel_clk_in(clock), .x_in(player1_x), .y_in(player1_y), .hcount_in(hcount), 
+//        .vcount_in(vcount), .player_direction(player1_direction), .player_state(player1_state), .pixel_out(pixel_out));
 
-   player_blob player2 (.pixel_clk_in(clock), .x_in(player2_x), .y_in(player2_y), .hcount_in(hcount), 
-       .vcount_in(vcount), .player_direction(player2_direction), .player_state(player2_state), .pixel_out(player2_pixel));
+//   player_blob player2 (.pixel_clk_in(clock), .x_in(player2_x), .y_in(player2_y), .hcount_in(hcount), 
+//       .vcount_in(vcount), .player_direction(player2_direction), .player_state(player2_state), .pixel_out(player2_pixel));
 
-   player_blob player3 (.pixel_clk_in(clock), .x_in(player3_x), .y_in(player3_y), .hcount_in(hcount), 
-       .vcount_in(vcount), .player_direction(player3_direction), .player_state(player3_state), .pixel_out(player3_pixel));
+//   player_blob player3 (.pixel_clk_in(clock), .x_in(player3_x), .y_in(player3_y), .hcount_in(hcount), 
+//       .vcount_in(vcount), .player_direction(player3_direction), .player_state(player3_state), .pixel_out(player3_pixel));
 
-   player_blob player4 (.pixel_clk_in(clock), .x_in(player4_x), .y_in(player4_y), .hcount_in(hcount), 
-       .vcount_in(vcount), .player_direction(player4_direction), .player_state(player4_state), .pixel_out(player4_pixel));
+//   player_blob player4 (.pixel_clk_in(clock), .x_in(player4_x), .y_in(player4_y), .hcount_in(hcount), 
+//       .vcount_in(vcount), .player_direction(player4_direction), .player_state(player4_state), .pixel_out(player4_pixel));
 
-    // grid logic
-    logic [2:0] current_grid_x, grid_object_x;
-    logic [4:0] current_grid_y, grid_object_y;
-    logic [3:0] grid_state;
-    pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(vcount), .grid_x(current_grid_x), .grid_y(current_grid_y));
+//    // grid logic
+//    logic [2:0] current_grid_x, grid_object_x;
+//    logic [4:0] current_grid_y, grid_object_y;
+//    logic [3:0] grid_state;
+//    pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(vcount), .grid_x(current_grid_x), .grid_y(current_grid_y));
 
-    // more grid logic
-    always_comb begin
-        // bounds of game grid
-        if (hcount > 111 && hcount < 367) begin
-            // update the grid state if we end up on a new square of the grid
-            if ((hcount - 112) % 32 == 0 && (vcount - 112) % 32 == 0) begin
-                grid_state = object_grid[current_grid_x][current_grid_y];
-                grid_object_x = vcount;
-                grid_object_y = hcount;
-            end 
-        end        
+//    // more grid logic
+//    always_comb begin
+//        // bounds of game grid
+//        if (hcount > 111 && hcount < 367) begin
+//            // update the grid state if we end up on a new square of the grid
+//            if ((hcount - 112) % 32 == 0 && (vcount - 112) % 32 == 0) begin
+//                grid_state = object_grid[current_grid_x][current_grid_y];
+//                grid_object_x = vcount;
+//                grid_object_y = hcount;
+//            end 
+//        end        
 
-       case (num_players)
-           0: player_pixel = player1_pixel;
-           1: player_pixel = player1_pixel + player2_pixel;
-           2: player_pixel = player1_pixel + player2_pixel + player3_pixel;
-           3: player_pixel = player1_pixel + player2_pixel + player3_pixel + player4_pixel;
-       endcase
-
-//       logic [11:0] whole_onion, chopped_onion, empty_bowl, full_bowl, empty_pot, raw_pot, cooked_pot, fire_pot, fire, extinguisher;
-
-//       case (grid_state)
-//          G_EMPTY: object_pixel = 0;
-//          G_ONION_WHOLE: object_pixel = whole_onion;
-//          G_ONION_CHOPPED: object_pixel = chopped_onion;
-//          G_BOWL_EMPTY: object_pixel = empty_bowl;
-//          G_BOWL_FULL: object_pixel = full_bowl;
-//          G_POT_EMPTY: object_pixel = empty_pot;
-//          G_POT_RAW: object_pixel = raw_pot;
-//          G_POT_COOKED: object_pixel = cooked_pot;
-//          G_POT_FIRE: object_pixel = fire_pot;
-//          G_FIRE: object_pixel = fire;
-//          G_EXTINGUISHER: object_pixel = extinguisher;
-//          default: object_pixel = 0;
+//       case (num_players)
+//           0: player_pixel = player1_pixel;
+//           1: player_pixel = player1_pixel + player2_pixel;
+//           2: player_pixel = player1_pixel + player2_pixel + player3_pixel;
+//           3: player_pixel = player1_pixel + player2_pixel + player3_pixel + player4_pixel;
 //       endcase
 
-        hsync_out = hsync;
-        vsync_out = vsync;
-        blank_out = blank;
-        //pixel_out = player_pixel + object_pixel;
-    end
+////       logic [11:0] whole_onion, chopped_onion, empty_bowl, full_bowl, empty_pot, raw_pot, cooked_pot, fire_pot, fire, extinguisher;
 
-endmodule
+////       case (grid_state)
+////          G_EMPTY: object_pixel = 0;
+////          G_ONION_WHOLE: object_pixel = whole_onion;
+////          G_ONION_CHOPPED: object_pixel = chopped_onion;
+////          G_BOWL_EMPTY: object_pixel = empty_bowl;
+////          G_BOWL_FULL: object_pixel = full_bowl;
+////          G_POT_EMPTY: object_pixel = empty_pot;
+////          G_POT_RAW: object_pixel = raw_pot;
+////          G_POT_COOKED: object_pixel = cooked_pot;
+////          G_POT_FIRE: object_pixel = fire_pot;
+////          G_FIRE: object_pixel = fire;
+////          G_EXTINGUISHER: object_pixel = extinguisher;
+////          default: object_pixel = 0;
+////       endcase
+
+//        hsync_out = hsync;
+//        vsync_out = vsync;
+//        blank_out = blank;
+//        //pixel_out = player_pixel + object_pixel;
+//    end
+
+//endmodule

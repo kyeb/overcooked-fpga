@@ -8,6 +8,7 @@ module action(input reset,
               input [1:0] player_direction, //up, down, left, right
               input [8:0] player_loc_x,
               input [8:0] player_loc_y,
+              input clear_space1, clear_space2,
               output logic [3:0] player_state,
               output logic [7:0][12:0][3:0] object_grid,
               output logic [5:0][3:0] time_grid); //board1, board2, pots1-4
@@ -49,11 +50,24 @@ module action(input reset,
     parameter P_EXT_OFF = 9;
     parameter P_EXT_ON = 10;
     
+    //fire state
+    parameter F_NONE = 0;
+    parameter F_RAW = 1;
+    parameter F_COOKED = 2;
+    parameter F_FIRE = 3;
+    
     logic [3:0] grid_x;
     logic [2:0] grid_y;
     logic [3:0] object_in_front;
     logic [3:0] x_front;
     logic [2:0] y_front;
+    logic [10:0] fire_counter;
+    logic [9:0] pot_counter1;
+    logic [9:0] pot_counter2;
+    logic [9:0] pot_counter3;
+    logic [9:0] pot_counter4;
+    logic [1:0] fire_state;
+    
     
     pixel_to_grid p2g (.pixel_x({0,(player_loc_x+16)}), .pixel_y((player_loc_y+16)), 
                        .grid_x(grid_x), .grid_y(grid_y));
@@ -66,12 +80,16 @@ module action(input reset,
                     
     logic [5:0] go;
     logic [5:0] restart;
+    logic [3:0] c_go;
+    logic [3:0] c_restart;
+    logic [3:0][3:0] c_left;
     time_remaining #(.GIVEN_TIME(5)) b1 (.vsync(vsync), .timer_go(go[5]), .restart(restart[5]), .time_left(time_grid[5]));
     time_remaining #(.GIVEN_TIME(5)) b2 (.vsync(vsync), .timer_go(go[4]), .restart(restart[4]), .time_left(time_grid[4]));
     time_remaining #(.GIVEN_TIME(10)) p1 (.vsync(vsync), .timer_go(go[3]), .restart(restart[3]), .time_left(time_grid[3]));
     time_remaining #(.GIVEN_TIME(10)) p2 (.vsync(vsync), .timer_go(go[2]), .restart(restart[2]), .time_left(time_grid[2]));
     time_remaining #(.GIVEN_TIME(10)) p3 (.vsync(vsync), .timer_go(go[1]), .restart(restart[1]), .time_left(time_grid[1]));
     time_remaining #(.GIVEN_TIME(10)) p4 (.vsync(vsync), .timer_go(go[0]), .restart(restart[0]), .time_left(time_grid[0]));
+    time_remaining #(.GIVEN_TIME(10)) c3 (.vsync(vsync), .timer_go(c_go[3]), .restart(c_restart[3]), .time_left(c_left[3]));
                        
     always_ff @(negedge vsync) begin
         if (reset) begin
@@ -87,7 +105,10 @@ module action(input reset,
             object_grid[0][7] <= G_EXTINGUISHER;
             go <= 0;
             restart <= 6'b111_111;
-        
+        end else if (clear_space1) begin
+            object_grid[5][12] <= G_EMPTY;
+        end else if (clear_space2) begin
+            object_grid[4][12] <= G_EMPTY;
         end else if (player_state == P_NOTHING) begin
             if (chop) begin
                 player_state <= P_CHOPPING;
@@ -95,7 +116,11 @@ module action(input reset,
                 restart[4] <= 1; //make sure b2 reset
             end else if ((object_in_front == G_ONION_WHOLE) && (carry)) begin
                 player_state <= P_ONION_WHOLE;
-                object_grid[y_front][x_front] <= G_EMPTY;
+                if ((x_front == 0)&&((y_front == 2)||(y_front == 3))) begin
+                    object_grid[y_front][x_front] <= G_ONION_WHOLE;
+                end else begin
+                    object_grid[y_front][x_front] <= G_EMPTY;
+                end
             end else if ((object_in_front == G_ONION_CHOPPED) && (carry)) begin
                 player_state <= P_ONION_CHOPPED;
                 object_grid[y_front][x_front] <= G_EMPTY;
@@ -110,7 +135,11 @@ module action(input reset,
                 object_grid[y_front][x_front] <= G_EMPTY;
             end else if ((object_in_front == G_BOWL_EMPTY) && (carry)) begin
                 player_state <= P_BOWL_EMPTY;
-                object_grid[y_front][x_front] <= G_EMPTY;
+                if ((x_front == 12)&&(y_front == 6)) begin
+                    object_grid[y_front][x_front] <= G_BOWL_EMPTY;
+                end else begin
+                    object_grid[y_front][x_front] <= G_EMPTY;
+                end
             end else if ((object_in_front == G_BOWL_FULL) && (carry)) begin
                 player_state <= P_BOWL_FULL;
                 object_grid[y_front][x_front] <= G_EMPTY;
@@ -215,17 +244,58 @@ module action(input reset,
         
         end
         
-        //replace onions
+        if ((fire_state == F_NONE)&&(object_grid[0][8] == G_POT_RAW)) begin
+            fire_state <= F_RAW;
+            go[3] <= 0;
+            restart[3] <= 1;
+        end else if (fire_state == F_RAW) begin
+            go[3] <= 1;
+            restart[3] <= 0;
+            if (object_grid[0][8] == G_EMPTY) begin
+                go[3] <= 0;
+                restart[3] <= 1;
+                fire_state <= F_NONE;
+            end else if (time_grid[3] == 0) begin
+                fire_state <= F_COOKED;
+                object_grid[0][8] <= G_POT_COOKED;
+            end
+        end else if (fire_state == F_COOKED) begin
+            
+        end else if (fire_state == F_FIRE) begin
+        end
+        
+        
         //fire spread
+        if (fire_counter == 0) begin
+            fire_counter <= 11'd1200;
+            if (object_grid[0][8] == G_FIRE) begin
+                object_grid[0][7] <= G_FIRE;
+                object_grid[0][9] <= G_FIRE;
+            end
+        end else begin
+            fire_counter <= fire_counter-1;
+        end
+        
+        
         //cook pots
+        if (object_grid[0][8] == G_POT_RAW) begin
+            go[3] <= 1;
+            restart[3]<= 0;
+        end else if (time_grid[3]==0) begin
+            object_grid[0][8] <= G_POT_COOKED;
+            go[3] <= 0;
+            restart <= 1;
+            pot_counter1 <= 11'd600; //10sec*60 cycles
+        end else if ((pot_counter1==0)&&(object_grid[0][8] == G_POT_COOKED)) begin
+            object_grid[0][8] <= G_FIRE;
+        end else if ((pot_counter1==0)&&(object_grid[0][8] == G_EMPTY)) begin
+            //pass
+        end else begin
+            pot_counter1 <= pot_counter1-1;
+        end
     
     
     end
-
-
-//player state
-//update grid
-//cooking time, fire
 
 endmodule //action
 

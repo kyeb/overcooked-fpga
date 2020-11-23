@@ -31,8 +31,7 @@ module game_logic(input reset,
     logic [30:0] start_counter;
     logic timer_go;
     logic restart_timer;
-    logic clear_space0;
-    logic clear_space1;
+    logic [1:0] clear_space;
     logic [1:0][3:0] check_spaces;
     assign check_spaces[1] = object_grid[5][12];
     assign check_spaces[0] = object_grid[4][12];
@@ -45,13 +44,13 @@ module game_logic(input reset,
     player_move pm (.reset(reset),.vsync(vsync),.left(left), 
                     .right(right), .up(up), .down(down), .chop(chop), .carry(carry), .state(game_state),
                     .player_direction(player_direction), .player_loc_x(player_loc_x),
-                    .player_loc_y(player_loc_y),.player_state(player_state));
+                    .player_loc_y(player_loc_y));
                     
    time_remaining tr (.vsync(vsync),.timer_go(timer_go),.restart(restart_timer),
                       .time_left(time_left));
     
    orders_and_points op (.clock(clock), .vsync(vsync),.reset(reset),.check_spaces(check_spaces),
-                         .timer_go(timer_go),.clear_space0(clear_space0), .clear_space1(clear_space1),
+                         .timer_go(timer_go),.clear_space(clear_space), 
                          .point_total(point_total),.orders(orders),.order_times(order_times));
     
     always_ff @(negedge vsync) begin
@@ -61,8 +60,6 @@ module game_logic(input reset,
             team_name[1]<=8'h41;
             team_name[2]<=8'h41;
             w_state = 0; 
-            object_grid <= {{8{{13{{4'h0}}}}}};
-            time_grid <= {{8{{13{4'hf}}}}};
             restart_timer <= 1;
             timer_go <= 0;
 // 0 - Welcome Menu
@@ -174,7 +171,6 @@ module game_logic(input reset,
                 restart_timer <= 1;
                 timer_go <= 0;
                 w_state <= 4'd0;
-                object_grid <= {{8{{13{{4'h0}}}}}};
             end     
 
         
@@ -187,11 +183,6 @@ module game_logic(input reset,
                 start_counter <= 0;
                 restart_timer <= 0;
                 timer_go <= 1;
-                //initial conditions
-                object_grid[2][0] <= 4'b1; //initial onions
-                object_grid[3][0] <= 4'b1;
-                object_grid[6][12] <= 4'd3;//initial bowl
-                time_grid <= {{8{{13{4'hf}}}}};
             end else begin
                 start_counter <= start_counter+1;
             end

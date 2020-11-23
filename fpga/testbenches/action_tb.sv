@@ -47,13 +47,6 @@ action uut (.reset(reset),.vsync(vsync),.num_players(num_players),.left(left),
     #10
     reset = 0;
     
-    #100
-    player_loc_x = 9'd177;
-    player_loc_y = 9'd305;
-    player_direction = DOWN;
-    object_grid[7][2] == G_ONION_WHOLE;
-    chop = 1;
-    
     end
 
 endmodule
