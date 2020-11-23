@@ -49,7 +49,7 @@ module game_logic(input reset,
    time_remaining tr (.vsync(vsync),.timer_go(timer_go),.restart(restart_timer),
                       .time_left(time_left));
     
-   orders_and_points op (.clock(clock), .vsync(vsync),.reset(reset),.check_spaces(check_spaces),
+   orders_and_points op (.vsync(vsync),.reset(reset),.check_spaces(check_spaces),
                          .timer_go(timer_go),.clear_space(clear_space), 
                          .point_total(point_total),.orders(orders),.order_times(order_times));
     

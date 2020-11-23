@@ -1,5 +1,4 @@
-module orders_and_points (input clock,
-                          input vsync,
+module orders_and_points (input vsync,
                           input reset,
                           input [1:0][3:0] check_spaces,
                           input timer_go,
