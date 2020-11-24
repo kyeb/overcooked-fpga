@@ -48,7 +48,7 @@ module graphics(
    output logic hsync_out,
    output logic vsync_out,
    output logic blank_out,
-   output [11:0] pixel_out);              
+   output logic [11:0] pixel_out);              
 
    // player states
    parameter P_NOTHING = 0;
@@ -136,11 +136,9 @@ module graphics(
 //          G_EXTINGUISHER: object_pixel = extinguisher;
 //          default: object_pixel = 0;
 //       endcase
-
        hsync_out = hsync;
        vsync_out = vsync;
        blank_out = blank;
-       pixel_out = player_pixel + object_pixel;
+       pixel_out = player_pixel;
    end
-
 endmodule
