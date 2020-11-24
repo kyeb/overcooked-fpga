@@ -243,61 +243,36 @@ module action(input reset,
             end else begin
                 object_grid[y_front][x_front] <= G_EMPTY;
             end
-              end
+        end
         
         if (reset) begin
             fire_state <= F_NONE;
-            go[3] <= 0;
-            restart[3] <= 1;
-            fire_go[3] <= 0;
-            fire_restart[3] <= 1;
+            go[3] <= 0; restart[3] <= 1;
+            fire_go[3] <= 0; fire_restart[3] <= 1;
         end else if ((fire_state == F_NONE)&&(object_grid[0][8] == G_POT_RAW)) begin
             fire_state <= F_RAW;
-            go[3] <= 0;
-            restart[3] <= 1;
+            go[3] <= 0; restart[3] <= 1;
         end else if (fire_state == F_RAW) begin
-            go[3] <= 1;
-            restart[3] <= 0;
+            go[3] <= 1; restart[3] <= 0;
             if (object_grid[0][8] == G_EMPTY) begin
-                go[3] <= 0;
-                restart[3] <= 1;
+                go[3] <= 0; restart[3] <= 1;
                 fire_state <= F_NONE;
             end else if (time_grid[3] == 0) begin
                 fire_state <= F_COOKED;
                 object_grid[0][8] <= G_POT_COOKED;
-                fire_go[3] <= 0;
-                fire_restart[3] <= 1;
+                fire_go[3] <= 0; fire_restart[3] <= 1;
             end
         end else if (fire_state == F_COOKED) begin
-            fire_go[3] <= 1;
-            fire_restart[3] <= 0;
+            fire_go[3] <= 1; fire_restart[3] <= 0;
             if (fire_left[3] == 0) begin
                 fire_state <= F_FIRE;
                 object_grid[0][8] <= G_FIRE;
-                fire_go[3] <= 0;
-            fire_restart[3] <= 1;
+                fire_go[3] <= 0; fire_restart[3] <= 1;
             end
-        end else if (fire_state == F_FIRE) begin    
-            fire_go[3] <= 1;
-            fire_restart[3] <= 0;
-            if (fire_left[3] == 0) begin
-                fire_go[3] <= 0;
-                fire_restart[3] <= 1;
-            end else if ((object_grid[0][0]!=G_FIRE)&&(object_grid[0][1]!=G_FIRE)&&(object_grid[0][2]!=G_FIRE)&&
-                         (object_grid[0][3]!=G_FIRE)&&(object_grid[0][4]!=G_FIRE)&&(object_grid[0][5]!=G_FIRE)&&
-                         (object_grid[0][6]!=G_FIRE)&&(object_grid[0][7]!=G_FIRE)&&(object_grid[0][8]!=G_FIRE)&&
-                         (object_grid[0][9]!=G_FIRE)&&(object_grid[0][10]!=G_FIRE)&&(object_grid[0][11]!=G_FIRE)&&
-                         (object_grid[0][12]!=G_FIRE)) begin
+        end else if ((fire_state == F_FIRE)&&(object_grid[0][8]!=G_FIRE)) begin
                 fire_state <= F_NONE;
-             end
         end
-        
-        for (i = 0; i < 13; i = i + 1) begin
-            if ((object_grid[0][i] == G_FIRE)&&(fire_left[3] == 0)) begin
-                object_grid[0][i+1] <= G_FIRE;
-                object_grid[0][i-1] <= G_FIRE;
-            end
-        end 
+       
     end
 
     
