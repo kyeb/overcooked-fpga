@@ -53,6 +53,12 @@ module game_logic(input reset,
                          .timer_go(timer_go),.clear_space(clear_space), 
                          .point_total(point_total),.orders(orders),.order_times(order_times));
     
+    action act (.reset(reset),.vsync(vsync),.num_players(num_players),.left(left), 
+                    .right(right), .up(up), .down(down), .chop(chop), .carry(carry),
+                    .game_state(game_state),.player_direction(player_direction), .player_loc_x(player_loc_x),
+                    .player_loc_y(player_loc_y),.clear_space(clear_space),.player_state(player_state),
+                    .object_grid(object_grid), .time_grid(time_grid));
+    
     always_ff @(negedge vsync) begin
         if (reset) begin
             game_state <= 0;
