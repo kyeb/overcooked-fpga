@@ -24,20 +24,20 @@ module graphics(
    input [8:0] player1_y,
    input [3:0] player1_state,
     
-  input [1:0] player2_direction,
-  input [8:0] player2_x,
-  input [8:0] player2_y,
-  input [3:0] player2_state,
+//  input [1:0] player2_direction,
+//  input [8:0] player2_x,
+//  input [8:0] player2_y,
+//  input [3:0] player2_state,
 
-  input [1:0] player3_direction,
-  input [8:0] player3_x,
-  input [8:0] player3_y,
-  input [3:0] player3_state,
+//  input [1:0] player3_direction,
+//  input [8:0] player3_x,
+//  input [8:0] player3_y,
+//  input [3:0] player3_state,
 
-  input [1:0] player4_direction,
-  input [8:0] player4_x,
-  input [8:0] player4_y,
-  input [3:0] player4_state,
+//  input [1:0] player4_direction,
+//  input [8:0] player4_x,
+//  input [8:0] player4_y,
+//  input [3:0] player4_state,
 
    input [10:0] hcount, // horizontal index of current pixel (0..1023)
    input [9:0]  vcount, // vertical index of current pixel (0..767)

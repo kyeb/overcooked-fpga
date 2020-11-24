@@ -52,47 +52,47 @@ module player_blob
    whole_onion_left_coe whole_onion_left(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_left_bits));
    whole_onion_right_coe whole_onion_right(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_right_bits));
 
-   // chopped onion coes
-   chopped_onion_up_coe chopped_onion_up(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_up_bits));
-   chopped_onion_down_coe chopped_onion_down(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_down_bits));
-   chopped_onion_left_coe chopped_onion_left(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_left_bits));
-   chopped_onion_right_coe chopped_onion_right(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_right_bits));
+//   // chopped onion coes
+//   chopped_onion_up_coe chopped_onion_up(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_up_bits));
+//   chopped_onion_down_coe chopped_onion_down(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_down_bits));
+//   chopped_onion_left_coe chopped_onion_left(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_left_bits));
+//   chopped_onion_right_coe chopped_onion_right(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_right_bits));
 
-   // empty pot coes
-   empty_pot_up_coe empty_pot_up(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_up_bits));
-   empty_pot_down_coe empty_pot_down(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_down_bits));
-   empty_pot_left_coe empty_pot_left(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_left_bits));
-   empty_pot_right_coe empty_pot_right(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_right_bits));
+//   // empty pot coes
+//   empty_pot_up_coe empty_pot_up(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_up_bits));
+//   empty_pot_down_coe empty_pot_down(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_down_bits));
+//   empty_pot_left_coe empty_pot_left(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_left_bits));
+//   empty_pot_right_coe empty_pot_right(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_right_bits));
 
-   // soup pot coes
-   soup_pot_up_coe soup_pot_up(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_up_bits));
-   soup_pot_down_coe soup_pot_down(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_down_bits));
-   soup_pot_left_coe soup_pot_left(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_left_bits));
-   soup_pot_right_coe soup_pot_right(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_right_bits));
+//   // soup pot coes
+//   soup_pot_up_coe soup_pot_up(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_up_bits));
+//   soup_pot_down_coe soup_pot_down(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_down_bits));
+//   soup_pot_left_coe soup_pot_left(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_left_bits));
+//   soup_pot_right_coe soup_pot_right(.clka(pixel_clk_in), .addra(image_addr), .douta(soup_pot_right_bits));
 
-   // empty_bowl coes
-   empty_bowl_up_coe empty_bowl_up(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_up_bits));
-   empty_bowl_down_coe empty_bowl_down(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_down_bits));
-   empty_bowl_left_coe empty_bowl_left(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_left_bits));
-   empty_bowl_right_coe empty_bowl_right(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_right_bits));
+//   // empty_bowl coes
+//   empty_bowl_up_coe empty_bowl_up(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_up_bits));
+//   empty_bowl_down_coe empty_bowl_down(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_down_bits));
+//   empty_bowl_left_coe empty_bowl_left(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_left_bits));
+//   empty_bowl_right_coe empty_bowl_right(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl_right_bits));
 
-   // full_bowl coes
-   full_bowl_up_coe full_bowl_up(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_up_bits));
-   full_bowl_down_coe full_bowl_down(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_down_bits));
-   full_bowl_left_coe full_bowl_left(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_left_bits));
-   full_bowl_right_coe full_bowl_right(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_right_bits));
+//   // full_bowl coes
+//   full_bowl_up_coe full_bowl_up(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_up_bits));
+//   full_bowl_down_coe full_bowl_down(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_down_bits));
+//   full_bowl_left_coe full_bowl_left(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_left_bits));
+//   full_bowl_right_coe full_bowl_right(.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl_right_bits));
 
-   // extinguisher_off coes
-   extinguisher_off_up_coe extinguisher_off_up(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_up_bits));
-   extinguisher_off_down_coe extinguisher_off_down(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_down_bits));
-   extinguisher_off_left_coe extinguisher_off_left(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_left_bits));
-   extinguisher_off_right_coe extinguisher_off_right(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_right_bits));
+//   // extinguisher_off coes
+//   extinguisher_off_up_coe extinguisher_off_up(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_up_bits));
+//   extinguisher_off_down_coe extinguisher_off_down(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_down_bits));
+//   extinguisher_off_left_coe extinguisher_off_left(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_left_bits));
+//   extinguisher_off_right_coe extinguisher_off_right(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_off_right_bits));
 
-   // extinguisher_on coes
-   extinguisher_on_up_coe extinguisher_on_up(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_up_bits));
-   extinguisher_on_down_coe extinguisher_on_down(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_down_bits));
-   extinguisher_on_left_coe extinguisher_on_left(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_left_bits));
-   extinguisher_on_right_coe extinguisher_on_right(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_right_bits));
+//   // extinguisher_on coes
+//   extinguisher_on_up_coe extinguisher_on_up(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_up_bits));
+//   extinguisher_on_down_coe extinguisher_on_down(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_down_bits));
+//   extinguisher_on_left_coe extinguisher_on_left(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_left_bits));
+//   extinguisher_on_right_coe extinguisher_on_right(.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher_on_right_bits));
 
     always_comb begin
         case (player_state)
@@ -112,70 +112,70 @@ module player_blob
                     P_UP: image_bits = whole_onion_up_bits;
                 endcase
             end
-            P_ONION_CHOPPED: begin
-                case (player_direction)
-                    P_LEFT: image_bits = chopped_onion_left_bits;
-                    P_RIGHT: image_bits = chopped_onion_right_bits;
-                    P_DOWN: image_bits = chopped_onion_down_bits;
-                    P_UP: image_bits = chopped_onion_up_bits;
-                endcase
-            end
-            P_POT_EMPTY: begin
-                case (player_direction)
-                    P_LEFT: image_bits = empty_pot_left_bits;
-                    P_RIGHT: image_bits = empty_pot_right_bits;
-                    P_DOWN: image_bits = empty_pot_down_bits;
-                    P_UP: image_bits = empty_pot_up_bits;
-                endcase 
-                end
-            P_POT_RAW: begin
-                case (player_direction)
-                    P_LEFT: image_bits = soup_pot_left_bits;
-                    P_RIGHT: image_bits = soup_pot_right_bits;
-                    P_DOWN: image_bits = soup_pot_down_bits;
-                    P_UP: image_bits = soup_pot_up_bits;
-                endcase
-            end
-            P_POT_COOKED: begin
-                case (player_direction)
-                    P_LEFT: image_bits = soup_pot_left_bits;
-                    P_RIGHT: image_bits = soup_pot_right_bits;
-                    P_DOWN: image_bits = soup_pot_down_bits;
-                    P_UP: image_bits = soup_pot_up_bits;
-                endcase
-            end
-           P_BOWL_EMPTY: begin
-               case (player_direction)
-                   P_LEFT: image_bits = empty_bowl_left_bits;
-                   P_RIGHT: image_bits = empty_bowl_right_bits;
-                   P_DOWN: image_bits = empty_bowl_down_bits;
-                   P_UP: image_bits = empty_bowl_up_bits;
-               endcase
-           end
-           P_BOWL_FULL: begin
-               case (player_direction)
-                   P_LEFT: image_bits = full_bowl_left_bits;
-                   P_RIGHT: image_bits = full_bowl_right_bits;
-                   P_DOWN: image_bits = full_bowl_down_bits;
-                   P_UP: image_bits = full_bowl_up_bits;
-               endcase
-           end
-           P_EXT_OFF: begin
-               case (player_direction)
-                   P_LEFT: image_bits = extinguisher_off_left_bits;
-                   P_RIGHT: image_bits = extinguisher_off_right_bits;
-                   P_DOWN: image_bits = extinguisher_off_down_bits;
-                   P_UP: image_bits = extinguisher_off_up_bits;
-               endcase
-           end
-           P_EXT_ON: begin
-               case (player_direction)
-                   P_LEFT: image_bits = extinguisher_on_left_bits;
-                   P_RIGHT: image_bits = extinguisher_on_right_bits;
-                   P_DOWN: image_bits = extinguisher_on_down_bits;
-                   P_UP: image_bits = extinguisher_on_up_bits;
-               endcase
-           end
+//            P_ONION_CHOPPED: begin
+//                case (player_direction)
+//                    P_LEFT: image_bits = chopped_onion_left_bits;
+//                    P_RIGHT: image_bits = chopped_onion_right_bits;
+//                    P_DOWN: image_bits = chopped_onion_down_bits;
+//                    P_UP: image_bits = chopped_onion_up_bits;
+//                endcase
+//            end
+//            P_POT_EMPTY: begin
+//                case (player_direction)
+//                    P_LEFT: image_bits = empty_pot_left_bits;
+//                    P_RIGHT: image_bits = empty_pot_right_bits;
+//                    P_DOWN: image_bits = empty_pot_down_bits;
+//                    P_UP: image_bits = empty_pot_up_bits;
+//                endcase 
+//                end
+//            P_POT_RAW: begin
+//                case (player_direction)
+//                    P_LEFT: image_bits = soup_pot_left_bits;
+//                    P_RIGHT: image_bits = soup_pot_right_bits;
+//                    P_DOWN: image_bits = soup_pot_down_bits;
+//                    P_UP: image_bits = soup_pot_up_bits;
+//                endcase
+//            end
+//            P_POT_COOKED: begin
+//                case (player_direction)
+//                    P_LEFT: image_bits = soup_pot_left_bits;
+//                    P_RIGHT: image_bits = soup_pot_right_bits;
+//                    P_DOWN: image_bits = soup_pot_down_bits;
+//                    P_UP: image_bits = soup_pot_up_bits;
+//                endcase
+//            end
+//           P_BOWL_EMPTY: begin
+//               case (player_direction)
+//                   P_LEFT: image_bits = empty_bowl_left_bits;
+//                   P_RIGHT: image_bits = empty_bowl_right_bits;
+//                   P_DOWN: image_bits = empty_bowl_down_bits;
+//                   P_UP: image_bits = empty_bowl_up_bits;
+//               endcase
+//           end
+//           P_BOWL_FULL: begin
+//               case (player_direction)
+//                   P_LEFT: image_bits = full_bowl_left_bits;
+//                   P_RIGHT: image_bits = full_bowl_right_bits;
+//                   P_DOWN: image_bits = full_bowl_down_bits;
+//                   P_UP: image_bits = full_bowl_up_bits;
+//               endcase
+//           end
+//           P_EXT_OFF: begin
+//               case (player_direction)
+//                   P_LEFT: image_bits = extinguisher_off_left_bits;
+//                   P_RIGHT: image_bits = extinguisher_off_right_bits;
+//                   P_DOWN: image_bits = extinguisher_off_down_bits;
+//                   P_UP: image_bits = extinguisher_off_up_bits;
+//               endcase
+//           end
+//           P_EXT_ON: begin
+//               case (player_direction)
+//                   P_LEFT: image_bits = extinguisher_on_left_bits;
+//                   P_RIGHT: image_bits = extinguisher_on_right_bits;
+//                   P_DOWN: image_bits = extinguisher_on_down_bits;
+//                   P_UP: image_bits = extinguisher_on_up_bits;
+//               endcase
+//           end
             default: begin // no actions, just moving
                case (player_direction)
                    P_LEFT: image_bits = move_left_bits;
