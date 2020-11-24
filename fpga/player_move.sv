@@ -3,7 +3,7 @@
 module player_move(input reset,
                    input vsync,
                    input left, right, up, down, chop, carry,
-                   input [2:0] state,
+                   input [2:0] game_state,
                    output logic [1:0] player_direction, //0 left 1 right 2 up 3 down 
                    output logic [8:0] player_loc_x,
                    output logic [8:0] player_loc_y);
@@ -26,24 +26,33 @@ module player_move(input reset,
             player_direction <= 2'd3;
             player_loc_x <= 9'd304;
             player_loc_y <= 9'd208;
-        end else if ((state == START)||(state == PAUSE)) begin
+        end else if (game_state != PLAY) begin
             player_loc_y <= player_loc_y;
             player_loc_x <= player_loc_x;
             //y direction
-        end else if(up && (player_loc_y>148)) begin //up button
-            player_loc_y <= player_loc_y-4;  //move 4 pixels up
+        end else if(up) begin //up button
             player_direction <= UP;
-        end else if (down && (player_loc_y<300)) begin //down button
-            player_loc_y <= player_loc_y+4; //move 4 pixel down
+            if (player_loc_y>148) begin
+                player_loc_y <= player_loc_y-4;  //move 4 pixels up
+            end
+        end else if (down) begin //down button
             player_direction <= DOWN;
+            if (player_loc_y<300) begin
+                player_loc_y <= player_loc_y+4; //move 4 pixel down
+            end
+            
             
         //x direction
-        end else if (left && (player_loc_x>148)) begin //left button
-            player_loc_x <= player_loc_x-4; //move 4 pixel left
+        end else if (left) begin //left button
             player_direction <= LEFT;
-        end else if (right && (player_loc_x<460)) begin //right button
-            player_loc_x <= player_loc_x+4; //move 4 pixel right
+            if (player_loc_x>148) begin
+                player_loc_x <= player_loc_x-4; //move 4 pixel left
+            end
+        end else if (right) begin //right button
             player_direction <= RIGHT;
+            if (player_loc_x<460) begin
+                player_loc_x <= player_loc_x+4; //move 4 pixel right
+            end
         end else begin //else same position
             player_loc_y <= player_loc_y;
             player_loc_x <= player_loc_x;

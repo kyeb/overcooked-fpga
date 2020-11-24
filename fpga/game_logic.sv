@@ -42,7 +42,7 @@ module game_logic(input reset,
     //orders_and_points  
     
     player_move pm (.reset(reset),.vsync(vsync),.left(left), 
-                    .right(right), .up(up), .down(down), .chop(chop), .carry(carry), .state(game_state),
+                    .right(right), .up(up), .down(down), .chop(chop), .carry(carry), .game_state(game_state),
                     .player_direction(player_direction), .player_loc_x(player_loc_x),
                     .player_loc_y(player_loc_y));
                     
