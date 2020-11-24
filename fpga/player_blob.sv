@@ -52,11 +52,11 @@ module player_blob
    whole_onion_left_coe whole_onion_left(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_left_bits));
    whole_onion_right_coe whole_onion_right(.clka(pixel_clk_in), .addra(image_addr), .douta(whole_onion_right_bits));
 
-//   // chopped onion coes
-//   chopped_onion_up_coe chopped_onion_up(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_up_bits));
-//   chopped_onion_down_coe chopped_onion_down(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_down_bits));
-//   chopped_onion_left_coe chopped_onion_left(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_left_bits));
-//   chopped_onion_right_coe chopped_onion_right(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_right_bits));
+   // chopped onion coes
+   chopped_onion_up_coe chopped_onion_up(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_up_bits));
+   chopped_onion_down_coe chopped_onion_down(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_down_bits));
+   chopped_onion_left_coe chopped_onion_left(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_left_bits));
+   chopped_onion_right_coe chopped_onion_right(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_right_bits));
 
 //   // empty pot coes
 //   empty_pot_up_coe empty_pot_up(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_up_bits));
@@ -112,14 +112,14 @@ module player_blob
                     P_UP: image_bits = whole_onion_up_bits;
                 endcase
             end
-//            P_ONION_CHOPPED: begin
-//                case (player_direction)
-//                    P_LEFT: image_bits = chopped_onion_left_bits;
-//                    P_RIGHT: image_bits = chopped_onion_right_bits;
-//                    P_DOWN: image_bits = chopped_onion_down_bits;
-//                    P_UP: image_bits = chopped_onion_up_bits;
-//                endcase
-//            end
+            P_ONION_CHOPPED: begin
+                case (player_direction)
+                    P_LEFT: image_bits = chopped_onion_left_bits;
+                    P_RIGHT: image_bits = chopped_onion_right_bits;
+                    P_DOWN: image_bits = chopped_onion_down_bits;
+                    P_UP: image_bits = chopped_onion_up_bits;
+                endcase
+            end
 //            P_POT_EMPTY: begin
 //                case (player_direction)
 //                    P_LEFT: image_bits = empty_pot_left_bits;
