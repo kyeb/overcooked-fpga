@@ -52,10 +52,10 @@ module top_level(
    debounce dbup(.reset_in(reset),.clock_in(clock),.noisy_in(btnu),.clean_out(local_up));
    debounce dbdown(.reset_in(reset),.clock_in(clock),.noisy_in(btnd),.clean_out(local_down));
    
-   //variables only main controls
+   //main controls
    logic [2:0] comms_game_state, local_game_state, game_state;
    logic [7:0][12:0][3:0] comms_object_grid, local_object_grid, object_grid;
-   logic [5:0][3:0] comms_time_grid, local_time_grid, time_grid; 
+   logic [3:0][3:0] comms_time_grid, local_time_grid, time_grid; 
    logic [7:0] comms_time_left, local_time_left, time_left; 
    logic [9:0] comms_point_total, local_point_total, point_total; 
    logic [3:0] comms_orders, local_orders, orders;
@@ -69,10 +69,21 @@ module top_level(
    logic [3:0] local_state, player1_state, player2_state, player3_state, player4_state;
    
    //comms 
-        //send to main: player ID (2), player direction (2), player_loc_x(9), player_loc_y(9), player state (4)
-        // receive from main: 
-            // high priority: object grid (8x13x4), time_grid (6x4), other 3 player info
-            // low priority: game state (3), team_name(3x8), order_times (4x5), time_left(8), point_total(10), orders(4), other 3 positions
+   
+        // if main: 
+            // receive: 3x player ID (2), player direction (2), player_loc_x(9), player_loc_y(9), player state (4)
+            // send:
+                 // high priority: object grid (8x13x4), time_grid (4x4)
+                // low priority: game state (3), team_name(3x8), order_times (4x5), time_left(8), point_total(10), orders(4), 
+                //               other 3 player direction, locationx2, state, ID
+        
+        
+        // if secondary:
+            //send to main: player ID (2), player direction (2), player_loc_x(9), player_loc_y(9), player state (4)
+            // receive from main: 
+                // high priority: object grid (8x13x4), time_grid (4x4)
+                // low priority: game state (3), team_name(3x8), order_times (4x5), time_left(8), point_total(10), orders(4), 
+                //               other 3 player direction, locationx2, state, ID
             
     always_comb begin
         if (local_player_ID == 0) begin
@@ -99,12 +110,27 @@ module top_level(
             order_times = comms_order_times;
             team_name = comms_team_name;
         end
+        
+        if (num_players == 2'b0) begin
+        end else if (num_players == 2'b01) begin
+            if (local_player_ID == 2'b0) begin
+            end else if (local_player_ID == 2'b01) begin
+            end
+        end else if (num_players == 2'b10) begin
+            if (local_player_ID == 2'b0) begin
+            end else if (local_player_ID == 2'b01) begin
+            end else if (local_player_ID == 2'b10) begin
+            end
+        end else if (num_players == 2'b11) begin
+            if (local_player_ID == 2'b0) begin
+            end else if (local_player_ID == 2'b01) begin
+            end else if (local_player_ID == 2'b10) begin
+            end else if (local_player_ID == 2'b11) begin
+            end
+        end
     end
-    
-    //if main, receive other 3 and send back out
-    //if not main, send position, receive other 3 from main
             
-    main_FPGA_control ctl (.reset(reset), .vsync(vsync_in), .pause(pause),
+    main_FPGA_control ctl (.reset(reset), .vsync(vsync_in), .pause(pause), 
                    .left(local_left), .right(local_right), .up(local_up), .down(local_down), .chop(local_chop), .carry(local_carry),
                    .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state),
                    .player2_direction(player2_direction), .player2_x(player2_loc_x), .player2_y(player2_loc_y), .player2_state(player2_state),
@@ -115,12 +141,15 @@ module top_level(
                    .point_total(local_point_total), .orders(local_orders), .order_times(local_order_times), .team_name(local_team_name));
     
     //add collisions here
-    game_logic gl (.reset(reset), .vsync(vsync_in), .game_state(game_state), .object_grid(object_grid),
+    game_logic gl (.reset(reset), .vsync(vsync_in), .game_state(game_state), .object_grid(object_grid),.num_players(num_players), .local_player_ID(local_player_ID),
                    .left(local_left), .right(local_right), .up(local_up), .down(local_down), .chop(local_chop), .carry(local_carry),
+                   //make these 0 if no player, just for collision/blocking purposes
+                   .player_a_x(player_a_x), .player_a_y(player_a_y), .player_b_x(player_b_x), .player_b_y(player_b_y), 
+                   .player_c_x(player_c_x), .player_c_y(player_c_y), 
                    
                    .player_direction(local_direction), .player_loc_x(local_loc_x), .player_loc_y(local_loc_y), .player_state(local_state));
     
-    assign valz = {29'b0, game_state};
+    assign valz = {1'b0, game_state, 20'b0, time_left};
 
     //graphics
     logic [10:0] hcount;    // pixel on current line
@@ -153,8 +182,6 @@ module top_level(
 
     assign vga_hs = ~hs;
     assign vga_vs = ~vs;
-
-    //communication
 
 endmodule
 

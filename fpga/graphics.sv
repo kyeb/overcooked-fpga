@@ -24,20 +24,20 @@ module graphics(
    input [8:0] player1_y,
    input [3:0] player1_state,
     
-//  input [1:0] player2_direction,
-//  input [8:0] player2_x,
-//  input [8:0] player2_y,
-//  input [3:0] player2_state,
+  input [1:0] player2_direction,
+  input [8:0] player2_x,
+  input [8:0] player2_y,
+  input [3:0] player2_state,
 
-//  input [1:0] player3_direction,
-//  input [8:0] player3_x,
-//  input [8:0] player3_y,
-//  input [3:0] player3_state,
+  input [1:0] player3_direction,
+  input [8:0] player3_x,
+  input [8:0] player3_y,
+  input [3:0] player3_state,
 
-//  input [1:0] player4_direction,
-//  input [8:0] player4_x,
-//  input [8:0] player4_y,
-//  input [3:0] player4_state,
+  input [1:0] player4_direction,
+  input [8:0] player4_x,
+  input [8:0] player4_y,
+  input [3:0] player4_state,
 
    input [10:0] hcount, // horizontal index of current pixel (0..1023)
    input [9:0]  vcount, // vertical index of current pixel (0..767)
@@ -86,14 +86,14 @@ module graphics(
    player_blob player1 (.pixel_clk_in(clock), .x_in(player1_x), .y_in(player1_y), .hcount_in(hcount), 
        .vcount_in(vcount), .player_direction(player1_direction), .player_state(player1_state), .pixel_out(player1_pixel));
 
-//   player_blob player2 (.pixel_clk_in(clock), .x_in(player2_x), .y_in(player2_y), .hcount_in(hcount), 
-//       .vcount_in(vcount), .player_direction(player2_direction), .player_state(player2_state), .pixel_out(player2_pixel));
+   player_blob player2 (.pixel_clk_in(clock), .x_in(player2_x), .y_in(player2_y), .hcount_in(hcount), 
+       .vcount_in(vcount), .player_direction(player2_direction), .player_state(player2_state), .pixel_out(player2_pixel));
 
-//   player_blob player3 (.pixel_clk_in(clock), .x_in(player3_x), .y_in(player3_y), .hcount_in(hcount), 
-//       .vcount_in(vcount), .player_direction(player3_direction), .player_state(player3_state), .pixel_out(player3_pixel));
+   player_blob player3 (.pixel_clk_in(clock), .x_in(player3_x), .y_in(player3_y), .hcount_in(hcount), 
+       .vcount_in(vcount), .player_direction(player3_direction), .player_state(player3_state), .pixel_out(player3_pixel));
 
-//   player_blob player4 (.pixel_clk_in(clock), .x_in(player4_x), .y_in(player4_y), .hcount_in(hcount), 
-//       .vcount_in(vcount), .player_direction(player4_direction), .player_state(player4_state), .pixel_out(player4_pixel));
+   player_blob player4 (.pixel_clk_in(clock), .x_in(player4_x), .y_in(player4_y), .hcount_in(hcount), 
+       .vcount_in(vcount), .player_direction(player4_direction), .player_state(player4_state), .pixel_out(player4_pixel));
 
    // grid logic
    logic [2:0] current_grid_x, grid_object_x;
@@ -115,9 +115,9 @@ module graphics(
 
       case (num_players)
           0: player_pixel = player1_pixel;
-        //   1: player_pixel = player1_pixel + player2_pixel;
-        //   2: player_pixel = player1_pixel + player2_pixel + player3_pixel;
-        //   3: player_pixel = player1_pixel + player2_pixel + player3_pixel + player4_pixel;
+           1: player_pixel = player1_pixel + player2_pixel;
+           2: player_pixel = player1_pixel + player2_pixel + player3_pixel;
+           3: player_pixel = player1_pixel + player2_pixel + player3_pixel + player4_pixel;
       endcase
 
     //   logic [11:0] whole_onion, chopped_onion, empty_bowl, full_bowl, empty_pot, raw_pot, cooked_pot, fire_pot, fire, extinguisher;

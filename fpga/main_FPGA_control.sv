@@ -14,7 +14,7 @@ module main_FPGA_control(input reset,
                          output logic [7:0] time_left,
                          output logic [9:0] point_total,
                          output logic [7:0][12:0][3:0] object_grid, 
-                         output logic [5:0][3:0] time_grid,
+                         output logic [3:0][3:0] time_grid,
                          output logic [3:0] orders, // how many orders are currently on the screen
                          output logic [3:0][4:0] order_times);
    
@@ -38,14 +38,15 @@ module main_FPGA_control(input reset,
     assign check_spaces[0] = object_grid[4][12];
                   
     time_remaining tr (.vsync(vsync),.timer_go(timer_go),.restart(restart_timer),
+    
                        .time_left(time_left));
     
     orders_and_points op (.vsync(vsync),.reset(reset),.check_spaces(check_spaces),
-                          .timer_go(timer_go),.clear_space(clear_space), 
-                          .point_total(point_total),.orders(orders),.order_times(order_times));
+                          .timer_go(timer_go),
+                          
+                          .clear_space(clear_space), .point_total(point_total),.orders(orders),.order_times(order_times));
     
     action act (.reset(reset),.vsync(vsync), .game_state(game_state), .clear_space(clear_space),
-                .chop(chop), .carry(carry),
                 .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state),
                 .player2_direction(player2_direction), .player2_x(player2_loc_x), .player2_y(player2_loc_y), .player2_state(player2_state),
                 .player3_direction(player3_direction), .player3_x(player3_loc_x), .player3_y(player3_loc_y), .player3_state(player3_state),

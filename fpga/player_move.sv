@@ -4,6 +4,10 @@ module player_move(input reset,
                    input vsync,
                    input left, right, up, down, chop, carry,
                    input [2:0] game_state,
+                   input [1:0] num_players,
+                   input [1:0] local_player_ID,
+                   input [8:0] player_a_x, player_b_x, player_c_x,
+                   input [8:0] player_a_y, player_b_y, player_c_y,
                    output logic [1:0] player_direction, //0 left 1 right 2 up 3 down 
                    output logic [8:0] player_loc_x,
                    output logic [8:0] player_loc_y);
@@ -24,15 +28,54 @@ module player_move(input reset,
         //players move between 144 and 304 pixels y
         if (reset) begin
             player_direction <= 2'd3;
-            player_loc_x <= 9'd304;
-            player_loc_y <= 9'd208;
-        end else if (game_state != PLAY) begin
+            if (num_players == 2'b0) begin
+                player_loc_x <= 9'd304;
+                player_loc_y <= 9'd208;
+            end else if (num_players == 2'b01) begin
+                if (local_player_ID == 2'b0) begin
+                    player_loc_x <= 9'd208;
+                    player_loc_y <= 9'd208;
+                end else if (local_player_ID == 2'b01) begin
+                    player_loc_x <= 9'd400;
+                    player_loc_y <= 9'd208;
+                end
+            end else if (num_players == 2'b10) begin
+                if (local_player_ID == 2'b0) begin
+                    player_loc_x <= 9'd304;
+                    player_loc_y <= 9'd176;
+                end else if (local_player_ID == 2'b01) begin
+                    player_loc_x <= 9'd208;
+                    player_loc_y <= 9'd272;
+                end else if (local_player_ID == 2'b10) begin
+                    player_loc_x <= 9'd400;
+                    player_loc_y <= 9'd272;
+                end
+            end else if (num_players == 2'b11) begin
+                if (local_player_ID == 2'b0) begin
+                    player_loc_x <= 9'd208;
+                    player_loc_y <= 9'd176;
+                end else if (local_player_ID == 2'b01) begin
+                    player_loc_x <= 9'd400;
+                    player_loc_y <= 9'd176;
+                end else if (local_player_ID == 2'b10) begin
+                    player_loc_x <= 9'd208;
+                    player_loc_y <= 9'd272;
+                end else if (local_player_ID == 2'b11) begin
+                    player_loc_x <= 9'd400;
+                    player_loc_y <= 9'd272;
+                end
+            end
+        end else if ((game_state != PLAY)||chop) begin
             player_loc_y <= player_loc_y;
             player_loc_x <= player_loc_x;
-            //y direction
-        end else if(up) begin //up button
+            
+        
+        //y direction
+        end else if (up) begin //up button
             player_direction <= UP;
-            if (player_loc_y>148) begin
+            if ((player_loc_y>148)&&((player_loc_y>(player_a_y+32))||(player_loc_x>(player_a_x+32))||(player_a_x>(player_loc_x+32)))
+                                  &&((player_loc_y>(player_b_y+32))||(player_loc_x>(player_b_x+32))||(player_b_x>(player_loc_x+32)))
+                                  &&((player_loc_y>(player_c_y+32))||(player_loc_x>(player_c_x+32))||(player_c_x>(player_loc_x+32)))) begin
                 player_loc_y <= player_loc_y-4;  //move 4 pixels up
             end
         end else if (down) begin //down button
