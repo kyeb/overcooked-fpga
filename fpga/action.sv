@@ -2,14 +2,15 @@
 
 module action(input reset,
               input vsync,
-              input [1:0] num_players,
-              input left, right, up, down, chop, carry,
-              input [2:0] game_state,
-              input [1:0] player_direction, //up, down, left, right
-              input [8:0] player_loc_x,
-              input [8:0] player_loc_y,
+              input chop, carry,
               input [1:0] clear_space,
-              output logic [3:0] player_state,
+              input [2:0] game_state,
+              
+              input [1:0] player1_direction, player2_direction, player3_direction, player4_direction,
+              input [8:0] player1_x, player2_x, player3_x, player4_x,
+              input [8:0] player1_y, player2_y, player3_y, player4_y,
+              input [3:0] player1_state, player2_state, player3_state, player4_state,
+                         
               output logic [7:0][12:0][3:0] object_grid,
               output logic [5:0][3:0] time_grid); //board1, board2, pots1-4
               
@@ -70,7 +71,7 @@ module action(input reset,
     logic [4:0] i;
     
     
-    pixel_to_grid p2g (.pixel_x({1'b0,(player_loc_x+16)}), .pixel_y((player_loc_y+16)), 
+    pixel_to_grid p2g (.pixel_x((player_loc_x+16)), .pixel_y((player_loc_y+16)), 
                        .grid_x(grid_x), .grid_y(grid_y));
     
     check_in_front cf (.grid_x(grid_x),.grid_y(grid_y),.player_direction(player_direction),
@@ -277,34 +278,3 @@ module action(input reset,
 
     
 endmodule //action
-
-module grid_in_front (input [3:0] grid_x,
-                       input [2:0] grid_y,
-                       input [1:0] player_direction,
-                       output logic [3:0] x_front,
-                       output logic [2:0] y_front);
-                       
-    parameter LEFT = 2'd0;
-    parameter RIGHT = 2'd1;
-    parameter UP = 2'd2;
-    parameter DOWN = 2'd3;
-      
-    always_comb begin
-        if (player_direction == LEFT) begin
-            x_front = grid_x-1;
-            y_front = grid_y;
-        end else if (player_direction == RIGHT) begin
-            x_front = grid_x+1;
-            y_front = grid_y;
-        end else if (player_direction == UP) begin
-            x_front = grid_x;
-            y_front = grid_y-1;
-        end else if (player_direction == DOWN) begin
-            x_front = grid_x;
-            y_front = grid_y+1;
-        end  
-    end
-
-endmodule
-
-
