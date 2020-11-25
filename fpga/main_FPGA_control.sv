@@ -63,9 +63,9 @@ module main_FPGA_control(input reset,
             restart_timer <= 1;
             start_counter <= 0;
             timer_go <= 0;
-// 0 - Welcome Menu
-// Generate team name
-// Start game -> press chop to start
+        // 0 - Welcome Menu
+        // Generate team name
+        // Start game -> press chop to start
         end else if (game_state == WELCOME) begin 
             //state 0: letter 1
             if (w_state == 0) begin      
@@ -174,9 +174,9 @@ module main_FPGA_control(input reset,
                 w_state <= 4'd0;
             end     
        
-// 1 - Game Introduction
-// Wait 5 seconds so players can view map, players can't move
-// Start game
+        // 1 - Game Introduction
+        // Wait 5 seconds so players can view map, players can't move
+        // Start game
         end else if (game_state==START) begin
             if (start_counter == START_TIMER) begin
                 game_state <= PLAY;
@@ -187,7 +187,7 @@ module main_FPGA_control(input reset,
                 start_counter <= start_counter+1;
             end
             
-// 2 - Play Game - Timer starts, players can move
+        // 2 - Play Game - Timer starts, players can move
         end else if (game_state==PLAY) begin
             timer_go <= 1;
             if (time_left == 0) begin
@@ -195,13 +195,13 @@ module main_FPGA_control(input reset,
             end else if (pause) begin
                 game_state <= PAUSE;
             end
-// 3 - Pause Game - Timer pauses, all objects freeze
+        // 3 - Pause Game - Timer pauses, all objects freeze
         end else if (game_state==PAUSE) begin
             timer_go <= 0;
             if (~pause) begin
                 game_state <= PLAY;
             end
-// 4 - Finish Game - Once timer runs out, press any button to restart
+        // 4 - Finish Game - Once timer runs out, press any button to restart
         end else if ((game_state==FINISH)&&((left)||(right)||(up)||(down)||(chop))) begin
             game_state <= WELCOME;
         end      
