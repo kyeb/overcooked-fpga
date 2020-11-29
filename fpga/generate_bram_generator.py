@@ -20,8 +20,16 @@ directions = ["up", "down", "right", "left"]
 sprites = [
     "chop",
     "chopped_onion",
+    "empty_bowl", 
+    "empty_pot",
+    "extinguisher_off",
+    "extinguisher_on",
+    "full_bowl",
+    "move",
+    "soup_pot",
     "whole_onion"
     ]
+
 for s in sprites:
     for d in directions:
         coes.append((f'{s}_{d}_coe', f'/{s}/{s}_{d}.coe', 1024))
