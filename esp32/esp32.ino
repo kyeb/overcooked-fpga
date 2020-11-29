@@ -8,8 +8,8 @@ const int BUTTON_PIN = 19;
 const int LED_PIN = 18;
 
 // WiFi credentials
-const char* ssid = "MIT";
-const char* password = "";
+const char* ssid = "FiOS-KLEIN";
+const char* password = "pAf1pAg1m3L1";
 
 String serverName = "http://esp32.kyeburchard.com/overcooked";
 
@@ -17,7 +17,7 @@ HardwareSerial FPGASerial(1);
 
 /* =============== config section end =============== */
 
-// PORTS: USB0, USB1
+// PORTS: USB0, USB2
 
 
 void setup() {

@@ -13,13 +13,13 @@ module top_level(
    );
    
    // create clock for display
-   logic clock;
-   clk_wiz_25 clk25 (.clk_in1(clk_100mhz), .clk_out1(clock));
+   logic clock, clock100;
+   clk_wiz_25 clk25 (.clk_in1(clk_100mhz), .clk_out1(clock), .clk_out2(clock100));
    
    // digit display
    logic [31:0] valz;
    assign  dp = 1'b1;  // turn off the period
-   seven_seg_controller my_controller (.clk_in(clock), .rst_in(reset), .val_in(valz), 
+   seven_seg_controller my_controller (.clk_in(clock100), .rst_in(reset), .val_in(valz), 
                                         .cat_out({cg, cf, ce, cd, cc, cb, ca}), .an_out(an));
    
    // vga signals
@@ -52,7 +52,7 @@ module top_level(
    debounce dbup(.reset_in(reset),.clock_in(clock),.noisy_in(btnu),.clean_out(local_up));
    debounce dbdown(.reset_in(reset),.clock_in(clock),.noisy_in(btnd),.clean_out(local_down));
    
-   //main controls
+   // main controls
    logic [2:0] comms_game_state, local_game_state, game_state;
    logic [7:0][12:0][3:0] comms_object_grid, local_object_grid, object_grid;
    logic [3:0][3:0] comms_time_grid, local_time_grid, time_grid; 
@@ -68,7 +68,7 @@ module top_level(
    logic [8:0] local_loc_y, player1_loc_y, player2_loc_y, player3_loc_y, player4_loc_y;
    logic [3:0] local_state, player1_state, player2_state, player3_state, player4_state;
    
-   //comms 
+   //comms
    
         // if main: 
             // receive: 3x player ID (2), player direction (2), player_loc_x(9), player_loc_y(9), player state (4)
@@ -84,7 +84,16 @@ module top_level(
                 // high priority: object grid (8x13x4), time_grid (4x4)
                 // low priority: game state (3), team_name(3x8), order_times (4x5), time_left(8), point_total(10), orders(4), 
                 //               other 3 player direction, locationx2, state, ID
-            
+    comms c (
+        .clk(clock100), .rst(reset), .player_ID(local_player_ID),
+        .local_direction(local_direction), .local_loc_x(local_loc_x), .local_loc_y(local_loc_y), .local_state(local_state),
+        .player1_direction(player1_direction), .player2_direction(player2_direction), .player3_direction(player3_direction), .player4_direction(player4_direction),
+        .player1_loc_x(player1_loc_x), .player2_loc_x(player2_loc_x), .player3_loc_x(player3_loc_x), .player4_loc_x(player4_loc_x),
+        .player1_loc_y(player1_loc_y), .player2_loc_y(player2_loc_y), .player3_loc_y(player3_loc_y), .player4_loc_y(player4_loc_y),
+        .player1_state(player1_state), .player2_state(player2_state), .player3_state(player3_state), .player4_state(player4_state)
+    );
+    
+    
     always_comb begin
         if (local_player_ID == 0) begin
             game_state = local_game_state;
@@ -96,10 +105,6 @@ module top_level(
             order_times = local_order_times;
             team_name = local_team_name;
             
-            player1_direction = local_direction;
-            player1_loc_x = local_loc_x;
-            player1_loc_y = local_loc_y;
-            player1_state = local_state;
         end else begin
             game_state = comms_game_state;
             object_grid = comms_object_grid;
@@ -129,7 +134,7 @@ module top_level(
             end
         end
     end
-            
+    
     main_FPGA_control ctl (.reset(reset), .vsync(vsync_in), .pause(pause), 
                    .left(local_left), .right(local_right), .up(local_up), .down(local_down), .chop(local_chop), .carry(local_carry),
                    .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state),
@@ -158,7 +163,7 @@ module top_level(
     logic [11:0] pixel;
     logic [11:0] rgb;
     logic border = (hcount>=0 & hcount<639 & vcount>=0 & vcount<479);
-        
+    
     graphics game(.clock(clock), .reset(reset), .team_name(team_name), .local_player_ID(local_player_ID), .num_players(num_players),
         .game_state(game_state), .time_left(time_left), .point_total(point_total), .object_grid(object_grid), .time_grid(time_grid), .orders(orders), .order_times(order_times), 
         .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state), 
@@ -166,7 +171,7 @@ module top_level(
         .player3_direction(player3_direction), .player3_x(player3_loc_x), .player3_y(player3_loc_y), .player3_state(player3_state), 
         .player4_direction(player4_direction), .player4_x(player4_loc_x), .player4_y(player4_loc_y), .player4_state(player4_state), 
         .hcount(hcount_in), .vcount(vcount_in), .hsync(hsync_in), .vsync(vsync_in), .blank(blank_in), .hsync_out(hsync), .vsync_out(vsync), .blank_out(blank), .pixel_out(pixel));
-        
+    
     logic b,hs,vs;
     always_ff @(posedge clock) begin
         hs <= hsync;
@@ -255,7 +260,7 @@ module seven_seg_controller(input logic         clk_in,
             end
         end
     end
-        
+    
 endmodule //seven_seg_controller
 
 
