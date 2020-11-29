@@ -1,12 +1,11 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <HardwareSerial.h>
 
 /* =============== config section start =============== */
 
-#define DEV_TYPE 1    // "0" for primary, and "1" for others
-
-const int BUTTON_PIN = 32;
-const int LED_PIN = 22;
+const int BUTTON_PIN = 19;
+const int LED_PIN = 18;
 
 // WiFi credentials
 const char* ssid = "MIT";
@@ -14,16 +13,21 @@ const char* password = "";
 
 String serverName = "http://esp32.kyeburchard.com/overcooked";
 
+HardwareSerial FPGASerial(1);
+
 /* =============== config section end =============== */
+
+// PORTS: USB0, USB1
 
 
 void setup() {
   Serial.begin(115200);
+  // Set up a hardware serial at 115200 baud, transmitting 8 bits at a time
+  // and with pins 22 and 23 as 
+  FPGASerial.begin(115200, SERIAL_8N1, 22, 23);
 
   pinMode(BUTTON_PIN, INPUT_PULLUP);
-
   pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);
 
   // attempt wifi connection
   while (WiFi.status() != WL_CONNECTED) {
@@ -45,19 +49,16 @@ void setup() {
 }
 
 
-void sendPressed(int pressed) {
-  Serial.print("pressed: ");
-  Serial.println(pressed);
+void sendState(uint32_t val) {
   HTTPClient http;
   String route = serverName + "/button";
   http.begin(route.c_str());
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   String body;
-  if (pressed) {
-    body = "pressed=1";
-  } else {
-    body = "pressed=0";
-  }
+  body = String("pressed=") + String(val);
+  Serial.print("sending POST to server ");
+  Serial.println(body);
+  // TODO: can this be nonblocking??
   int respCode = http.POST(body);
   if (respCode > 0) {
     Serial.print("Response: ");
@@ -69,18 +70,34 @@ void sendPressed(int pressed) {
   }
 }
 
+#define NUM_BYTES 4
+void upload() {
+  uint32_t val = 0;
+  if (FPGASerial.available()) {
+    for (int i = 0; i < NUM_BYTES; i++) {
+      uint8_t v = FPGASerial.read();
+      Serial.print("Received from FPGA: ");
+      Serial.println(v);
+      val |= v << (8*i);
+    }
+    sendState(val);
+  }
+}
 
-int fetchPressed() {
+
+uint32_t fetchState() {
   HTTPClient http;
   String route = serverName + "/button";
   http.begin(route.c_str());
   int respCode = http.GET();
   if (respCode > 0) {
-    Serial.print("Response: ");
+    Serial.print("Response code: ");
     Serial.println(respCode);
     String resp = http.getString();
-    Serial.println(resp);
-    return resp.toInt();
+    uint32_t num = strtoul(resp.c_str(), NULL, 10);
+    Serial.print("Response: ");
+    Serial.println(num);
+    return num;
   } else {
     Serial.print("Error code: ");
     Serial.println(respCode);
@@ -89,27 +106,29 @@ int fetchPressed() {
 }
 
 
-enum State {IDLE, SEND, WAIT};
-State state = IDLE;
-
-int prev;
-void loop() {
-#if DEV_TYPE == 0
-  int b = digitalRead(BUTTON_PIN);
-  if (b != prev) {
-    if (b == LOW) {
-      sendPressed(1);
-    } else {
-      sendPressed(0);
+void download() {
+  uint32_t val = fetchState();
+  digitalWrite(LED_PIN, (bool)val);
+  if (FPGASerial.availableForWrite()) {
+    for (int i = 0; i < NUM_BYTES; i++) {
+      uint8_t shift = i << 3;
+      uint32_t mask = 255 << shift;
+      uint8_t num = (val & mask) >> shift;
+      FPGASerial.write(num);
     }
-  }
-  prev = b;
-#else
-  int b = fetchPressed();
-  if (b) {
-    digitalWrite(LED_PIN, HIGH);
+    Serial.print("transmitted to FPGA x=");
+    Serial.println(val);
   } else {
-    digitalWrite(LED_PIN, LOW);
+    Serial.println("FPGASerial not available for writing");
   }
-#endif
+}
+
+
+void loop() {
+  // Read from FPGA and send to server
+  upload();
+
+  // Fetch from server and send to FPGA
+  download();
+  delay(100);
 }

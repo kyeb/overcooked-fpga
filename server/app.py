@@ -8,8 +8,7 @@ app = Flask(__name__)
 engine = create_engine(
     "sqlite://", 
     connect_args={"check_same_thread": False}, 
-    poolclass=StaticPool,
-    echo=True
+    poolclass=StaticPool
 )
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
@@ -26,7 +25,7 @@ class Button(Base):
 
     # enable decent-looking print statements
     def __repr__(self):
-        return f"<Button id={self.id}, pressed={bool(self.pressed)}>"
+        return f"<Button id={self.id}, pressed={self.pressed}>"
 
 def initializeDB():
     Base.metadata.create_all(engine)
@@ -45,7 +44,7 @@ def button():
     session = Session()
     if request.method == "GET":
         pressed = session.query(Button).first().pressed
-        return "1" if pressed else "0"
+        return str(pressed)
     elif request.method == "POST":
         b = session.query(Button).first()
         b.pressed = int(request.form["pressed"])
