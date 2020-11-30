@@ -97,7 +97,8 @@
 
     // table counters
     logic [11:0] floor_pixel;
-    table_counter tables (.x_in(0), .hcount_in(hcount), .y_in(0), .vcount_in(vcount), .pixel_out(floor_pixel));
+    table_counter tables (.x_in_counter('d112), .x_in_floor('d144), .hcount_in(hcount), 
+        .y_in_counter('d112), .y_in_floor('d144), .vcount_in(vcount), .pixel_out(floor_pixel));
 
     // grid logic
     logic [2:0] current_grid_x, grid_object_x;
@@ -145,7 +146,7 @@
         vsync_out = vsync;
         blank_out = blank;
 
-        if (player_pixel == 12'h000) begin
+        if (player_pixel == 12'hFFF) begin
             pixel_out = floor_pixel;
         end else begin
             pixel_out = player_pixel;
