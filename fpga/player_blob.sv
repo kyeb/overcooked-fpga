@@ -187,9 +187,9 @@ module player_blob
        endcase
    end
 
-   rcm rcm (.clka(pixel_clk_in), .addra(image_bits), .douta(red_mapped));
-   gcm gcm (.clka(pixel_clk_in), .addra(image_bits), .douta(green_mapped));
-   bcm bcm (.clka(pixel_clk_in), .addra(image_bits), .douta(blue_mapped));
+   red_coe rcm (.clka(pixel_clk_in), .addra(image_bits), .douta(red_mapped));
+   green_coe gcm (.clka(pixel_clk_in), .addra(image_bits), .douta(green_mapped));
+   blue_coe bcm (.clka(pixel_clk_in), .addra(image_bits), .douta(blue_mapped));
      
    // note the one clock cycle delay in pixel!
    always_ff @ (posedge pixel_clk_in) begin
