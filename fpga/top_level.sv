@@ -2,18 +2,20 @@ module top_level(
    input clk_100mhz,
    input [15:0] sw,
    input btnc, btnu, btnr, btnd, btnl,
-   output logic[3:0] vga_r,
-   output logic[3:0] vga_b,
-   output logic[3:0] vga_g,
+   input logic  ja_1, // serial RX pin
+   output logic ja_0, // serial TX pin
+   output logic [3:0] vga_r,
+   output logic [3:0] vga_b,
+   output logic [3:0] vga_g,
    output logic vga_hs,
    output logic vga_vs,
    output logic [15:0] led,
    output logic ca, cb, cc, cd, ce, cf, cg, dp,  // segments a-g, dp
-   output logic[7:0] an    // Display location 0-7
+   output logic [7:0] an    // Display location 0-7
    );
    
-   // create clock for display
-   logic clock, clock100;
+   // create clocks for display and serial
+   logic clock, clock100; // 25mhz and 100mhz, respectively
    clk_wiz_25 clk25 (.clk_in1(clk_100mhz), .clk_out1(clock), .clk_out2(clock100));
    
    // digit display
@@ -85,7 +87,7 @@ module top_level(
                 // low priority: game state (3), team_name(3x8), order_times (4x5), time_left(8), point_total(10), orders(4), 
                 //               other 3 player direction, locationx2, state, ID
     comms c (
-        .clk(clock100), .rst(reset), .player_ID(local_player_ID),
+        .clk(clock100), .vsync(vsync_in), .rst(reset), .ja_0(ja_0), .ja_1(ja_1), .player_ID(local_player_ID),
         .local_direction(local_direction), .local_loc_x(local_loc_x), .local_loc_y(local_loc_y), .local_state(local_state),
         .player1_direction(player1_direction), .player2_direction(player2_direction), .player3_direction(player3_direction), .player4_direction(player4_direction),
         .player1_loc_x(player1_loc_x), .player2_loc_x(player2_loc_x), .player3_loc_x(player3_loc_x), .player4_loc_x(player4_loc_x),
@@ -94,7 +96,7 @@ module top_level(
     );
     
     
-    always_comb begin
+    always_ff @(negedge vsync_in) begin
         if (local_player_ID == 0) begin
             game_state = local_game_state;
             object_grid = local_object_grid;

@@ -68,8 +68,6 @@ module serial_rx(
             end
         endcase
     end
-    
-    // TODO: hold valid until negedge vsync + a few cycles?
 endmodule
 
 
