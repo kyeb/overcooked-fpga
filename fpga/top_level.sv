@@ -111,7 +111,7 @@ module top_level(
             team_name = local_team_name;
             
         end else begin
-//            game_state = comms_game_state; km
+//            game_state = comms_game_state;
             game_state = local_game_state;
             object_grid = comms_object_grid;
             time_grid = comms_time_grid;

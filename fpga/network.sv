@@ -126,6 +126,7 @@ module comms(
     logic [31:0] local_full_state, prev_local_full_state;
     assign txstate = tx_state;
     always_ff @(posedge clk) begin
+        // TODO: compare current state with state when last in idle for better consistency
         local_full_state <= {player_ID, local_direction, local_loc_x, local_loc_y, local_state, 6'b000000};
         prev_local_full_state <= local_full_state;
 
