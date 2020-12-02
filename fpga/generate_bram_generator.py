@@ -5,6 +5,7 @@
 
 # SET THIS TO YOUR COMPUTER
 basedir = "/home/kyeb/mit/6.111/final_project"
+basedir = "C:/Users/lacth/overcooked-fpga"
 coedir = basedir + "/sprites"
 srcsdir = basedir + "/fpga/vivado_project/vivado_project.srcs/sources_1/ip"
 
@@ -22,16 +23,18 @@ sprites = [
     "chopped_onion",
     "empty_bowl", 
     "empty_pot",
-    "extinguisher_off",
-    "extinguisher_on",
+    "ext_off",
+    "ext_on",
     "full_bowl",
     "move",
     "soup_pot",
-    "whole_onion"
+    "onion"
     ]
 
 for s in sprites:
     for d in directions:
+        if s != "move" and d == "up":
+            continue
         coes.append((f'{s}_{d}_coe', f'/{s}/{s}_{d}.coe', 1024))
 
 f = open("autogenerate_bram.tcl", "w+")

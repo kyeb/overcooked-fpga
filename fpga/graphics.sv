@@ -125,11 +125,11 @@
             3: player_pixel = player1_pixel + player2_pixel + player3_pixel + player4_pixel;
         endcase
 
-        //   logic [11:0] whole_onion, chopped_onion, empty_bowl, full_bowl, empty_pot, raw_pot, cooked_pot, fire_pot, fire, extinguisher;
+        //   logic [11:0] onion, chopped_onion, empty_bowl, full_bowl, empty_pot, raw_pot, cooked_pot, fire_pot, fire, extinguisher;
 
     //       case (grid_state)
     //          G_EMPTY: object_pixel = 0;
-    //          G_ONION_WHOLE: object_pixel = whole_onion;
+    //          G_ONION_WHOLE: object_pixel = onion;
     //          G_ONION_CHOPPED: object_pixel = chopped_onion;
     //          G_BOWL_EMPTY: object_pixel = empty_bowl;
     //          G_BOWL_FULL: object_pixel = full_bowl;

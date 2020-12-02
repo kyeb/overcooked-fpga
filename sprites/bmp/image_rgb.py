@@ -33,7 +33,7 @@ if __name__ == "__main__":
             f.write(coe_hdr)
             for i in range(256):
                 f.write(get_bin_string(palette[i][1]) + ",\n")
-        
+         
         with open(f"{sys.argv[1][:sys.argv[1].index('.')]}_color_map_blue.coe", "w") as f:
             f.write(coe_hdr)
             for i in range(256):
