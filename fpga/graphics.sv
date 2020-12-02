@@ -83,16 +83,16 @@
 
     // player displays
     logic [11:0] player_pixel, player1_pixel, player2_pixel, player3_pixel, player4_pixel;
-    player_blob player1 (.pixel_clk_in(clock), .x_in(player1_x), .y_in(player1_y), .hcount_in(hcount), 
+    player_blob player1 (.pixel_clk_in(clock), .vsync(vsync), .x_in(player1_x), .y_in(player1_y), .hcount_in(hcount), 
         .vcount_in(vcount), .player_direction(player1_direction), .player_state(player1_state), .pixel_out(player1_pixel));
 
-    player_blob player2 (.pixel_clk_in(clock), .x_in(player2_x), .y_in(player2_y), .hcount_in(hcount), 
+    player_blob player2 (.pixel_clk_in(clock), .vsync(vsync), .x_in(player2_x), .y_in(player2_y), .hcount_in(hcount), 
         .vcount_in(vcount), .player_direction(player2_direction), .player_state(player2_state), .pixel_out(player2_pixel));
 
-    player_blob player3 (.pixel_clk_in(clock), .x_in(player3_x), .y_in(player3_y), .hcount_in(hcount), 
+    player_blob player3 (.pixel_clk_in(clock), .vsync(vsync), .x_in(player3_x), .y_in(player3_y), .hcount_in(hcount), 
         .vcount_in(vcount), .player_direction(player3_direction), .player_state(player3_state), .pixel_out(player3_pixel));
 
-    player_blob player4 (.pixel_clk_in(clock), .x_in(player4_x), .y_in(player4_y), .hcount_in(hcount), 
+    player_blob player4 (.pixel_clk_in(clock), .vsync(vsync), .x_in(player4_x), .y_in(player4_y), .hcount_in(hcount), 
         .vcount_in(vcount), .player_direction(player4_direction), .player_state(player4_state), .pixel_out(player4_pixel));
 
     // table counters

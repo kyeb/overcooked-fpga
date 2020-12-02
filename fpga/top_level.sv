@@ -16,7 +16,7 @@ module top_level(
    
    // create clocks for display and serial
    logic clock, clock100; // 25mhz and 100mhz, respectively
-   clk_wiz_25 clk25 (.clk_in1(clk_100mhz), .clk_out1(clock), .clk_out2(clock100));
+   clk_wiz clk25 (.clk_in1(clk_100mhz), .clk_out1(clock), .clk_out2(clock100));
    
    // digit display
    logic [31:0] valz;
