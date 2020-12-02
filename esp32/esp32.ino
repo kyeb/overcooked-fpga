@@ -17,7 +17,7 @@ HardwareSerial FPGASerial(1);
 
 /* =============== config section end =============== */
 
-// PORTS: USB0, USB2
+// PORTS: USB4, USB0
 
 
 void setup() {
@@ -27,7 +27,9 @@ void setup() {
   FPGASerial.begin(115200, SERIAL_8N1, 22, 23);
 
   pinMode(BUTTON_PIN, INPUT_PULLUP);
+  
   pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
 
   // attempt wifi connection
   while (WiFi.status() != WL_CONNECTED) {
@@ -51,11 +53,11 @@ void setup() {
 
 void sendState(uint32_t val) {
   HTTPClient http;
-  String route = serverName + "/button";
+  String route = serverName + "/playerstate";
   http.begin(route.c_str());
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   String body;
-  body = String("pressed=") + String(val);
+  body = String("state=") + String(val);
   Serial.print("sending POST to server ");
   Serial.println(body);
   // TODO: can this be nonblocking??
@@ -68,58 +70,70 @@ void sendState(uint32_t val) {
     Serial.print("Error code: ");
     Serial.println(respCode);
   }
+  uint32_t ack = 15;
+  sendToFPGA(ack); // ACK that we finished POSTing
 }
 
-#define NUM_BYTES 4
 void upload() {
   uint32_t val = 0;
   if (FPGASerial.available()) {
-    for (int i = 0; i < NUM_BYTES; i++) {
+    for (int i = 0; i < 4; i++) {
       uint8_t v = FPGASerial.read();
       Serial.print("Received from FPGA: ");
       Serial.println(v);
       val |= v << (8*i);
     }
     sendState(val);
+  } else {
+//    Serial.println("Nothing received from FPGA.");
   }
 }
 
 
-uint32_t fetchState() {
+uint32_t states[4];
+void fetchState() {
   HTTPClient http;
-  String route = serverName + "/button";
+  String route = serverName + "/playerstate";
   http.begin(route.c_str());
   int respCode = http.GET();
   if (respCode > 0) {
     Serial.print("Response code: ");
     Serial.println(respCode);
     String resp = http.getString();
-    uint32_t num = strtoul(resp.c_str(), NULL, 10);
     Serial.print("Response: ");
-    Serial.println(num);
-    return num;
+    Serial.println(resp);
+    states[0] = strtoul(resp.substring(0, 10).c_str(), NULL, 10);
+    states[1] = strtoul(resp.substring(11, 21).c_str(), NULL, 10);
+    states[2] = strtoul(resp.substring(22, 32).c_str(), NULL, 10);
+    states[3] = strtoul(resp.substring(33, 43).c_str(), NULL, 10);
+    Serial.println("updated local states!");
+    return;
   } else {
     Serial.print("Error code: ");
     Serial.println(respCode);
-    return 0;
+    return;
   }
 }
 
-
-void download() {
-  uint32_t val = fetchState();
-  digitalWrite(LED_PIN, (bool)val);
+void sendToFPGA(uint32_t bytes) {
   if (FPGASerial.availableForWrite()) {
-    for (int i = 0; i < NUM_BYTES; i++) {
+    for (int i = 0; i < 4; i++) {
       uint8_t shift = i << 3;
       uint32_t mask = 255 << shift;
-      uint8_t num = (val & mask) >> shift;
-      FPGASerial.write(num);
+      uint8_t val = (bytes & mask) >> shift;
+      FPGASerial.write(val);
     }
-    Serial.print("transmitted to FPGA x=");
-    Serial.println(val);
+    Serial.print("transmitted to FPGA bytes=");
+    Serial.println(bytes);
   } else {
     Serial.println("FPGASerial not available for writing");
+  }
+}
+
+void download() {
+  fetchState();
+  for (int i = 0; i < 4; i++) {
+    sendToFPGA(states[i]);
   }
 }
 
@@ -130,5 +144,4 @@ void loop() {
 
   // Fetch from server and send to FPGA
   download();
-  delay(100);
 }

@@ -86,13 +86,16 @@ module top_level(
                 // high priority: object grid (8x13x4), time_grid (4x4)
                 // low priority: game state (3), team_name(3x8), order_times (4x5), time_left(8), point_total(10), orders(4), 
                 //               other 3 player direction, locationx2, state, ID
+
+    logic txstate;
     comms c (
         .clk(clock100), .vsync(vsync_in), .rst(reset), .ja_0(ja_0), .ja_1(ja_1), .player_ID(local_player_ID),
         .local_direction(local_direction), .local_loc_x(local_loc_x), .local_loc_y(local_loc_y), .local_state(local_state),
         .player1_direction(player1_direction), .player2_direction(player2_direction), .player3_direction(player3_direction), .player4_direction(player4_direction),
         .player1_loc_x(player1_loc_x), .player2_loc_x(player2_loc_x), .player3_loc_x(player3_loc_x), .player4_loc_x(player4_loc_x),
         .player1_loc_y(player1_loc_y), .player2_loc_y(player2_loc_y), .player3_loc_y(player3_loc_y), .player4_loc_y(player4_loc_y),
-        .player1_state(player1_state), .player2_state(player2_state), .player3_state(player3_state), .player4_state(player4_state)
+        .player1_state(player1_state), .player2_state(player2_state), .player3_state(player3_state), .player4_state(player4_state),
+        .txstate(txstate)
     );
     
     
@@ -108,7 +111,8 @@ module top_level(
             team_name = local_team_name;
             
         end else begin
-            game_state = comms_game_state;
+//            game_state = comms_game_state; km
+            game_state = local_game_state;
             object_grid = comms_object_grid;
             time_grid = comms_time_grid;
             time_left = comms_time_left;
@@ -156,7 +160,7 @@ module top_level(
                    
                    .player_direction(local_direction), .player_loc_x(local_loc_x), .player_loc_y(local_loc_y), .player_state(local_state));
     
-    assign valz = {1'b0, game_state, 20'b0, time_left};
+    assign valz = {1'b0, game_state, 14'b0, txstate, 4'b0, time_left};
 
     //graphics
     logic [10:0] hcount;    // pixel on current line

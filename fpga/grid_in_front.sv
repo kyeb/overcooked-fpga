@@ -8,7 +8,7 @@ module grid_in_front (input [3:0] grid_x,
     parameter RIGHT = 2'd1;
     parameter UP = 2'd2;
     parameter DOWN = 2'd3;
-      
+    
     always_comb begin
         if (player_direction == LEFT) begin
             x_front = grid_x-1;

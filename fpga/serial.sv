@@ -161,6 +161,7 @@ module serial_tx(
         input logic        rst_in,
         input logic        trigger_in,
         input logic [31:0] data_in, // NUM_BYTES*8-1
+        output logic       ready,
         output logic       line_out
     );
     parameter DIVISOR = 868;
@@ -239,6 +240,7 @@ module serial_tx(
             end
         endcase
     end
+    assign ready = state == IDLE ? 1 : 0;
 endmodule
 
 
