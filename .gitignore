@@ -1,3 +1,6 @@
 __pycache__
 fpga/vivado_project
 fpga/autogenerate_bram.tcl
+*.jou
+*.log
+*.str
