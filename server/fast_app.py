@@ -1,10 +1,10 @@
-from flask import Flask, request
+from japronto import Application
+
 from sqlalchemy import create_engine, Column, Integer
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from sqlalchemy.ext.declarative import declarative_base
 
-app = Flask(__name__)
 engine = create_engine(
     "sqlite://", 
     connect_args={"check_same_thread": False}, 
@@ -70,23 +70,23 @@ def update_state(state):
 # Routes
 #######################################
 
-# TODO: unify into just POST, use response
-@app.route("/overcooked/playerstate", methods=['GET', 'POST'])
-def player_state():
-    if request.method == "GET":
-        return get_all_states()
-    elif request.method == "POST":
-        state = int(request.form["state"])
-        if state < 0 or state > 2**32:
-            return "error: state out of acceptable range"
+def player_state(request):
+    state = int(request.form["state"])
+    if state < 0 or state > 2**32:
+        r = "error: state out of acceptable range"
+        return request.Response(text=r)
+    if state != 0:
         player = update_state(state)
-        return f"updated player {player_num(player.state)} state to {player.state}"
-    else:
-        return "error"
+
+    r = get_all_states()
+    return request.Response(text=r)
 
 #######################################
 # Main
 #######################################
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+app = Application()
+r = app.router
+r.add_route('/overcooked/playerstate', player_state, 'POST')
+
+app.run()
