@@ -96,6 +96,13 @@ module top_level(
         .txstate(txstate)
     );
     
+    logic timer_go;
+    logic restart_timer;
+    parameter WELCOME = 0;
+    parameter START = 1;
+    parameter PLAY = 2;
+    parameter PAUSE = 3;
+    parameter FINISH = 4;
     
     always_ff @(negedge vsync_in) begin
         if (local_player_ID == 0) begin
@@ -115,27 +122,40 @@ module top_level(
             order_times = comms_order_times;
             team_name = comms_team_name;
         end
+     end
         
-        if (num_players == 2'b0) begin
-        end else if (num_players == 2'b01) begin
-            if (local_player_ID == 2'b0) begin
-            end else if (local_player_ID == 2'b01) begin
-            end
-        end else if (num_players == 2'b10) begin
-            if (local_player_ID == 2'b0) begin
-            end else if (local_player_ID == 2'b01) begin
-            end else if (local_player_ID == 2'b10) begin
-            end
-        end else if (num_players == 2'b11) begin
-            if (local_player_ID == 2'b0) begin
-            end else if (local_player_ID == 2'b01) begin
-            end else if (local_player_ID == 2'b10) begin
-            end else if (local_player_ID == 2'b11) begin
-            end
-        end
+     always_comb begin
+        if (game_state == PLAY) begin //timer going, dont reset
+            timer_go = 1;
+            restart_timer <= 0;
+        end else if ((game_state == WELCOME)||(game_state==START))begin
+            timer_go = 0; //reset timer, not going
+            restart_timer = 1;
+        end else begin //dont reset timer when paused
+            timer_go = 0;
+            restart_timer = 0;
+     end
+        
+//        if (num_players == 2'b0) begin
+//        end else if (num_players == 2'b01) begin
+//            if (local_player_ID == 2'b0) begin
+//            end else if (local_player_ID == 2'b01) begin
+//            end
+//        end else if (num_players == 2'b10) begin
+//            if (local_player_ID == 2'b0) begin
+//            end else if (local_player_ID == 2'b01) begin
+//            end else if (local_player_ID == 2'b10) begin
+//            end
+//        end else if (num_players == 2'b11) begin
+//            if (local_player_ID == 2'b0) begin
+//            end else if (local_player_ID == 2'b01) begin
+//            end else if (local_player_ID == 2'b10) begin
+//            end else if (local_player_ID == 2'b11) begin
+//            end
+//        end
     end
     
-    main_FPGA_control ctl (.reset(reset), .vsync(vsync_in), .pause(pause), 
+    main_FPGA_control ctl (.reset(reset), .vsync(vsync_in), .pause(pause), .timer_go(timer_go),
                    .left(local_left), .right(local_right), .up(local_up), .down(local_down), .chop(local_chop), .carry(local_carry),
                    .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state),
                    .player2_direction(player2_direction), .player2_x(player2_loc_x), .player2_y(player2_loc_y), .player2_state(player2_state),
@@ -153,6 +173,9 @@ module top_level(
                    .player_c_x(player_c_x), .player_c_y(player_c_y), 
                    
                    .player_direction(local_direction), .player_loc_x(local_loc_x), .player_loc_y(local_loc_y), .player_state(local_state));
+                   
+    time_remaining game_time (.vsync(vsync_in),.timer_go(timer_go),.restart(restart_timer),
+                   .time_left(time_left));
     
     assign valz = {1'b0, game_state, 14'b0, txstate, 4'b0, time_left};
 
