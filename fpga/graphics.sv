@@ -50,37 +50,6 @@
     output logic blank_out,
     output logic [11:0] pixel_out);              
 
-    // player states
-    parameter P_NOTHING = 0;
-    parameter P_CHOPPING = 1;
-    parameter P_ONION_WHOLE = 2;
-    parameter P_ONION_CHOPPED = 3;
-    parameter P_POT_EMPTY = 4;
-    parameter P_POT_SOUP = 5;
-    parameter P_BOWL_EMPTY = 6;
-    parameter P_BOWL_FULL = 7;
-    parameter P_EXT_OFF = 8;
-    parameter P_EXT_ON = 9;
-
-    // player directions
-    parameter P_LEFT = 0;
-    parameter P_RIGHT = 1;
-    parameter P_UP = 2;
-    parameter P_DOWN = 3;
-
-    // grid object parameters
-    parameter G_EMPTY = 0;
-    parameter G_ONION_WHOLE = 1;
-    parameter G_ONION_CHOPPED = 2;
-    parameter G_BOWL_EMPTY = 3;
-    parameter G_BOWL_FULL = 4;
-    parameter G_POT_EMPTY = 5;
-    parameter G_POT_RAW = 6;
-    parameter G_POT_COOKED = 7;
-    parameter G_POT_FIRE = 8;
-    parameter G_FIRE = 9;
-    parameter G_EXTINGUISHER = 10;
-
     // player displays
     logic [11:0] player_pixel, player1_pixel, player2_pixel, player3_pixel, player4_pixel;
     player_blob player1 (.pixel_clk_in(clock), .vsync(vsync), .x_in(player1_x), .y_in(player1_y), .hcount_in(hcount), 
@@ -100,22 +69,36 @@
     table_counter tables (.x_in_counter('d112), .x_in_floor('d144), .hcount_in(hcount), 
         .y_in_counter('d112), .y_in_floor('d144), .vcount_in(vcount), .pixel_out(floor_pixel));
 
-    // grid logic
-    logic [2:0] current_grid_x, grid_object_x;
-    logic [4:0] current_grid_y, grid_object_y;
-    logic [3:0] grid_state;
-    pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(vcount), .grid_x(current_grid_x), .grid_y(current_grid_y));  
+    // object graphics
+    logic [11:0] object_pixel;
+    logic [12:0] grid_pixels [11:0];
 
+    logic [3:0] y;
+    assign y = (vcount - 112) / 32;
+    
+    static_sprites s0 (.object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[0]));
+    static_sprites s1 (.object_grid(object_grid), .x_in(144), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[1]));
+    static_sprites s2 (.object_grid(object_grid), .x_in(176), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[2]));
+    static_sprites s3 (.object_grid(object_grid), .x_in(208), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[3]));
+    static_sprites s4 (.object_grid(object_grid), .x_in(240), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[4]));
+    static_sprites s5 (.object_grid(object_grid), .x_in(272), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[5]));
+    static_sprites s6 (.object_grid(object_grid), .x_in(304), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[6]));
+    static_sprites s7 (.object_grid(object_grid), .x_in(336), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[7]));
+    static_sprites s8 (.object_grid(object_grid), .x_in(368), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[8]));
+    static_sprites s9 (.object_grid(object_grid), .x_in(400), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[9]));
+    static_sprites s10 (.object_grid(object_grid), .x_in(432), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[10]));
+    static_sprites s11 (.object_grid(object_grid), .x_in(464), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[11]));
+    static_sprites s12 (.object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[12]));
+    
     // more grid logic
-    always_comb begin
+    always_ff @(posedge clock) begin
         // bounds of game grid
         if (hcount > 111 && hcount < 367) begin
             // update the grid state if we end up on a new square of the grid
             if ((hcount - 112) % 32 == 0 && (vcount - 112) % 32 == 0) begin
-                grid_state = object_grid[current_grid_x][current_grid_y];
-                grid_object_x = vcount;
-                grid_object_y = hcount;
+                object_pixel = grid_pixels[y];
             end 
+                 
         end        
 
         case (num_players)
@@ -124,33 +107,17 @@
             2: player_pixel = player1_pixel + player2_pixel + player3_pixel;
             3: player_pixel = player1_pixel + player2_pixel + player3_pixel + player4_pixel;
         endcase
-
-        //   logic [11:0] onion, chopped_onion, empty_bowl, full_bowl, empty_pot, raw_pot, cooked_pot, fire_pot, fire, extinguisher;
-
-    //       case (grid_state)
-    //          G_EMPTY: object_pixel = 0;
-    //          G_ONION_WHOLE: object_pixel = onion;
-    //          G_ONION_CHOPPED: object_pixel = chopped_onion;
-    //          G_BOWL_EMPTY: object_pixel = empty_bowl;
-    //          G_BOWL_FULL: object_pixel = full_bowl;
-    //          G_POT_EMPTY: object_pixel = empty_pot;
-    //          G_POT_RAW: object_pixel = raw_pot;
-    //          G_POT_COOKED: object_pixel = cooked_pot;
-    //          G_POT_FIRE: object_pixel = fire_pot;
-    //          G_FIRE: object_pixel = fire;
-    //          G_EXTINGUISHER: object_pixel = extinguisher;
-    //          default: object_pixel = 0;
-    //       endcase
-    
+        
         hsync_out = hsync;
         vsync_out = vsync;
         blank_out = blank;
 
-        if (player_pixel == 12'hFFF) begin
+        if (player_pixel == 12'hFFF && object_pixel == 12'hFFF) begin
             pixel_out = floor_pixel;
+        end else if (object_pixel == 12'hFFF) begin
+            pixel_out = player_pixel; 
         end else begin
             pixel_out = player_pixel;
         end
-    
     end
 endmodule

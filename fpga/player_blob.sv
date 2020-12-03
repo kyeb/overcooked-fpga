@@ -15,6 +15,7 @@ module player_blob
    localparam P_UP = 2;
    localparam P_DOWN = 3;
 
+    // player states
    localparam P_NOTHING = 0;
    localparam P_CHOPPING = 1;
    localparam P_ONION_WHOLE = 2;
@@ -28,10 +29,9 @@ module player_blob
    localparam P_EXT_ON = 10;
 
 
-   logic [15:0] image_addr;   // num of bits for 256*240 ROM
+   logic [11:0] image_addr;   // num of bits for 256*240 ROM
    logic [7:0] image_bits, red_mapped, green_mapped, blue_mapped;
 
-   logic [7:0] up_bits, down_bits, left_bits, right_bits;
    // calculate rom address and read the location
    assign image_addr = (hcount_in-x_in) + (vcount_in-y_in) * WIDTH;
 
@@ -146,8 +146,7 @@ module player_blob
     logic [11:0] last_pixel;
     always_ff @ (posedge pixel_clk_in) begin
     if ((hcount_in >= x_in && hcount_in < (x_in+WIDTH)) && (vcount_in >= y_in && vcount_in < (y_in+HEIGHT)))
-        last_pixel <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
-    else last_pixel <= 12'hFFF;
-    pixel_out <= last_pixel;
+        pixel_out <= {red_mapped[3:0], green_mapped[3:0], blue_mapped[3:0]};
+    else pixel_out <= 12'hFFF;
     end
 endmodule
