@@ -95,7 +95,7 @@
         // bounds of game grid
         if (hcount > 111 && hcount < 367) begin
             // update the grid state if we end up on a new square of the grid
-            if ((hcount - 112) % 32 == 0 && (vcount - 112) % 32 == 0) begin
+            if ((hcount - 112) % 32 == 0) begin
                 object_pixel = grid_pixels[y];
             end 
                  
@@ -117,7 +117,7 @@
         end else if (object_pixel == 12'hFFF) begin
             pixel_out = player_pixel; 
         end else begin
-            pixel_out = player_pixel;
+            pixel_out = object_pixel;
         end
     end
 endmodule

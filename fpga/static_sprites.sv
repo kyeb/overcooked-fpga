@@ -25,8 +25,8 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
     assign image_addr = (hcount-x_in) + (vcount-y_in) * WIDTH;
 
     // grid logic
-    logic [2:0] current_grid_x, grid_object_x;
-    logic [4:0] current_grid_y, grid_object_y;
+    logic [2:0] current_grid_x;
+    logic [4:0] current_grid_y;
     logic [3:0] grid_state;
     pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(hcount), .grid_x(current_grid_x), .grid_y(current_grid_y));  
 
@@ -35,7 +35,7 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
     empty_bowl_coe eb (.clka(pixel_clk_in), .addra(image_addr), .douta(empty_bowl));
     full_bowl_coe fb (.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl));
     empty_pot_coe ep (.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot));
-    raw_pot_coe rp (.clka(pixel_clk_in), .addra(image_addr), .douta(full_pot));
+    full_pot_coe rp (.clka(pixel_clk_in), .addra(image_addr), .douta(full_pot));
     fire_pot_coe fp (.clka(pixel_clk_in), .addra(image_addr), .douta(fire_pot));
     fire_coe f (.clka(pixel_clk_in), .addra(image_addr), .douta(fire));
     extinguisher_coe e (.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher));
@@ -54,7 +54,7 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
             G_ONION_CHOPPED: object_bits = chopped_onion;
             G_BOWL_EMPTY: object_bits = empty_bowl;
             G_BOWL_FULL: object_bits = full_bowl;
-            G_POT_EMPTY: object_bits = empty_pot;
+            G_POT_EMPTY: object_bits = 12'h070;
             G_POT_RAW: object_bits = full_pot;
             G_POT_COOKED: object_bits = full_pot;
             G_POT_FIRE: object_bits = fire_pot;
@@ -72,7 +72,7 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
     logic [11:0] last_pixel;
     always_ff @ (posedge pixel_clk_in) begin
     if ((hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
-        pixel_out <= {red_mapped[3:0], green_mapped[3:0], blue_mapped[3:0]};
+        pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
     else pixel_out <= 12'hFFF;
     end
 endmodule
