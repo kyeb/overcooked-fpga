@@ -191,13 +191,13 @@ module comms(
         endcase
     end
 
-    // MAIN - TX BOARD
-    always_ff @(posedge clk) begin if (player_ID == 0) begin
+
+    always_ff @(posedge clk) begin
+    if (player_ID == 0) begin
+        // MAIN - TX BOARD
         object_grid_out <= local_object_grid;
-    end end
-    
-    // SECONDARY - RX BOARD
-    always_ff @(posedge clk) begin if (player_ID != 0) begin
+    end else begin
+        // SECONDARY - RX BOARD
         object_grid_out <= local_object_grid;
     end end
 endmodule
