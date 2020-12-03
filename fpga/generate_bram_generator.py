@@ -4,31 +4,32 @@
 # then use `source autogenerate_bram.tcl` in Vivado
 
 # SET THIS TO YOUR COMPUTER
-basedir = "/home/kyeb/mit/6.111/final_project"
+#basedir = "/home/kyeb/mit/6.111/final_project"
+basedir = "/home/julia/projects/overcooked-fpga"
 # basedir = "C:/Users/lacth/overcooked-fpga"
 coedir = basedir + "/sprites"
 srcsdir = basedir + "/fpga/vivado_project/vivado_project.srcs/sources_1/ip"
 
 coes = [
     # name in vivado, file path (relative to sprites directory), port depth
-    ("red_coe", "/red.coe", 256),
-    ("blue_coe", "/blue.coe", 256),
-    ("green_coe", "/green.coe", 256),
+    #("red_coe", "/red.coe", 256),
+    #("blue_coe", "/blue.coe", 256),
+    #("green_coe", "/green.coe", 256),
 ]
 
 directions = ["up", "down", "right", "left"]
 # # sprites that have 4 directions
 sprites = [
-    "chop",
-    "chopped_onion",
-    "empty_bowl",
-    "empty_pot",
-    "ext_off",
-    "ext_on",
-    "full_bowl",
-    "move",
-    "soup_pot",
-    "onion"
+    #"chop",
+    #"chopped_onion",
+    #"empty_bowl",
+    #"empty_pot",
+    #"ext_off",
+    #"ext_on",
+    #"full_bowl",
+    #"move",
+    #"soup_pot",
+    #"onion"
     ]
 
 for s in sprites:
@@ -37,7 +38,8 @@ for s in sprites:
             continue
         coes.append((f'{s}_{d}_coe', f'/{s}/{s}_{d}.coe', 1024))
 
-table_sprites = ["onion", "chopped_onion", "empty_bowl", "full_bowl", 
+table_sprites = [#"onion", 
+	"chopped_onion", "empty_bowl", "full_bowl", 
     "empty_pot", "full_pot", "fire_pot", "fire", "extinguisher"]
 
 for t in table_sprites:

@@ -155,14 +155,14 @@ module top_level(
 //        end
     end
     
-    main_FPGA_control ctl (.reset(reset), .vsync(vsync_in), .pause(pause), .timer_go(timer_go),
+    main_FPGA_control ctl (.reset(reset), .vsync(vsync_in), .pause(pause), .timer_go(timer_go), .time_left(time_left), 
                    .left(local_left), .right(local_right), .up(local_up), .down(local_down), .chop(local_chop), .carry(local_carry),
                    .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state),
                    .player2_direction(player2_direction), .player2_x(player2_loc_x), .player2_y(player2_loc_y), .player2_state(player2_state),
                    .player3_direction(player3_direction), .player3_x(player3_loc_x), .player3_y(player3_loc_y), .player3_state(player3_state),
                    .player4_direction(player4_direction), .player4_x(player4_loc_x), .player4_y(player4_loc_y), .player4_state(player4_state),
                    
-                   .game_state(local_game_state),.object_grid(local_object_grid), .time_grid(local_time_grid), .time_left(time_left), 
+                   .game_state(local_game_state),.object_grid(local_object_grid), .time_grid(local_time_grid), 
                    .point_total(local_point_total), .orders(local_orders), .order_times(local_order_times), .team_name(local_team_name));
     
     //add collisions here
