@@ -193,16 +193,11 @@ module comms(
 
     // MAIN - TX BOARD
     always_ff @(posedge clk) begin if (player_ID == 0) begin
-        
+        object_grid_out <= local_object_grid;
     end end
     
     // SECONDARY - RX BOARD
     always_ff @(posedge clk) begin if (player_ID != 0) begin
-        
+        object_grid_out <= local_object_grid;
     end end
-    
-    
-    // TODO: register outputs to cross clock domains
-    always_ff @(posedge clk) begin
-    end
 endmodule

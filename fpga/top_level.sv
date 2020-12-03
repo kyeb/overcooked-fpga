@@ -57,12 +57,12 @@ module top_level(
    // main controls
    logic [2:0] comms_game_state, local_game_state, game_state;
    logic [7:0][12:0][3:0] comms_object_grid, local_object_grid, object_grid;
-   logic [3:0][3:0] comms_time_grid, local_time_grid, time_grid; 
+   logic [3:0][3:0] comms_time_grid, local_time_grid, time_grid;
    logic [7:0] time_left;
-   logic [9:0] comms_point_total, local_point_total, point_total; 
+   logic [9:0] comms_point_total, local_point_total, point_total;
    logic [3:0] comms_orders, local_orders, orders;
-   logic [3:0][4:0] comms_order_times, local_order_times, order_times; 
-   logic [2:0][7:0] comms_team_name, local_team_name, team_name; 
+   logic [3:0][4:0] comms_order_times, local_order_times, order_times;
+   logic [2:0][7:0] comms_team_name, local_team_name, team_name;
    
    // variables unique to FPGA
    logic [1:0] local_direction, player1_direction, player2_direction, player3_direction, player4_direction;
@@ -83,7 +83,7 @@ module top_level(
                 // high priority: object grid (8x13x4), time_grid (4x4)
                 // low priority: game state (3), team_name(3x8), order_times (4x5), point_total(10), orders(4), 
 
-    logic txstate;
+    logic [1:0] txstate;
     comms c (
         .clk(clock100), .rst(reset), .ja_0(ja_0), .ja_1(ja_1), .player_ID(local_player_ID),
         .local_game_state(local_game_state), .game_state_out(comms_game_state),
