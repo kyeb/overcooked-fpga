@@ -16,7 +16,7 @@ module top_level(
    
    // create clocks for display and serial
    logic clock, clock100; // 25mhz and 100mhz, respectively
-   clk_wiz clk25 (.clk_in1(clk_100mhz), .clk_out1(clock), .clk_out2(clock100));
+   clk_wiz_25 clk25 (.clk_in1(clk_100mhz), .clk_out1(clock), .clk_out2(clock100));
    
    // digit display
    logic [31:0] valz;
@@ -58,7 +58,7 @@ module top_level(
    logic [2:0] comms_game_state, local_game_state, game_state;
    logic [7:0][12:0][3:0] comms_object_grid, local_object_grid, object_grid;
    logic [3:0][3:0] comms_time_grid, local_time_grid, time_grid; 
-   logic [7:0] comms_time_left, local_time_left, time_left; 
+   logic [7:0] time_left;
    logic [9:0] comms_point_total, local_point_total, point_total; 
    logic [3:0] comms_orders, local_orders, orders;
    logic [3:0][4:0] comms_order_times, local_order_times, order_times; 
@@ -72,24 +72,22 @@ module top_level(
    
    //comms
    
-        // if main: 
-            // receive: 3x player ID (2), player direction (2), player_loc_x(9), player_loc_y(9), player state (4)
+        // if main:
             // send:
                  // high priority: object grid (8x13x4), time_grid (4x4)
-                // low priority: game state (3), team_name(3x8), order_times (4x5), time_left(8), point_total(10), orders(4), 
-                //               other 3 player direction, locationx2, state, ID
+                // low priority: game state (3), team_name(3x8), order_times (4x5), point_total(10), orders(4), 
         
         
         // if secondary:
-            //send to main: player ID (2), player direction (2), player_loc_x(9), player_loc_y(9), player state (4)
             // receive from main: 
                 // high priority: object grid (8x13x4), time_grid (4x4)
-                // low priority: game state (3), team_name(3x8), order_times (4x5), time_left(8), point_total(10), orders(4), 
-                //               other 3 player direction, locationx2, state, ID
+                // low priority: game state (3), team_name(3x8), order_times (4x5), point_total(10), orders(4), 
 
     logic txstate;
     comms c (
-        .clk(clock100), .vsync(vsync_in), .rst(reset), .ja_0(ja_0), .ja_1(ja_1), .player_ID(local_player_ID),
+        .clk(clock100), .rst(reset), .ja_0(ja_0), .ja_1(ja_1), .player_ID(local_player_ID),
+        .local_game_state(local_game_state), .game_state_out(comms_game_state),
+        .local_object_grid(local_object_grid), .object_grid_out(comms_object_grid),
         .local_direction(local_direction), .local_loc_x(local_loc_x), .local_loc_y(local_loc_y), .local_state(local_state),
         .player1_direction(player1_direction), .player2_direction(player2_direction), .player3_direction(player3_direction), .player4_direction(player4_direction),
         .player1_loc_x(player1_loc_x), .player2_loc_x(player2_loc_x), .player3_loc_x(player3_loc_x), .player4_loc_x(player4_loc_x),
@@ -104,18 +102,14 @@ module top_level(
             game_state = local_game_state;
             object_grid = local_object_grid;
             time_grid = local_time_grid;
-            time_left = local_time_left;
             point_total = local_point_total;
             orders = local_orders;
             order_times = local_order_times;
             team_name = local_team_name;
-            
         end else begin
-//            game_state = comms_game_state;
-            game_state = local_game_state;
+            game_state = comms_game_state;
             object_grid = comms_object_grid;
             time_grid = comms_time_grid;
-            time_left = comms_time_left;
             point_total = comms_point_total;
             orders = comms_orders;
             order_times = comms_order_times;
@@ -148,7 +142,7 @@ module top_level(
                    .player3_direction(player3_direction), .player3_x(player3_loc_x), .player3_y(player3_loc_y), .player3_state(player3_state),
                    .player4_direction(player4_direction), .player4_x(player4_loc_x), .player4_y(player4_loc_y), .player4_state(player4_state),
                    
-                   .game_state(local_game_state),.object_grid(local_object_grid), .time_grid(local_time_grid), .time_left(local_time_left), 
+                   .game_state(local_game_state),.object_grid(local_object_grid), .time_grid(local_time_grid), .time_left(time_left), 
                    .point_total(local_point_total), .orders(local_orders), .order_times(local_order_times), .team_name(local_team_name));
     
     //add collisions here

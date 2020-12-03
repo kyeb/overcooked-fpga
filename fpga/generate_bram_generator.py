@@ -5,7 +5,7 @@
 
 # SET THIS TO YOUR COMPUTER
 basedir = "/home/kyeb/mit/6.111/final_project"
-basedir = "C:/Users/lacth/overcooked-fpga"
+# basedir = "C:/Users/lacth/overcooked-fpga"
 coedir = basedir + "/sprites"
 srcsdir = basedir + "/fpga/vivado_project/vivado_project.srcs/sources_1/ip"
 

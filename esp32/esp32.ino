@@ -4,6 +4,8 @@
 
 /* =============== config section start =============== */
 
+#define DEBUG_PRINT 0
+
 const int BUTTON_PIN = 19;
 const int LED_PIN = 18;
 
@@ -17,7 +19,7 @@ HardwareSerial FPGASerial(1);
 
 /* =============== config section end =============== */
 
-// PORTS: USB5, USB0
+// PORTS: USB0, USB2
 
 
 void setup() {
@@ -51,6 +53,7 @@ void setup() {
 }
 
 uint32_t states[4];
+uint32_t ack = 7;
 
 // Sends an updated player state to the server and updates local states[] storage.
 // If val=0, purely updates local states[].
@@ -61,14 +64,16 @@ void updateState(uint32_t val) {
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   String body;
   body = String("state=") + String(val);
+#if DEBUG_PRINT == 1
   Serial.print("sending POST to server ");
   Serial.println(body);
-  
-  int respCode = http.POST(body);
-  
+#endif
+  int respCode = http.POST(body);  
   if (respCode > 0) {
+#if DEBUG_PRINT == 1
     Serial.print("Response code: ");
     Serial.println(respCode);
+#endif
     String resp = http.getString();
     Serial.print("Response: ");
     Serial.println(resp);
@@ -76,7 +81,9 @@ void updateState(uint32_t val) {
     states[1] = strtoul(resp.substring(11, 21).c_str(), NULL, 10);
     states[2] = strtoul(resp.substring(22, 32).c_str(), NULL, 10);
     states[3] = strtoul(resp.substring(33, 43).c_str(), NULL, 10);
+#if DEBUG_PRINT == 1
     Serial.println("updated local states!");
+#endif
   } else {
     Serial.print("Error code: ");
     Serial.println(respCode);
@@ -84,7 +91,6 @@ void updateState(uint32_t val) {
 
   // only ack if non-trivial data was sent
   if (val != 0) {
-    uint32_t ack = 15;
     sendToFPGA(ack); // ACK that we finished POSTing
   }
 }
@@ -108,8 +114,10 @@ void sendToFPGA(uint32_t bytes) {
       uint8_t val = (bytes & mask) >> shift;
       FPGASerial.write(val);
     }
-//    Serial.print("transmitted to FPGA bytes=");
-//    Serial.println(bytes);
+#if DEBUG_PRINT == 1
+    Serial.print("transmitted to FPGA bytes=");
+    Serial.println(bytes);
+#endif
   } else {
     Serial.println("FPGASerial not available for writing");
   }

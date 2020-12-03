@@ -173,7 +173,7 @@ module main_FPGA_control(input reset,
                 restart_timer <= 1;
                 timer_go <= 0;
                 w_state <= 4'd0;
-            end     
+            end
        
         // 1 - Game Introduction
         // Wait 5 seconds so players can view map, players can't move
