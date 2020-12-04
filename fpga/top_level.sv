@@ -70,6 +70,9 @@ module top_level(
    logic [8:0] local_loc_y, player1_loc_y, player2_loc_y, player3_loc_y, player4_loc_y;
    logic [3:0] local_state, player1_state, player2_state, player3_state, player4_state;
    
+   //collision variables
+   logic [8:0] player_a_x, player_a_y, player_b_x, player_b_y, player_c_x, player_c_y;
+   
    //comms
    
         // if main:
@@ -104,7 +107,7 @@ module top_level(
     parameter PAUSE = 3;
     parameter FINISH = 4;
     
-    always_ff @(negedge vsync_in) begin
+    always_comb begin
         if (local_player_ID == 0) begin
             game_state = local_game_state;
             object_grid = local_object_grid;
@@ -122,9 +125,8 @@ module top_level(
             order_times = comms_order_times;
             team_name = comms_team_name;
         end
-     end
         
-     always_comb begin
+     
         if (game_state == PLAY) begin //timer going, dont reset
             timer_go = 1;
             restart_timer <= 0;
@@ -134,27 +136,80 @@ module top_level(
         end else begin //dont reset timer when paused
             timer_go = 0;
             restart_timer = 0;
-     end
-        
-//        if (num_players == 2'b0) begin
-//        end else if (num_players == 2'b01) begin
-//            if (local_player_ID == 2'b0) begin
-//            end else if (local_player_ID == 2'b01) begin
-//            end
-//        end else if (num_players == 2'b10) begin
-//            if (local_player_ID == 2'b0) begin
-//            end else if (local_player_ID == 2'b01) begin
-//            end else if (local_player_ID == 2'b10) begin
-//            end
-//        end else if (num_players == 2'b11) begin
-//            if (local_player_ID == 2'b0) begin
-//            end else if (local_player_ID == 2'b01) begin
-//            end else if (local_player_ID == 2'b10) begin
-//            end else if (local_player_ID == 2'b11) begin
-//            end
-//        end
+        end
+
+        if (num_players == 2'b0) begin
+            player_a_x = 9'b0;
+            player_a_y = 9'b0;
+            player_b_x = 9'b0;
+            player_b_y = 9'b0;
+            player_c_x = 9'b0;
+            player_c_y = 9'b0;
+        end else if (num_players == 2'b01) begin
+            player_b_x = 9'b0;
+            player_b_y = 9'b0;
+            player_c_x = 9'b0;
+            player_c_y = 9'b0;
+            if (local_player_ID == 2'b0) begin
+                player_a_x = player2_loc_x;
+                player_a_y = player2_loc_y;
+            end else if (local_player_ID == 2'b01) begin
+                player_a_x = player1_loc_x;
+                player_a_y = player1_loc_y;
+            end
+        end else if (num_players == 2'b10) begin
+            player_c_x = 9'b0;
+            player_c_y = 9'b0;
+            if (local_player_ID == 2'b0) begin
+                player_a_x = player2_loc_x;
+                player_a_y = player2_loc_y;
+                player_b_x = player3_loc_x;
+                player_b_y = player3_loc_y;
+            end else if (local_player_ID == 2'b01) begin
+                player_a_x = player1_loc_x;
+                player_a_y = player1_loc_y;
+                player_b_x = player3_loc_x;
+                player_b_y = player3_loc_y;
+            end else if (local_player_ID == 2'b10) begin
+                player_a_x = player1_loc_x;
+                player_a_y = player1_loc_y;
+                player_b_x = player2_loc_x;
+                player_b_y = player2_loc_y;
+            end
+        end else if (num_players == 2'b11) begin
+            if (local_player_ID == 2'b0) begin
+                player_a_x = player2_loc_x;
+                player_a_y = player2_loc_y;
+                player_b_x = player3_loc_x;
+                player_b_y = player3_loc_y;
+                player_c_x = player4_loc_x;
+                player_c_y = player4_loc_y;
+            end else if (local_player_ID == 2'b01) begin
+                player_a_x = player1_loc_x;
+                player_a_y = player1_loc_y;
+                player_b_x = player3_loc_x;
+                player_b_y = player3_loc_y;
+                player_c_x = player4_loc_x;
+                player_c_y = player4_loc_y;
+            end else if (local_player_ID == 2'b10) begin
+                player_a_x = player1_loc_x;
+                player_a_y = player1_loc_y;
+                player_b_x = player2_loc_x;
+                player_b_y = player2_loc_y;
+                player_c_x = player4_loc_x;
+                player_c_y = player4_loc_y;
+            end else if (local_player_ID == 2'b11) begin
+                player_a_x = player1_loc_x;
+                player_a_y = player1_loc_y;
+                player_b_x = player2_loc_x;
+                player_b_y = player2_loc_y;
+                player_c_x = player3_loc_x;
+                player_c_y = player3_loc_y;
+            end
+        end
     end
     
+    //main FPGA controls game from here
     main_FPGA_control ctl (.reset(reset), .vsync(vsync_in), .pause(pause), .timer_go(timer_go), .time_left(time_left), 
                    .left(local_left), .right(local_right), .up(local_up), .down(local_down), .chop(local_chop), .carry(local_carry),
                    .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state),
@@ -165,10 +220,9 @@ module top_level(
                    .game_state(local_game_state),.object_grid(local_object_grid), .time_grid(local_time_grid), 
                    .point_total(local_point_total), .orders(local_orders), .order_times(local_order_times), .team_name(local_team_name));
     
-    //add collisions here
+    //individual player movement
     game_logic gl (.reset(reset), .vsync(vsync_in), .game_state(game_state), .object_grid(object_grid),.num_players(num_players), .local_player_ID(local_player_ID),
                    .left(local_left), .right(local_right), .up(local_up), .down(local_down), .chop(local_chop), .carry(local_carry),
-                   //make these 0 if no player, just for collision/blocking purposes
                    .player_a_x(player_a_x), .player_a_y(player_a_y), .player_b_x(player_b_x), .player_b_y(player_b_y), 
                    .player_c_x(player_c_x), .player_c_y(player_c_y), 
                    

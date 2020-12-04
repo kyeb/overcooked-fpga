@@ -11,13 +11,13 @@ module check_in_front (input [3:0] grid_x,
       
     always_comb begin
         if (player_direction == LEFT) begin
-            object = object_grid[(grid_y)][(grid_x-1)];
+            object = object_grid[{grid_y}][{grid_x-1}];
         end else if (player_direction == RIGHT) begin
-            object = object_grid[(grid_y)][(grid_x+1)];
+            object = object_grid[{grid_y}][{grid_x+1}];
         end else if (player_direction == UP) begin
-            object = object_grid[(grid_y-1)][(grid_x)];
+            object = object_grid[{grid_y-1}][{grid_x}];
         end else if (player_direction == DOWN) begin
-            object = object_grid[(grid_y+1)][(grid_x)];
+            object = object_grid[{grid_y+1}][{grid_x}];
         end  
     end
 
