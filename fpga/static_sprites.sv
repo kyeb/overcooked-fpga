@@ -25,8 +25,8 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
     assign image_addr = (hcount-x_in) + (vcount-y_in) * WIDTH;
 
     // grid logic
-    logic [2:0] current_grid_x;
-    logic [4:0] current_grid_y;
+    logic [3:0] current_grid_x;
+    logic [2:0] current_grid_y;
     logic [3:0] grid_state;
     pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(hcount), .grid_x(current_grid_x), .grid_y(current_grid_y));  
 
@@ -45,7 +45,7 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
         if (hcount > 111 && hcount < 367) begin
             // update the grid state if we end up on a new square of the grid
             if ((hcount - 112) % 32 == 0) begin
-                grid_state = object_grid[current_grid_x][current_grid_y];
+                grid_state = object_grid[current_grid_y][current_grid_x];
             end 
         end        
 
@@ -54,25 +54,24 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
             G_ONION_CHOPPED: object_bits = chopped_onion;
             G_BOWL_EMPTY: object_bits = empty_bowl;
             G_BOWL_FULL: object_bits = full_bowl;
-            G_POT_EMPTY: object_bits = 12'h070;
+            G_POT_EMPTY: object_bits = empty_pot;
             G_POT_RAW: object_bits = full_pot;
             G_POT_COOKED: object_bits = full_pot;
             G_POT_FIRE: object_bits = fire_pot;
             G_FIRE: object_bits = fire;
             G_EXTINGUISHER: object_bits = extinguisher;
-            default: object_bits = 12'hFFF;
         endcase
     end
     
     red_coe rcm (.clka(pixel_clk_in), .addra(object_bits), .douta(red_mapped));
     green_coe gcm (.clka(pixel_clk_in), .addra(object_bits), .douta(green_mapped));
     blue_coe bcm (.clka(pixel_clk_in), .addra(object_bits), .douta(blue_mapped));
-     
+         
     // note the one clock cycle delay in pixel!
-    logic [11:0] last_pixel;
     always_ff @ (posedge pixel_clk_in) begin
+    if (grid_state == G_EMPTY) pixel_out <= 12'hFFF;
     if ((hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
         pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
-    else pixel_out <= 12'hFFF;
+    else pixel_out <= 12'h700;
     end
 endmodule

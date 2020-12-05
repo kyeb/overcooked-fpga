@@ -73,8 +73,7 @@
     logic [11:0] object_pixel;
     logic [12:0] grid_pixels [11:0];
 
-    logic [3:0] y;
-    assign y = (vcount - 112) / 32;
+    logic [9:0] y = (vcount - 112) >> 5;
     
     static_sprites s0 (.object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[0]));
     static_sprites s1 (.object_grid(object_grid), .x_in(144), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[1]));
@@ -91,21 +90,23 @@
     static_sprites s12 (.object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[12]));
     
     // more grid logic
-    always_ff @(posedge clock) begin
+    always_comb begin
         // bounds of game grid
         if (hcount > 111 && hcount < 367) begin
             // update the grid state if we end up on a new square of the grid
-            if ((hcount - 112) % 32 == 0) begin
-                object_pixel = grid_pixels[y];
-            end 
-                 
-        end        
-
+            object_pixel = grid_pixels[(hcount - 112) >> 5];
+        end 
+        
         case (num_players)
             0: player_pixel = player1_pixel;
-            1: player_pixel = player1_pixel + player2_pixel;
-            2: player_pixel = player1_pixel + player2_pixel + player3_pixel;
-            3: player_pixel = player1_pixel + player2_pixel + player3_pixel + player4_pixel;
+            1: player_pixel = player1_pixel == 12'hFFF ? player2_pixel : player1_pixel;
+            2: player_pixel = player1_pixel == 12'hFFF && player2_pixel == 12'hFFF ? player3_pixel :
+                              player1_pixel == 12'hFFF && player3_pixel == 12'hFFF ? player2_pixel :
+                              player1_pixel;
+            3: player_pixel = player1_pixel == 12'hFFF && player2_pixel == 12'hFFF && player3_pixel == 12'hFFF ? player4_pixel :
+                              player1_pixel == 12'hFFF && player2_pixel == 12'hFFF && player4_pixel == 12'hFFF ? player3_pixel :
+                              player1_pixel == 12'hFFF && player3_pixel == 12'hFFF && player4_pixel == 12'hFFF ? player2_pixel :
+                              player1_pixel;
         endcase
         
         hsync_out = hsync;
@@ -114,7 +115,7 @@
 
         if (player_pixel == 12'hFFF && object_pixel == 12'hFFF) begin
             pixel_out = floor_pixel;
-        end else if (object_pixel == 12'hFFF) begin
+        end else if (player_pixel != 12'hFFF) begin
             pixel_out = player_pixel; 
         end else begin
             pixel_out = object_pixel;
