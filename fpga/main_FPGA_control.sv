@@ -2,6 +2,8 @@ module main_FPGA_control(input reset,
                          input vsync,
                          input pause,
                          input left, right, up, down, chop, carry,
+                         input timer_go,
+                         input [7:0] time_left,
    
                          input [1:0] player1_direction, player2_direction, player3_direction, player4_direction,
                          input [8:0] player1_x, player2_x, player3_x, player4_x,
@@ -10,8 +12,6 @@ module main_FPGA_control(input reset,
   
                          output logic [2:0][7:0] team_name,
                          output logic [2:0] game_state, // welcome, game, etc
-   
-                         output logic [7:0] time_left,
                          output logic [9:0] point_total,
                          output logic [7:0][12:0][3:0] object_grid, 
                          output logic [3:0][3:0] time_grid,
@@ -30,16 +30,10 @@ module main_FPGA_control(input reset,
     
     logic [3:0] w_state;
     logic [30:0] start_counter;
-    logic timer_go;
-    logic restart_timer;
     logic [1:0] clear_space;
     logic [1:0][3:0] check_spaces;
     assign check_spaces[1] = object_grid[5][12];
     assign check_spaces[0] = object_grid[4][12];
-                  
-    time_remaining tr (.vsync(vsync),.timer_go(timer_go),.restart(restart_timer),
-    
-                       .time_left(time_left));
     
     orders_and_points op (.vsync(vsync),.reset(reset),.check_spaces(check_spaces),
                           .timer_go(timer_go),
@@ -61,9 +55,7 @@ module main_FPGA_control(input reset,
             team_name[1]<=8'h41;
             team_name[2]<=8'h41;
             w_state = 0; 
-            restart_timer <= 1;
             start_counter <= 0;
-            timer_go <= 0;
         // 0 - Welcome Menu
         // Generate team name
         // Start game -> press chop to start
@@ -170,8 +162,6 @@ module main_FPGA_control(input reset,
             //state 11: going to next state
             end else if ((w_state == 4'd11)&&(chop==0)) begin
                 game_state <= START;
-                restart_timer <= 1;
-                timer_go <= 0;
                 w_state <= 4'd0;
             end
        
@@ -182,15 +172,12 @@ module main_FPGA_control(input reset,
             if (start_counter == START_TIMER) begin
                 game_state <= PLAY;
                 start_counter <= 0;
-                restart_timer <= 0;
-                timer_go <= 1;
             end else begin
                 start_counter <= start_counter+1;
             end
             
         // 2 - Play Game - Timer starts, players can move
         end else if (game_state==PLAY) begin
-            timer_go <= 1;
             if (time_left == 0) begin
                 game_state <= FINISH;
             end else if (pause) begin
@@ -198,7 +185,6 @@ module main_FPGA_control(input reset,
             end
         // 3 - Pause Game - Timer pauses, all objects freeze
         end else if (game_state==PAUSE) begin
-            timer_go <= 0;
             if (~pause) begin
                 game_state <= PLAY;
             end

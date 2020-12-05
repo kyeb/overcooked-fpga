@@ -47,7 +47,7 @@ module p_state(input reset,
     logic [2:0] y_front;
     
     
-    pixel_to_grid p2g (.pixel_x((player_loc_x+16)), .pixel_y((player_loc_y+16)), 
+    pixel_to_grid p2g (.pixel_x({player_loc_x+16}), .pixel_y({player_loc_y+16}), 
                        .grid_x(grid_x), .grid_y(grid_y));
     
     check_in_front cf (.grid_x(grid_x),.grid_y(grid_y),.player_direction(player_direction),

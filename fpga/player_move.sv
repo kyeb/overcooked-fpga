@@ -26,7 +26,7 @@ module player_move(input reset,
     always_ff @(negedge vsync) begin
         //players move between 144 and 464 pixels x
         //players move between 144 and 304 pixels y
-        if (reset) begin
+        if ((reset)||(game_state==WELCOME)) begin
             player_direction <= 2'd3;
             if (num_players == 2'b0) begin
                 player_loc_x <= 9'd304;
@@ -73,9 +73,9 @@ module player_move(input reset,
         //y direction
         end else if (up) begin //up button
             player_direction <= UP;
-            if ((player_loc_y>148)&&((player_loc_y>(player_a_y+32))||(player_loc_x>(player_a_x+32))||(player_a_x>(player_loc_x+32)))
-                                  &&((player_loc_y>(player_b_y+32))||(player_loc_x>(player_b_x+32))||(player_b_x>(player_loc_x+32)))
-                                  &&((player_loc_y>(player_c_y+32))||(player_loc_x>(player_c_x+32))||(player_c_x>(player_loc_x+32)))) begin
+            if ((player_loc_y>138)&&((player_loc_y>(player_a_y+16))||(player_loc_x>(player_a_x+16))||(player_a_x>(player_loc_x+16)))
+                                  &&((player_loc_y>(player_b_y+16))||(player_loc_x>(player_b_x+16))||(player_b_x>(player_loc_x+16)))
+                                  &&((player_loc_y>(player_c_y+16))||(player_loc_x>(player_c_x+16))||(player_c_x>(player_loc_x+16)))) begin
                 player_loc_y <= player_loc_y-4;  //move 4 pixels up
             end
         end else if (down) begin //down button

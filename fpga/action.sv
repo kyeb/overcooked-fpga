@@ -114,7 +114,7 @@ module action(input reset,
         
         //player 1
         if (reset) begin
-            object_grid <= 0;
+            object_grid <= {8{{13{{4'b0}}}}};
             object_grid[2][0] <= G_ONION_WHOLE;
             object_grid[3][0] <= G_ONION_WHOLE;
             object_grid[6][12] <= G_BOWL_EMPTY;
@@ -141,7 +141,7 @@ module action(input reset,
                 if (object_in_front1 == G_POT_EMPTY) begin
                     object_grid[y1_front][x1_front] <= G_POT_RAW;
                 end else if (object_in_front1 == G_EMPTY) begin
-                    object_grid[y1_front][x1_front] <= G_ONION_CHOPPED;;
+                    object_grid[y1_front][x1_front] <= G_ONION_CHOPPED;
                 end
             end else if (old_player1_state == P_POT_EMPTY) begin
                 if (object_in_front1 == G_ONION_CHOPPED) begin
