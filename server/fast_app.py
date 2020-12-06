@@ -6,9 +6,7 @@ from sqlalchemy.pool import StaticPool
 from sqlalchemy.ext.declarative import declarative_base
 
 engine = create_engine(
-    "sqlite://", 
-    connect_args={"check_same_thread": False}, 
-    poolclass=StaticPool
+    "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
 )
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
@@ -16,6 +14,7 @@ Base = declarative_base()
 #######################################
 # Database
 #######################################
+
 
 class Player(Base):
     __tablename__ = "players"
@@ -26,6 +25,7 @@ class Player(Base):
     def __repr__(self):
         return f"<Player id={self.id}, state={self.state}>"
 
+
 class Board(Base):
     __tablename__ = "boards"
     id = Column(Integer, primary_key=True)
@@ -34,17 +34,22 @@ class Board(Base):
     def __repr__(self):
         return f"<Board id={self.id}, state={self.state}>"
 
+
 def initializeDB():
     Base.metadata.create_all(engine)
     session = Session()
     for i in range(4):
-        state = (i << 30) | ((200 + 32*i) << 19) | (200 << 10)
+        state = (i << 30) | ((200 + 32 * i) << 19) | (200 << 10)
         p = Player(id=i, state=state)
         session.add(p)
-    b = Board(id=0, state="0001114272|0000000000|0000000000|0000000000|0000000000|0000000000|0000000000|0000000000|1342177280|0000000000|1342177280|0000000000|0000000048|0000065535|0964870144|")
+    b = Board(
+        id=0,
+        state="0001114272|0000000000|0000000000|0000000000|0000000000|0000000000|0000000000|0000000000|1342177280|0000000000|1342177280|0000000000|0000000048|0000065535|0964870144|",
+    )
     session.add(b)
     session.commit()
     print("DB initialized!")
+
 
 initializeDB()
 
@@ -52,8 +57,10 @@ initializeDB()
 # Methods
 #######################################
 
+
 def player_num(state):
     return state >> 30
+
 
 def get_player_states():
     session = Session()
@@ -63,6 +70,7 @@ def get_player_states():
         resp += f"{player.state}".zfill(10)
         resp += "|"
     return resp[:-1]
+
 
 def update_player_state(state):
     session = Session()
@@ -74,9 +82,11 @@ def update_player_state(state):
     session.commit()
     return player
 
+
 def get_board_state():
     session = Session()
     return session.query(Board).get(0).state
+
 
 # Actually sets board state + player 0 state
 def set_board_state(state):
@@ -94,13 +104,15 @@ def set_board_state(state):
 
     session.commit()
 
+
 #######################################
 # Routes
 #######################################
 
+
 def player_state(request):
     state = int(request.form["player_state"])
-    if state < 0 or state > 2**32:
+    if state < 0 or state > 2 ** 32:
         r = "error: state out of acceptable range"
         return request.Response(text=r)
     if state != 0:
@@ -109,12 +121,17 @@ def player_state(request):
     r = get_player_states()
     return request.Response(text=r)
 
+
 def board_state(request):
     state = request.form["board_state"]
-    if state != "none":
+    if state == "none":
+        r = get_board_state()
+        return request.Response(text=r)
+    else:
         set_board_state(state)
-    r = get_board_state()
-    return request.Response(text=r)
+        r = "ok - board state updated"
+        return request.Response(text=r)
+
 
 #######################################
 # Main
@@ -122,7 +139,7 @@ def board_state(request):
 
 app = Application()
 r = app.router
-r.add_route('/overcooked/playerstate', player_state, 'POST')
-r.add_route('/overcooked/boardstate',  board_state,  'POST')
+r.add_route("/overcooked/playerstate", player_state, "POST")
+r.add_route("/overcooked/boardstate", board_state, "POST")
 
 app.run()
