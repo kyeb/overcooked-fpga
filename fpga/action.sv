@@ -112,6 +112,12 @@ module action(input reset,
         old_player3_state <= player3_state;
         old_player4_state <= player4_state;
         
+        if (clear_space[0]) begin
+            object_grid[4][12] <= G_EMPTY;
+        end else if (clear_space[1]) begin
+            object_grid[5][12] <= G_EMPTY;
+        end 
+        
         //player 1
         if (reset) begin
             object_grid <= {8{{13{{4'b0}}}}};
@@ -126,10 +132,6 @@ module action(input reset,
         end else if (game_state != PLAY) begin
             go <= 4'b0;
             fire_go <= 2'b00;
-        end else if (clear_space[0]) begin
-            object_grid[4][12] <= G_EMPTY;
-        end else if (clear_space[1]) begin
-            object_grid[5][12] <= G_EMPTY;
         end else if (player1_state == P_NOTHING) begin
             if ((old_player1_state == P_CHOPPING)&&(x1_front==2)&&(y1_front==7)) begin
                 go[3] <= 0;
