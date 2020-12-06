@@ -66,8 +66,14 @@
 
     // table counters
     logic [11:0] floor_pixel;
-    table_counter tables (.pixel_clk_in(clock), .vsync(vsync), .x_in('d112), .hcount_in(hcount), 
-        .y_in('d112), .vcount_in(vcount), .pixel_out(floor_pixel));
+    table_counter tables (.x_in_counter('d112), .x_in_floor('d144), .hcount_in(hcount), 
+        .y_in_counter('d112), .y_in_floor('d144), .vcount_in(vcount),  
+        .pixel_out(floor_pixel));
+
+module table_counter   
+    (input [10:0] x_in_counter, x_in_floor, hcount_in,
+    input [9:0] y_in_counter, y_in_floor, vcount_in,
+    output logic [11:0] pixel_out);
 
     // object graphics
     logic [11:0] object_pixel;
