@@ -219,9 +219,7 @@ module serial_tx(
                     state <= SENDING;
             end
             SENDING: begin
-                if (tx_ready && byte_count == NUM_BYTES) begin
-                    state <= IDLE;
-                end else if (tx_ready) begin
+                if (tx_ready) begin
                     state <= DELAY;
                     wait_count <= 0;
                 end else begin
@@ -230,7 +228,10 @@ module serial_tx(
             end
             DELAY: begin
                 if (wait_count == DIVISOR) begin
-                    state <= START_SEND;
+                    if (byte_count == NUM_BYTES)
+                        state <= IDLE;
+                    else
+                        state <= START_SEND;
                 end else begin
                     wait_count <= wait_count + 1;
                 end
