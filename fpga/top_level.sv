@@ -365,5 +365,4 @@ module binary_to_seven_seg ( input [3:0] val_in, output logic [6:0] led_out);
         endcase
     end
 
-
 endmodule //binary_to_hex

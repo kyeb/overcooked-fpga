@@ -73,8 +73,16 @@
     logic [11:0] object_pixel;
     logic [12:0] grid_pixels [11:0];
 
-    logic [9:0] y = (vcount - 112) >> 5;
+    logic [3:0] grid_x;
+    logic [2:0] grid_y;
+    logic [3:0] grid_state;
+
+    pixel_to_grid p2g (.pixel_x(hcount), .pixel_y(vcount), .grid_x(grid_x), .grid_y(grid_y));  
+
+    logic [9:0] y;
     
+    assign y = ((vcount - 112) >> 5) << 5;
+
     static_sprites s0 (.object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[0]));
     static_sprites s1 (.object_grid(object_grid), .x_in(144), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[1]));
     static_sprites s2 (.object_grid(object_grid), .x_in(176), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[2]));
@@ -94,7 +102,7 @@
         // bounds of game grid
         if (hcount > 111 && hcount < 518) begin
             // update the grid state if we end up on a new square of the grid
-            object_pixel = grid_pixels[(hcount - 112) >> 5];
+            object_pixel = grid_pixels[grid_x];
         end 
         
         case (num_players)
@@ -112,14 +120,14 @@
         hsync_out = hsync;
         vsync_out = vsync;
         blank_out = blank;
-
-        if (player_pixel == 12'hFFF && object_pixel == 12'hFFF) begin
-            pixel_out = floor_pixel;
-        end else if (player_pixel != 12'hFFF) begin
-            pixel_out = player_pixel; 
+        pixel_out = object_pixel;
+//        if (player_pixel == 12'hFFF && object_pixel == 12'hFFF) begin
+//            pixel_out = floor_pixel;
+//        end else if (player_pixel != 12'hFFF) begin
+//            pixel_out = player_pixel; 
 //        end else begin
 //            pixel_out = object_pixel;
-        end
+//        end
     end
     
 endmodule

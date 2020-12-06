@@ -46,18 +46,20 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
         // update the grid state if we end up on a new square of the grid
         grid_state = object_grid[current_grid_y][current_grid_x];
 
-        case (grid_state)
-            G_ONION_WHOLE: object_bits = onion;
-            G_ONION_CHOPPED: object_bits = chopped_onion;
-            G_BOWL_EMPTY: object_bits = empty_bowl;
-            G_BOWL_FULL: object_bits = full_bowl;
-            G_POT_EMPTY: object_bits = empty_pot;
-            G_POT_RAW: object_bits = full_pot;
-            G_POT_COOKED: object_bits = full_pot;
-            G_POT_FIRE: object_bits = fire_pot;
-            G_FIRE: object_bits = fire;
-            G_EXTINGUISHER: object_bits = extinguisher;
-        endcase
+//        case (grid_state)
+//            G_ONION_WHOLE: object_bits = onion;
+//            G_ONION_CHOPPED: object_bits = chopped_onion;
+//            G_BOWL_EMPTY: object_bits = empty_bowl;
+//            G_BOWL_FULL: object_bits = full_bowl;
+//            G_POT_EMPTY: object_bits = empty_pot;
+//            G_POT_RAW: object_bits = full_pot;
+//            G_POT_COOKED: object_bits = full_pot;
+//            G_POT_FIRE: object_bits = fire_pot;
+//            G_FIRE: object_bits = fire;
+//            G_EXTINGUISHER: object_bits = extinguisher;
+//        endcase
+
+        object_bits = onion;
         
     end
     
