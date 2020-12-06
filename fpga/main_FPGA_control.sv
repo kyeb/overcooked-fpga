@@ -41,10 +41,10 @@ module main_FPGA_control(input reset,
                           .clear_space(clear_space), .point_total(point_total),.orders(orders),.order_times(order_times));
     
     action act (.reset(reset),.vsync(vsync), .game_state(game_state), .clear_space(clear_space),
-                .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state),
-                .player2_direction(player2_direction), .player2_x(player2_loc_x), .player2_y(player2_loc_y), .player2_state(player2_state),
-                .player3_direction(player3_direction), .player3_x(player3_loc_x), .player3_y(player3_loc_y), .player3_state(player3_state),
-                .player4_direction(player4_direction), .player4_x(player4_loc_x), .player4_y(player4_loc_y), .player4_state(player4_state),
+                .player1_direction(player1_direction), .player1_x(player1_x), .player1_y(player1_y), .player1_state(player1_state),
+                .player2_direction(player2_direction), .player2_x(player2_x), .player2_y(player2_y), .player2_state(player2_state),
+                .player3_direction(player3_direction), .player3_x(player3_x), .player3_y(player3_y), .player3_state(player3_state),
+                .player4_direction(player4_direction), .player4_x(player4_x), .player4_y(player4_y), .player4_state(player4_state),
                 
                 .object_grid(object_grid), .time_grid(time_grid));
     

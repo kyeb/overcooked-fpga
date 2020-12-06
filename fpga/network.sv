@@ -196,7 +196,7 @@ module comms(
         endcase
     end
 
-    logic [4:0] tx_counter;
+    logic [4:0] tx_counter, rx_counter;
     logic [7:0][12:0][3:0] prev_local_object_grid;
     logic prev_tx_ready; // TEMP
     always_ff @(posedge clk) begin
@@ -305,20 +305,147 @@ module comms(
     end else begin
     
     // SECONDARIES - RX BOARD STATE
-//    if (rst)
-//        rx_bstate <= RX_IDLE;
-//    case (rx_bstate)
-//        RX_IDLE: begin
-//            if (rx_valid && dtype == DTYPE_START_BSTATE) begin
-                
-//            end
-//        end
-//        RX_BUSY: begin
-            
-//        end
+    if (rst)
+        rx_bstate <= RX_IDLE;
+    case (rx_bstate)
+        RX_IDLE: begin
+            if (rx_valid && dtype == DTYPE_START_BSTATE) begin
+                rx_bstate <= RX_BUSY;
+            end
+            rx_counter <= 0;
+        end
+        RX_BUSY: begin
+            if (rx_counter == 15)
+                rx_bstate <= RX_IDLE;
+            else if (rx_valid) begin
+                rx_counter <= rx_counter + 1;
+                if (rx_counter == 0) begin
+                    object_grid_out[0][0][3:0] <= rx_data[31:28];
+                    object_grid_out[1][0][3:0] <= rx_data[27:24];
+                    object_grid_out[2][0][3:0] <= rx_data[23:20];
+                    object_grid_out[3][0][3:0] <= rx_data[19:16];
+                    object_grid_out[4][0][3:0] <= rx_data[15:12];
+                    object_grid_out[5][0][3:0] <= rx_data[11:8];
+                    object_grid_out[6][0][3:0] <= rx_data[7:4];
+                    object_grid_out[7][0][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 1) begin
+                    object_grid_out[0][1][3:0] <= rx_data[31:28];
+                    object_grid_out[1][1][3:0] <= rx_data[27:24];
+                    object_grid_out[2][1][3:0] <= rx_data[23:20];
+                    object_grid_out[3][1][3:0] <= rx_data[19:16];
+                    object_grid_out[4][1][3:0] <= rx_data[15:12];
+                    object_grid_out[5][1][3:0] <= rx_data[11:8];
+                    object_grid_out[6][1][3:0] <= rx_data[7:4];
+                    object_grid_out[7][1][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 2) begin
+                    object_grid_out[0][2][3:0] <= rx_data[31:28];
+                    object_grid_out[1][2][3:0] <= rx_data[27:24];
+                    object_grid_out[2][2][3:0] <= rx_data[23:20];
+                    object_grid_out[3][2][3:0] <= rx_data[19:16];
+                    object_grid_out[4][2][3:0] <= rx_data[15:12];
+                    object_grid_out[5][2][3:0] <= rx_data[11:8];
+                    object_grid_out[6][2][3:0] <= rx_data[7:4];
+                    object_grid_out[7][2][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 3) begin
+                    object_grid_out[0][3][3:0] <= rx_data[31:28];
+                    object_grid_out[1][3][3:0] <= rx_data[27:24];
+                    object_grid_out[2][3][3:0] <= rx_data[23:20];
+                    object_grid_out[3][3][3:0] <= rx_data[19:16];
+                    object_grid_out[4][3][3:0] <= rx_data[15:12];
+                    object_grid_out[5][3][3:0] <= rx_data[11:8];
+                    object_grid_out[6][3][3:0] <= rx_data[7:4];
+                    object_grid_out[7][3][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 4) begin
+                    object_grid_out[0][4][3:0] <= rx_data[31:28];
+                    object_grid_out[1][4][3:0] <= rx_data[27:24];
+                    object_grid_out[2][4][3:0] <= rx_data[23:20];
+                    object_grid_out[3][4][3:0] <= rx_data[19:16];
+                    object_grid_out[4][4][3:0] <= rx_data[15:12];
+                    object_grid_out[5][4][3:0] <= rx_data[11:8];
+                    object_grid_out[6][4][3:0] <= rx_data[7:4];
+                    object_grid_out[7][4][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 5) begin
+                    object_grid_out[0][5][3:0] <= rx_data[31:28];
+                    object_grid_out[1][5][3:0] <= rx_data[27:24];
+                    object_grid_out[2][5][3:0] <= rx_data[23:20];
+                    object_grid_out[3][5][3:0] <= rx_data[19:16];
+                    object_grid_out[4][5][3:0] <= rx_data[15:12];
+                    object_grid_out[5][5][3:0] <= rx_data[11:8];
+                    object_grid_out[6][5][3:0] <= rx_data[7:4];
+                    object_grid_out[7][5][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 6) begin
+                    object_grid_out[0][6][3:0] <= rx_data[31:28];
+                    object_grid_out[1][6][3:0] <= rx_data[27:24];
+                    object_grid_out[2][6][3:0] <= rx_data[23:20];
+                    object_grid_out[3][6][3:0] <= rx_data[19:16];
+                    object_grid_out[4][6][3:0] <= rx_data[15:12];
+                    object_grid_out[5][6][3:0] <= rx_data[11:8];
+                    object_grid_out[6][6][3:0] <= rx_data[7:4];
+                    object_grid_out[7][6][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 7) begin
+                    object_grid_out[0][7][3:0] <= rx_data[31:28];
+                    object_grid_out[1][7][3:0] <= rx_data[27:24];
+                    object_grid_out[2][7][3:0] <= rx_data[23:20];
+                    object_grid_out[3][7][3:0] <= rx_data[19:16];
+                    object_grid_out[4][7][3:0] <= rx_data[15:12];
+                    object_grid_out[5][7][3:0] <= rx_data[11:8];
+                    object_grid_out[6][7][3:0] <= rx_data[7:4];
+                    object_grid_out[7][7][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 8) begin
+                    object_grid_out[0][8][3:0] <= rx_data[31:28];
+                    object_grid_out[1][8][3:0] <= rx_data[27:24];
+                    object_grid_out[2][8][3:0] <= rx_data[23:20];
+                    object_grid_out[3][8][3:0] <= rx_data[19:16];
+                    object_grid_out[4][8][3:0] <= rx_data[15:12];
+                    object_grid_out[5][8][3:0] <= rx_data[11:8];
+                    object_grid_out[6][8][3:0] <= rx_data[7:4];
+                    object_grid_out[7][8][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 9) begin
+                    object_grid_out[0][9][3:0] <= rx_data[31:28];
+                    object_grid_out[1][9][3:0] <= rx_data[27:24];
+                    object_grid_out[2][9][3:0] <= rx_data[23:20];
+                    object_grid_out[3][9][3:0] <= rx_data[19:16];
+                    object_grid_out[4][9][3:0] <= rx_data[15:12];
+                    object_grid_out[5][9][3:0] <= rx_data[11:8];
+                    object_grid_out[6][9][3:0] <= rx_data[7:4];
+                    object_grid_out[7][9][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 10) begin
+                    object_grid_out[0][10][3:0] <= rx_data[31:28];
+                    object_grid_out[1][10][3:0] <= rx_data[27:24];
+                    object_grid_out[2][10][3:0] <= rx_data[23:20];
+                    object_grid_out[3][10][3:0] <= rx_data[19:16];
+                    object_grid_out[4][10][3:0] <= rx_data[15:12];
+                    object_grid_out[5][10][3:0] <= rx_data[11:8];
+                    object_grid_out[6][10][3:0] <= rx_data[7:4];
+                    object_grid_out[7][10][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 11) begin
+                    object_grid_out[0][11][3:0] <= rx_data[31:28];
+                    object_grid_out[1][11][3:0] <= rx_data[27:24];
+                    object_grid_out[2][11][3:0] <= rx_data[23:20];
+                    object_grid_out[3][11][3:0] <= rx_data[19:16];
+                    object_grid_out[4][11][3:0] <= rx_data[15:12];
+                    object_grid_out[5][11][3:0] <= rx_data[11:8];
+                    object_grid_out[6][11][3:0] <= rx_data[7:4];
+                    object_grid_out[7][11][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 12) begin
+                    object_grid_out[0][12][3:0] <= rx_data[31:28];
+                    object_grid_out[1][12][3:0] <= rx_data[27:24];
+                    object_grid_out[2][12][3:0] <= rx_data[23:20];
+                    object_grid_out[3][12][3:0] <= rx_data[19:16];
+                    object_grid_out[4][12][3:0] <= rx_data[15:12];
+                    object_grid_out[5][12][3:0] <= rx_data[11:8];
+                    object_grid_out[6][12][3:0] <= rx_data[7:4];
+                    object_grid_out[7][12][3:0] <= rx_data[3:0];
+                end else if (rx_counter == 13) begin
+                    // TODO: time grid sync
+                end else if (rx_counter == 14) begin
+                    // player 0 position, can throw away for now
+                end
+            end
+        end
 //        RX_WAIT: begin // I don't think we need this, but leaving here in case i get stuck
         
 //        end
-//    endcase
+    endcase
     end end
 endmodule
