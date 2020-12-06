@@ -39,8 +39,8 @@
     input [8:0] player4_y,
     input [3:0] player4_state,
 
-    input [10:0] hcount, // horizontal index of current pixel (0..1023)
-    input [9:0]  vcount, // vertical index of current pixel (0..767)
+    input [10:0] hcount, // horizontal index of current pixel 
+    input [9:0]  vcount, // vertical index of current pixel
     input hsync,         // XVGA horizontal sync signal (active low)
     input vsync,         // XVGA vertical sync signal (active low)
     input blank,         // XVGA blanking (1 means output black pixel)
@@ -92,7 +92,7 @@
     // more grid logic
     always_comb begin
         // bounds of game grid
-        if (hcount > 111 && hcount < 367) begin
+        if (hcount > 111 && hcount < 518) begin
             // update the grid state if we end up on a new square of the grid
             object_pixel = grid_pixels[(hcount - 112) >> 5];
         end 
@@ -113,12 +113,15 @@
         vsync_out = vsync;
         blank_out = blank;
 
-        if (player_pixel == 12'hFFF && object_pixel == 12'hFFF) begin
-            pixel_out = floor_pixel;
-        end else if (player_pixel != 12'hFFF) begin
-            pixel_out = player_pixel; 
-        end else begin
-            pixel_out = object_pixel;
-        end
+        pixel_out = object_pixel;
+
+//        if (player_pixel == 12'hFFF && object_pixel == 12'hFFF) begin
+//            pixel_out = floor_pixel;
+//        end else if (player_pixel != 12'hFFF) begin
+//            pixel_out = player_pixel; 
+//        end else begin
+//            pixel_out = object_pixel;
+//        end
     end
+    
 endmodule

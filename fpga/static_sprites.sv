@@ -28,7 +28,8 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
     logic [3:0] current_grid_x;
     logic [2:0] current_grid_y;
     logic [3:0] grid_state;
-    pixel_to_grid p2g (.pixel_x(vcount), .pixel_y(hcount), .grid_x(current_grid_x), .grid_y(current_grid_y));  
+
+    pixel_to_grid p2g (.pixel_x(x_in), .pixel_y(y_in), .grid_x(current_grid_x), .grid_y(current_grid_y));  
 
     onion_coe on(.clka(pixel_clk_in), .addra(image_addr), .douta(onion));
     chopped_onion_coe co (.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion));
@@ -42,12 +43,8 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
 
     always_comb begin
 
-        if (hcount > 111 && hcount < 367) begin
-            // update the grid state if we end up on a new square of the grid
-            if ((hcount - 112) % 32 == 0) begin
-                grid_state = object_grid[current_grid_y][current_grid_x];
-            end 
-        end        
+        // update the grid state if we end up on a new square of the grid
+        grid_state = object_grid[current_grid_y][current_grid_x];
 
         case (grid_state)
             G_ONION_WHOLE: object_bits = onion;
@@ -61,6 +58,7 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
             G_FIRE: object_bits = fire;
             G_EXTINGUISHER: object_bits = extinguisher;
         endcase
+        
     end
     
     red_coe rcm (.clka(pixel_clk_in), .addra(object_bits), .douta(red_mapped));

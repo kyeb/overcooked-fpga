@@ -40,7 +40,7 @@ module player_blob
                empty_bowl_down_bits, empty_bowl_left_bits, empty_bowl_right_bits,
                full_bowl_down_bits, full_bowl_left_bits, full_bowl_right_bits,
                ext_off_down_bits, ext_off_left_bits, ext_off_right_bits,
-               ext_on_down_bits, ext_on_left_bits, ext_off_right_bits;
+               ext_on_down_bits, ext_on_left_bits, ext_on_right_bits;
     
    // calculate rom address and read the location
    assign image_addr = (hcount_in-x_in) + (vcount_in-y_in) * WIDTH;
