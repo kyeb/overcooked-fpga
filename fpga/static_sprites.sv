@@ -57,6 +57,7 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
             G_POT_FIRE: object_bits = fire_pot;
             G_FIRE: object_bits = fire;
             G_EXTINGUISHER: object_bits = extinguisher;
+            default: object_bits = onion;
         endcase
         
     end
@@ -67,8 +68,12 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
          
     // note the one clock cycle delay in pixel!
     always_ff @ (posedge pixel_clk_in) begin
-    if ((hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
-        pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
-    else pixel_out <= 12'hFFF;
+        if (grid_state == G_EMPTY) begin
+            pixel_out <= 12'h070;
+        end else if (grid_state != G_EMPTY && (hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
+            pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
+        else begin
+            pixel_out <= 12'hFFF;
+        end
     end
 endmodule

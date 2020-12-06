@@ -120,18 +120,16 @@
     static_sprites s710 (.object_grid(object_grid), .x_in(432), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][10]));
     static_sprites s711 (.object_grid(object_grid), .x_in(464), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][11]));
     static_sprites s712 (.object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][12]));
-    
+     
     // more grid logic
     always_comb begin
         // bounds of game grid
         if (hcount > 111 && hcount < 518) begin
             // update the grid state if we end up on a new square of the grid
-            if (grid_x == 0 || grid_x == 12 || grid_y == 0 || grid_y == 7) begin
-                object_pixel = grid_pixels[grid_y][grid_x];
-            end else begin
-                object_pixel = 12'hFFF;
-            end
-        end 
+            object_pixel = grid_pixels[grid_y][grid_x];
+        end else begin
+            object_pixel = 12'hFFF;
+        end
         
         case (num_players)
             0: player_pixel = player1_pixel;
