@@ -113,15 +113,13 @@
         vsync_out = vsync;
         blank_out = blank;
 
-        pixel_out = object_pixel;
-
-//        if (player_pixel == 12'hFFF && object_pixel == 12'hFFF) begin
-//            pixel_out = floor_pixel;
-//        end else if (player_pixel != 12'hFFF) begin
-//            pixel_out = player_pixel; 
+        if (player_pixel == 12'hFFF && object_pixel == 12'hFFF) begin
+            pixel_out = floor_pixel;
+        end else if (player_pixel != 12'hFFF) begin
+            pixel_out = player_pixel; 
 //        end else begin
 //            pixel_out = object_pixel;
-//        end
+        end
     end
     
 endmodule
