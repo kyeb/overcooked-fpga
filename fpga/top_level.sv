@@ -86,7 +86,7 @@ module top_level(
                 // high priority: object grid (8x13x4), time_grid (4x4)
                 // low priority: game state (3), team_name(3x8), order_times (4x5), point_total(10), orders(4), 
 
-    logic [7:0] txstate;
+    logic [1:0] txstate;
     comms c (
         .clk(clock100), .rst(reset), .ja_0(ja_0), .ja_1(ja_1), .player_ID(local_player_ID),
         .local_game_state(local_game_state), .game_state_out(comms_game_state),
@@ -231,7 +231,7 @@ module top_level(
     time_remaining game_time (.vsync(vsync_in),.timer_go(timer_go),.restart(restart_timer),
                    .time_left(time_left));
     
-    assign valz = {1'b0, game_state, 8'b0, txstate, 4'b0, time_left};
+    assign valz = {1'b0, game_state, 14'b0, txstate, 4'b0, time_left};
 
     //graphics
     logic [10:0] hcount;    // pixel on current line
@@ -241,7 +241,7 @@ module top_level(
     logic [11:0] rgb;
     logic border = (hcount>=0 & hcount<639 & vcount>=0 & vcount<479);
     
-    graphics game(.clock(clock), .reset(reset), .team_name(team_name), .local_player_ID(local_player_ID), .num_players(num_players),
+    graphics gr (.clock(clock), .reset(reset), .team_name(team_name), .local_player_ID(local_player_ID), .num_players(num_players),
         .game_state(game_state), .time_left(time_left), .point_total(point_total), .object_grid(local_object_grid), .time_grid(time_grid), .orders(orders), .order_times(order_times), 
         .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state), 
         .player2_direction(player2_direction), .player2_x(player2_loc_x), .player2_y(player2_loc_y), .player2_state(player2_state), 
