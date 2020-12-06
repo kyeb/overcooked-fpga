@@ -128,6 +128,8 @@
             // update the grid state if we end up on a new square of the grid
             if (grid_x == 0 || grid_x == 12 || grid_y == 0 || grid_y == 7) begin
                 object_pixel = grid_pixels[grid_y][grid_x];
+            end else begin
+                object_pixel = 12'hFFF;
             end
         end 
         
