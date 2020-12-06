@@ -70,11 +70,6 @@
         .y_in_counter('d112), .y_in_floor('d144), .vcount_in(vcount),  
         .pixel_out(floor_pixel));
 
-module table_counter   
-    (input [10:0] x_in_counter, x_in_floor, hcount_in,
-    input [9:0] y_in_counter, y_in_floor, vcount_in,
-    output logic [11:0] pixel_out);
-
     // object graphics
     logic [11:0] object_pixel;
     logic [7:0][12:0] grid_pixels [11:0];
