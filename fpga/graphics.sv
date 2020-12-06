@@ -81,7 +81,7 @@
 
     logic [9:0] y;
     
-    assign y = ((vcount - 112) >> 5) << 5;
+    assign y = {(vcount - 112) >> 5, 5'b0};
 
     static_sprites s0 (.object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[0]));
     static_sprites s1 (.object_grid(object_grid), .x_in(144), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[1]));
