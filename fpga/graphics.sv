@@ -100,7 +100,7 @@ module graphics(
         
     logic [11:0] welcome_screen;
     
-    welcome_screen welc ();
+    welcome welc (.pixel_clk_in(clock), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(welcome_screen));
     
     // more grid logic
     always_comb begin
