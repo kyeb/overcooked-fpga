@@ -65,7 +65,7 @@ module player_blob
    chopped_onion_left_coe chopped_onion_left(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_left_bits));
    chopped_onion_right_coe chopped_onion_right(.clka(pixel_clk_in), .addra(image_addr), .douta(chopped_onion_right_bits));
 
-//   // empty pot coes
+   // empty pot coes
    empty_pot_down_coe empty_pot_down(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_down_bits));
    empty_pot_left_coe empty_pot_left(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_left_bits));
    empty_pot_right_coe empty_pot_right(.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot_right_bits));
@@ -152,10 +152,10 @@ module player_blob
    blue_coe bcm (.clka(pixel_clk_in), .addra(image_bits), .douta(blue_mapped));
 
     // note the one clock cycle delay in pixel!
-    logic [11:0] last_pixel;
     always_ff @ (posedge pixel_clk_in) begin
-    if ((hcount_in >= x_in && hcount_in < (x_in+WIDTH)) && (vcount_in >= y_in && vcount_in < (y_in+HEIGHT)))
-        pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
-    else pixel_out <= 12'hFFF;
+        if ((hcount_in >= x_in && hcount_in < (x_in+WIDTH)) && (vcount_in >= y_in && vcount_in < (y_in+HEIGHT)))
+            pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
+        else 
+            pixel_out <= 12'hFFF;
     end
 endmodule

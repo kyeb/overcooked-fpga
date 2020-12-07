@@ -79,21 +79,20 @@ module graphics(
 
     // table counters
     logic [11:0] floor_pixel;
-    table_counter tables (.x_in_counter('d112), .x_in_floor('d144), .hcount_in(hcount), 
-        .y_in_counter('d112), .y_in_floor('d144), .vcount_in(vcount),  
-        .pixel_out(floor_pixel));
+//    table_counter tables (.x_in_counter('d112), .x_in_floor('d144), .hcount_in(hcount), 
+//        .y_in_counter('d112), .y_in_floor('d144), .vcount_in(vcount),  
+//        .pixel_out(floor_pixel));
+
+    tables tab(.pixel_clk_in(clock), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(floor_pixel));
 
     // object graphics
     logic [11:0] object_pixel, grid_pixels;
-    
     logic [3:0] grid_x;
     logic [2:0] grid_y;
     logic [9:0] x, y;
-    
     pixel_to_grid p2g (.pixel_x(hcount), .pixel_y(vcount), .grid_x(grid_x), .grid_y(grid_y));  
     grid_to_pixel g2p (.grid_x(grid_x), .grid_y(grid_y), .pixel_x(x), .pixel_y(y));
-
-    static_sprites s0 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(x), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels));
+    static_sprites s (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(x), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels));
 
     // more grid logic
     always_comb begin
@@ -120,6 +119,7 @@ module graphics(
         hsync_out = hsync;
         vsync_out = vsync;
         blank_out = blank;
+        
         if (player_pixel == 12'hFFF && object_pixel == 12'hFFF) begin
             pixel_out = floor_pixel;
         end else 

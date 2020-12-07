@@ -17,10 +17,12 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
     localparam G_POT_FIRE = 8;
     localparam G_FIRE = 9;
     localparam G_EXTINGUISHER = 10;
+    localparam WHITE = 8'b00010110;
 
     logic [11:0] image_addr;   // num of bits for 256*240 ROM
     logic [7:0] object_bits, red_mapped, green_mapped, blue_mapped;
-    logic [11:0] onion, chopped_onion, empty_bowl, full_bowl, empty_pot, full_pot, fire_pot, fire, extinguisher;
+    logic [11:0] onion, chopped_onion, empty_bowl, full_bowl, empty_pot, 
+        full_pot, cooked_pot, fire_pot, fire, extinguisher;
 
     // calculate rom address and read the location
     assign image_addr = (hcount-x_in) + (vcount-y_in) * WIDTH;
@@ -38,6 +40,7 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
     full_bowl_coe fb (.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl));
     empty_pot_coe ep (.clka(pixel_clk_in), .addra(image_addr), .douta(empty_pot));
     full_pot_coe rp (.clka(pixel_clk_in), .addra(image_addr), .douta(full_pot));
+    cooked_pot_coe cp (.clka(pixel_clk_in), .addra(image_addr), .douta(cooked_pot));
     fire_pot_coe fp (.clka(pixel_clk_in), .addra(image_addr), .douta(fire_pot));
     fire_coe f (.clka(pixel_clk_in), .addra(image_addr), .douta(fire));
     extinguisher_coe e (.clka(pixel_clk_in), .addra(image_addr), .douta(extinguisher));
@@ -54,13 +57,13 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
             G_BOWL_FULL: object_bits = full_bowl;
             G_POT_EMPTY: object_bits = empty_pot;
             G_POT_RAW: object_bits = full_pot;
-            G_POT_COOKED: object_bits = full_pot;
+            G_POT_COOKED: object_bits = cooked_pot;
             G_POT_FIRE: object_bits = fire_pot;
-            G_FIRE: object_bits = fire;
+            G_FIRE: object_bits = fire_pot;
             G_EXTINGUISHER: object_bits = extinguisher;
-            default: object_bits = onion;
+            default: object_bits = WHITE;
         endcase
-        
+         
     end
     
     red_coe rcm (.clka(pixel_clk_in), .addra(object_bits), .douta(red_mapped));
@@ -70,13 +73,7 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
     // note the one clock cycle delay in pixel!
     always_ff @ (posedge pixel_clk_in) begin
         if ((hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
-            if (x_in == 496) begin
-                pixel_out <= 12'h070;
-            end else if (grid_state == G_EMPTY) begin
-                pixel_out <= 12'hFFF;
-            end else begin
                 pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
-            end
         else begin
             pixel_out <= 12'hFFF;
         end
