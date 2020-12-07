@@ -86,7 +86,7 @@ module graphics(
     tables tab(.pixel_clk_in(clock), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(floor_pixel));
 
     // object graphics
-    logic [11:0] object_pixel, grid_pixels;
+    logic [11:0] object_pixel, grid_pixels, info_out0, info_out1, info_out2, info_out3;
     logic [3:0] grid_x;
     logic [2:0] grid_y;
     logic [9:0] x, y;
@@ -94,6 +94,19 @@ module graphics(
     grid_to_pixel g2p (.grid_x(grid_x), .grid_y(grid_y), .pixel_x(x), .pixel_y(y));
     static_sprites s (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(x), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels));
 
+    // order displays
+    info_display id0 (.pixel_clk_in(clock), .x_in(50), .hcount(hcount), .y_in(50), .vcount(vcount),
+        .order(orders[0]), .order_time(order_times[0]), .pixel_out(info_out0));
+
+    info_display id1 (.pixel_clk_in(clock), .x_in(87), .hcount(hcount), .y_in(50), .vcount(vcount),
+        .order(orders[1]), .order_time(order_times[1]), .pixel_out(info_out1));
+
+    info_display id2 (.pixel_clk_in(clock), .x_in(124), .hcount(hcount), .y_in(50), .vcount(vcount),
+        .order(orders[2]), .order_time(order_times[2]), .pixel_out(info_out2));
+        
+     info_display id3 (.pixel_clk_in(clock), .x_in(161), .hcount(hcount), .y_in(50), .vcount(vcount),
+        .order(orders[3]), .order_time(order_times[3]), .pixel_out(info_out3));
+        
     // more grid logic
     always_comb begin
         // bounds of game grid
@@ -120,13 +133,12 @@ module graphics(
         vsync_out = vsync;
         blank_out = blank;
         
-        if (player_pixel == 12'hFFF && object_pixel == 12'hFFF) begin
-            pixel_out = floor_pixel;
-        end else 
         if (player_pixel != 12'hFFF) begin
             pixel_out = player_pixel; 
-        end else begin
+        end else if (object_pixel != 12'hFFF) begin
             pixel_out = object_pixel;
+        end else begin
+            pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3;
         end
     end
     
