@@ -93,7 +93,7 @@
     pixel_to_grid p2g (.pixel_x(hcount), .pixel_y(vcount), .grid_x(grid_x), .grid_y(grid_y));  
 
     logic [9:0] y;
-    assign y = (((vcount - 112) >> 5) << 5) + 11;
+    assign y = (((vcount - 112) >> 5) << 5) + 112;
 
     static_sprites s00 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][0]));
     static_sprites s01 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(144), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][1]));
