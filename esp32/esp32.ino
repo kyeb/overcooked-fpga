@@ -22,14 +22,16 @@ HardwareSerial FPGASerial(1);
 
 /* =============== config section end =============== */
 
-// PORTS: USB0, USB2 (main)
+// PORTS: USB0, USB5 (main)
 
-uint32_t states[4];
+
+#define DTYPE_START_BSTATE 1
+#define NUM_BPACKETS 15
 uint32_t ack = 7;
 
-#define NUM_BPACKETS 15
 uint32_t local_board_state[NUM_BPACKETS];
 uint32_t remote_board_state[NUM_BPACKETS];
+uint32_t player_states[4];
 
 void setup() {
   Serial.begin(115200);
@@ -61,54 +63,23 @@ void setup() {
   }
 }
 
-// Sends an updated player state to the server and updates local states[] storage.
-// If val=0, purely updates local states[].
-void updatePlayerState(uint32_t val) {
-  HTTPClient http;
-  String route = serverName + "/playerstate";
-  http.begin(route.c_str());
-  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-  String body;
-  body = String("player_state=") + String(val);
-#if DEBUG_PRINT == 1
-  Serial.print("sending player POST to server ");
-  Serial.println(body);
-#endif
-  int respCode = http.POST(body);
-  if (respCode > 0) {
-    String resp = http.getString();
-    Serial.print("Response: ");
-    Serial.println(resp);
-    states[0] = strtoul(resp.substring(0, 10).c_str(), NULL, 10);
-    states[1] = strtoul(resp.substring(11, 21).c_str(), NULL, 10);
-    states[2] = strtoul(resp.substring(22, 32).c_str(), NULL, 10);
-    states[3] = strtoul(resp.substring(33, 43).c_str(), NULL, 10);
-  } else {
-    Serial.print("Error code: ");
-    Serial.println(respCode);
-  }
 
-  // only ack if non-trivial data was sent
-  if (val != 0) {
-    sendToFPGA(ack); // ACK that we finished POSTing
-  }
-}
-
-void updateBoardState() {
-  for (int i = 0; i < NUM_BPACKETS; i++) {
-    uint32_t val = 0;
+void sendToFPGA(uint32_t bytes) {
+  if (FPGASerial.availableForWrite()) {
     for (int i = 0; i < 4; i++) {
-      while (!FPGASerial.available()) {} // wait for available
-      uint8_t v = FPGASerial.read();
-      val |= v << (8*i);
+      uint8_t shift = i << 3;
+      uint32_t mask = 255 << shift;
+      uint8_t val = (bytes & mask) >> shift;
+      FPGASerial.write(val);
     }
-    local_board_state[i] = val;
+  } else {
+    Serial.println("FPGASerial not available for writing");
   }
 }
 
-void sendBoardState() {
+void mainPOST() {
   HTTPClient http;
-  String route = serverName + "/boardstate";
+  String route = serverName + "/main";
   http.begin(route.c_str());
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   String body;
@@ -119,15 +90,23 @@ void sendBoardState() {
     snprintf(buf, 50, "%010u", local_board_state[i]);
     body = body + String(buf) + String('|');
   }
+  
 #if DEBUG_PRINT == 1
-  Serial.print("sending board POST to server ");
+  Serial.print("sending main POST to server: ");
   Serial.println(body);
 #endif
+
   int respCode = http.POST(body);  
   if (respCode > 0) {
     String resp = http.getString();
-    Serial.print("Response: ");
+
+    Serial.print("mainPOST() got: ");
     Serial.println(resp);
+
+    player_states[0] = strtoul(resp.substring(0, 10).c_str(), NULL, 10);
+    player_states[1] = strtoul(resp.substring(11, 21).c_str(), NULL, 10);
+    player_states[2] = strtoul(resp.substring(22, 32).c_str(), NULL, 10);
+    player_states[3] = strtoul(resp.substring(33, 43).c_str(), NULL, 10);
   } else {
     Serial.print("Error code: ");
     Serial.println(respCode);
@@ -136,21 +115,23 @@ void sendBoardState() {
   sendToFPGA(ack); // ACK that we finished POSTing
 }
 
-void getBoardState() {
+void secondaryPOST(uint32_t val) {
   HTTPClient http;
-  String route = serverName + "/boardstate";
+  String route = serverName + "/secondary";
   http.begin(route.c_str());
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   String body;
-  body = String("board_state=none");
+  body = String("player_state=") + String(val);
+  
 #if DEBUG_PRINT == 1
-  Serial.print("sending board POST (but actually this is a get) to server ");
+  Serial.print("sending secondary POST to server: ");
   Serial.println(body);
 #endif
+
   int respCode = http.POST(body);  
   if (respCode > 0) {
     String resp = http.getString();
-    Serial.print("Response: ");
+    Serial.print("secondaryPOST() got: ");
     Serial.println(resp);
     
     remote_board_state[0] = strtoul(resp.substring(0, 10).c_str(), NULL, 10);
@@ -168,22 +149,54 @@ void getBoardState() {
     remote_board_state[12] = strtoul(resp.substring(132, 142).c_str(), NULL, 10);
     remote_board_state[13] = strtoul(resp.substring(143, 153).c_str(), NULL, 10);
     remote_board_state[14] = strtoul(resp.substring(154, 164).c_str(), NULL, 10);
-    remote_board_state[15] = strtoul(resp.substring(165, 175).c_str(), NULL, 10);
 
-    for (int i = 0; i < NUM_BPACKETS; i++) {
-      Serial.print("Sending board packet to FPGA: ");
-      Serial.println(remote_board_state[i]);
-      sendToFPGA(remote_board_state[i]);
-    }
-    
+    player_states[0] = strtoul(resp.substring(165, 175).c_str(), NULL, 10);
+    player_states[1] = strtoul(resp.substring(176, 186).c_str(), NULL, 10);
+    player_states[2] = strtoul(resp.substring(187, 197).c_str(), NULL, 10);
+    player_states[3] = strtoul(resp.substring(198, 208).c_str(), NULL, 10);
     } else {
     Serial.print("Error code: ");
     Serial.println(respCode);
   }
+
+  // only ack if non-trivial data was sent
+  sendToFPGA(ack); // ACK that we finished POSTing
 }
 
-#define DTYPE_START_BSTATE 1
-void upload() {
+void mainSendToFPGA() {
+  for (int i = 0; i < 4; i++) {
+    sendToFPGA(player_states[i]);
+  }
+}
+
+void secondarySendToFPGA() {
+  for (int i = 0; i < 4; i++) {
+    sendToFPGA(player_states[i]);
+    Serial.print("Sending player_state= ");
+    Serial.println(player_states[i]);
+  }
+
+  delay(1);
+  
+  sendToFPGA(DTYPE_START_BSTATE);
+  for (int i = 0; i < NUM_BPACKETS; i++) {
+    sendToFPGA(remote_board_state[i]);
+  }
+}
+
+void readBoardFromFPGA() {
+  for (int i = 0; i < NUM_BPACKETS; i++) {
+    uint32_t val = 0;
+    for (int i = 0; i < 4; i++) {
+      while (!FPGASerial.available()) {} // wait for available
+      uint8_t v = FPGASerial.read();
+      val |= v << (8*i);
+    }
+    local_board_state[i] = val;
+  }
+}
+
+void readFromFPGA() {
   uint32_t val = 0;
   if (FPGASerial.available()) {
     for (int i = 0; i < 4; i++) {
@@ -191,45 +204,28 @@ void upload() {
       val |= v << (8*i);
     }
     if (val == DTYPE_START_BSTATE) { // magic num indicating start of board state
-      updateBoardState();
-      sendBoardState();
+      readBoardFromFPGA();
       val = 0;
     } else {
-      updatePlayerState(val);
+#ifndef main
+      secondaryPOST(val);
+      secondarySendToFPGA();
+#endif
     }
   }
-  updatePlayerState(val);
-}
-
-void sendToFPGA(uint32_t bytes) {
-  if (FPGASerial.availableForWrite()) {
-    for (int i = 0; i < 4; i++) {
-      uint8_t shift = i << 3;
-      uint32_t mask = 255 << shift;
-      uint8_t val = (bytes & mask) >> shift;
-      FPGASerial.write(val);
-    }
-  } else {
-    Serial.println("FPGASerial not available for writing");
-  }
-}
-
-void download() {
-  for (int i = 0; i < 4; i++) {
-    sendToFPGA(states[i]);
-  }
+#ifndef main
+  secondaryPOST(0);
+  secondarySendToFPGA();
+#endif
 }
 
 
 void loop() {
-  // Read from FPGA and send to server
-  upload();
-
-  // Send player state to FPGA
-  download();
-
-#ifndef main
-  // download and send board state to FPGA
-  getBoardState();
+  readFromFPGA();
+  
+#ifdef main
+  mainPOST();
+  mainSendToFPGA();
+#else
 #endif
 }

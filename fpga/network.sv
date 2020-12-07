@@ -8,10 +8,12 @@ module comms(
         input logic [3:0] local_state,
         input logic [2:0] local_game_state,
         input logic [7:0][12:0][3:0] local_object_grid,
+        input logic [9:0] local_point_total,
         input logic ja_1,
         output logic ja_0,
         output logic [2:0] game_state_out,
         output logic [7:0][12:0][3:0] object_grid_out,
+        output logic [9:0] point_total_out,
         output logic [1:0] player1_direction, player2_direction, player3_direction, player4_direction,
         output logic [8:0] player1_loc_x, player2_loc_x, player3_loc_x, player4_loc_x,
         output logic [8:0] player1_loc_y, player2_loc_y, player3_loc_y, player4_loc_y,
@@ -29,8 +31,7 @@ module comms(
     // data[2:0] (3 bits) - packet type.
     //       000: player state
     //       111: TX ACK
-    //       001: TODO (probably will be board state or smth)
-    // total: 2+2+9+9+4 = 26 bits of data, 6 left empty
+    //       001: board state start packet
     
     
     // register input pin
@@ -198,13 +199,11 @@ module comms(
 
     logic [4:0] tx_counter, rx_counter;
     logic [7:0][12:0][3:0] prev_local_object_grid;
-    logic prev_tx_ready; // TEMP
     always_ff @(posedge clk) begin
     if (player_ID == 0) begin
         // MAIN - TX BOARD
         object_grid_out <= local_object_grid;
-        prev_tx_ready <= tx_ready;
-        prev_local_object_grid <= local_object_grid;
+        point_total_out <= local_point_total;
         
         prev_bstate <= tx_bstate;
         
@@ -277,8 +276,7 @@ module comms(
                         tx_bdata <= {local_object_grid[0][12][3:0], local_object_grid[1][12][3:0], local_object_grid[2][12][3:0], local_object_grid[3][12][3:0],
                                     local_object_grid[4][12][3:0], local_object_grid[5][12][3:0], local_object_grid[6][12][3:0], local_object_grid[7][12][3:0]};
                    else if (tx_counter == 13)
-                        // send the time grid, zero padded
-                        tx_bdata <= {16'h0000, 16'hffff}; // TODO
+                        tx_bdata <= {22'h0000, local_point_total};
                     else if (tx_counter == 14)
                         tx_bdata <= local_full_state;
                 end
@@ -437,15 +435,12 @@ module comms(
                     object_grid_out[6][12][3:0] <= rx_data[7:4];
                     object_grid_out[7][12][3:0] <= rx_data[3:0];
                 end else if (rx_counter == 13) begin
-                    // TODO: time grid sync
+                    point_total_out <= rx_data[9:0];
                 end else if (rx_counter == 14) begin
-                    // player 0 position, can throw away for now
+                    // player 0 position, can throw away because sent separately
                 end
             end
         end
-//        RX_WAIT: begin // I don't think we need this, but leaving here in case i get stuck
-        
-//        end
     endcase
     end end
 endmodule
