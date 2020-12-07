@@ -1,5 +1,5 @@
 module welcome
-   #(parameter WIDTH = 246,     // default picture width
+   #(parameter WIDTH = 250,     // default picture width
                HEIGHT = 44)    // default picture height
    (input pixel_clk_in,
     input [10:0] hcount_in,
