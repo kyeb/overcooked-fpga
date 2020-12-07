@@ -99,7 +99,7 @@ module p_state(input reset,
         end else if (player_state == P_POT_COOKED) begin
             if ((object_in_front == G_BOWL_EMPTY)&&(chop)) begin
                 player_state <=P_POT_EMPTY;
-            end else if (object_in_front == G_EMPTY) begin
+            end else if ((~carry)&&(object_in_front == G_EMPTY)) begin
                 player_state <=P_NOTHING;
             end
         end else if (player_state == P_BOWL_EMPTY) begin
