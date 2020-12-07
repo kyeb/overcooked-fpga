@@ -50,18 +50,12 @@ module graphics(
     output logic blank_out,
     output logic [11:0] pixel_out);              
 
-    // grid object parameters
-    localparam G_EMPTY = 0;
-    localparam G_ONION_WHOLE = 1;
-    localparam G_ONION_CHOPPED = 2;
-    localparam G_BOWL_EMPTY = 3;
-    localparam G_BOWL_FULL = 4;
-    localparam G_POT_EMPTY = 5;
-    localparam G_POT_RAW = 6;
-    localparam G_POT_COOKED = 7;
-    localparam G_POT_FIRE = 8;
-    localparam G_FIRE = 9;
-    localparam G_EXTINGUISHER = 10;
+    // game state parameters
+    localparam WELCOME = 0;
+    localparam START = 1;
+    localparam PLAY = 2;
+    localparam PAUSE = 3;
+    localparam FINISH = 4;
 
     // player displays
     logic [11:0] player_pixel, player1_pixel, player2_pixel, player3_pixel, player4_pixel;
@@ -79,9 +73,6 @@ module graphics(
 
     // table counters
     logic [11:0] floor_pixel;
-//    table_counter tables (.x_in_counter('d112), .x_in_floor('d144), .hcount_in(hcount), 
-//        .y_in_counter('d112), .y_in_floor('d144), .vcount_in(vcount),  
-//        .pixel_out(floor_pixel));
 
     tables tab(.pixel_clk_in(clock), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(floor_pixel));
 
@@ -94,7 +85,7 @@ module graphics(
     grid_to_pixel g2p (.grid_x(grid_x), .grid_y(grid_y), .pixel_x(x), .pixel_y(y));
     static_sprites s (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(x), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels));
 
-    // order displays
+    // order displays -- TODO: toggle positioning of displays so they look nice
     info_display id0 (.pixel_clk_in(clock), .x_in(50), .hcount(hcount), .y_in(50), .vcount(vcount),
         .order(orders[0]), .order_time(order_times[0]), .pixel_out(info_out0));
 
@@ -107,9 +98,13 @@ module graphics(
      info_display id3 (.pixel_clk_in(clock), .x_in(161), .hcount(hcount), .y_in(50), .vcount(vcount),
         .order(orders[3]), .order_time(order_times[3]), .pixel_out(info_out3));
         
+    logic [11:0] welcome_screen;
+    
+    blob #(.COLOR(12'h007)) welc (.height(50), .width(250), .x_in(195), .y_in(215), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(color_out));
+        
     // more grid logic
     always_comb begin
-        // bounds of game grid
+    
         if (hcount > 111 && hcount < 528 && vcount > 111 && vcount < 369) begin
             // update the grid state if we end up on a new square of the grid
             object_pixel = grid_pixels;
@@ -121,25 +116,43 @@ module graphics(
             0: player_pixel = player1_pixel;
             1: player_pixel = player1_pixel == 12'hFFF ? player2_pixel : player1_pixel;
             2: player_pixel = player1_pixel == 12'hFFF && player2_pixel == 12'hFFF ? player3_pixel :
-                              player1_pixel == 12'hFFF && player3_pixel == 12'hFFF ? player2_pixel :
-                              player1_pixel;
+                            player1_pixel == 12'hFFF && player3_pixel == 12'hFFF ? player2_pixel :
+                            player1_pixel;
             3: player_pixel = player1_pixel == 12'hFFF && player2_pixel == 12'hFFF && player3_pixel == 12'hFFF ? player4_pixel :
-                              player1_pixel == 12'hFFF && player2_pixel == 12'hFFF && player4_pixel == 12'hFFF ? player3_pixel :
-                              player1_pixel == 12'hFFF && player3_pixel == 12'hFFF && player4_pixel == 12'hFFF ? player2_pixel :
-                              player1_pixel;
+                            player1_pixel == 12'hFFF && player2_pixel == 12'hFFF && player4_pixel == 12'hFFF ? player3_pixel :
+                            player1_pixel == 12'hFFF && player3_pixel == 12'hFFF && player4_pixel == 12'hFFF ? player2_pixel :
+                            player1_pixel;
         endcase
         
         hsync_out = hsync;
         vsync_out = vsync;
         blank_out = blank;
         
-        if (player_pixel != 12'hFFF) begin
-            pixel_out = player_pixel; 
-        end else if (object_pixel != 12'hFFF) begin
-            pixel_out = object_pixel;
-        end else begin
-            pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3;
-        end
+        // bounds of game grid
+        case (game_state)
+            
+            START, PLAY, PAUSE, FINISH: begin
+                if (player_pixel != 12'hFFF) begin
+                    pixel_out = player_pixel; 
+                end else if (object_pixel != 12'hFFF) begin
+                    pixel_out = object_pixel;
+                end else begin
+                    pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3;
+                end
+            end
+            
+            WELCOME: begin
+                if (welcome_screen != 12'h000) begin
+                    pixel_out = welcome_screen;
+                end else if (player_pixel != 12'hFFF) begin
+                    pixel_out = player_pixel; 
+                end else if (object_pixel != 12'hFFF) begin
+                    pixel_out = object_pixel;
+                end else begin
+                    pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3;
+                end
+            end
+        endcase 
     end
     
 endmodule
