@@ -22,7 +22,7 @@ module info_display(
     // calculate rom address and read the location
     assign image_addr = (hcount-x_in) + (vcount-y_in) * WIDTH;
     
-    full_bowl_coe fb (.clka(pixel_clk_in), .addra(image_addr), .douta(full_bowl));
+    full_bowl_coe fb (.clka(pixel_clk_in), .addra(image_addr), .douta(object_bits));
     
     red_coe rcm (.clka(pixel_clk_in), .addra(object_bits), .douta(red_mapped));
     green_coe gcm (.clka(pixel_clk_in), .addra(object_bits), .douta(green_mapped));
