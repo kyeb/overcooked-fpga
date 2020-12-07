@@ -110,28 +110,25 @@ def set_board_state(state):
 #######################################
 
 
-def player_state(request):
+# takes board_state and returns latest player states
+def main(request):
+    state = request.form["board_state"]
+    r = get_player_states()
+    if state != "none":
+        set_board_state(state)
+    return request.Response(text=r)
+
+
+# takes player_state and returns latest board + player states
+def secondary(request):
     state = int(request.form["player_state"])
     if state < 0 or state > 2 ** 32:
         r = "error: state out of acceptable range"
         return request.Response(text=r)
     if state != 0:
         player = update_player_state(state)
-
-    r = get_player_states()
+    r = get_board_state() + get_player_states()
     return request.Response(text=r)
-
-
-def board_state(request):
-    state = request.form["board_state"]
-    if state == "none":
-        r = get_board_state()
-        return request.Response(text=r)
-    else:
-        set_board_state(state)
-        r = "ok - board state updated"
-        return request.Response(text=r)
-
 
 #######################################
 # Main
@@ -139,7 +136,7 @@ def board_state(request):
 
 app = Application()
 r = app.router
-r.add_route("/overcooked/playerstate", player_state, "POST")
-r.add_route("/overcooked/boardstate", board_state, "POST")
+r.add_route("/overcooked/main", main, "POST")
+r.add_route("/overcooked/secondary", secondary, "POST")
 
 app.run()

@@ -1,96 +1,84 @@
 module top_level(
-   input clk_100mhz,
-   input [15:0] sw,
-   input btnc, btnu, btnr, btnd, btnl,
-   input logic  ja_1, // serial RX pin
-   output logic ja_0, // serial TX pin
-   output logic [3:0] vga_r,
-   output logic [3:0] vga_b,
-   output logic [3:0] vga_g,
-   output logic vga_hs,
-   output logic vga_vs,
-   output logic [15:0] led,
-   output logic ca, cb, cc, cd, ce, cf, cg, dp,  // segments a-g, dp
-   output logic [7:0] an    // Display location 0-7
-   );
+    input clk_100mhz,
+    input [15:0] sw,
+    input btnc, btnu, btnr, btnd, btnl,
+    input logic  ja_1, // serial RX pin
+    output logic ja_0, // serial TX pin
+    output logic [3:0] vga_r,
+    output logic [3:0] vga_b,
+    output logic [3:0] vga_g,
+    output logic vga_hs,
+    output logic vga_vs,
+    output logic [15:0] led,
+    output logic ca, cb, cc, cd, ce, cf, cg, dp,  // segments a-g, dp
+    output logic [7:0] an    // Display location 0-7
+    );
+    
+    // create clocks for display and serial
+    logic clock, clock100; // 25mhz and 100mhz, respectively
+    clk_wiz_25 clk25 (.clk_in1(clk_100mhz), .clk_out1(clock), .clk_out2(clock100));
+    
+    // digit display
+    logic [31:0] valz;
+    assign  dp = 1'b1;  // turn off the period
+    seven_seg_controller my_controller (.clk_in(clock100), .rst_in(reset), .val_in(valz), 
+                                         .cat_out({cg, cf, ce, cd, cc, cb, ca}), .an_out(an));
+    
+    // vga signals
+    logic [10:0] hcount_in;
+    logic [9:0] vcount_in;
+    logic vsync_in, hsync_in, blank_in;
+    xvga vga(.vclock_in(clock), .hcount_out(hcount_in), .vcount_out(vcount_in), .vsync_out(vsync_in),
+         .hsync_out(hsync_in), .blank_out(blank_in));
    
-   // create clocks for display and serial
-   logic clock, clock100; // 25mhz and 100mhz, respectively
-   clk_wiz_25 clk25 (.clk_in1(clk_100mhz), .clk_out1(clock), .clk_out2(clock100));
+    // sw[1:0] = player ID
+    // sw[3:2] = num_players
+    // w[4] = reset
+    // sw[14] = pause
+    // sw[15] = carry
+    logic [1:0] local_player_ID;
+    logic [1:0] num_players;
+    assign local_player_ID = sw[1:0]; // indicate player number, will need coordination 
+                                      // player 0 will be the primary, will do controls
+    assign num_players = sw[3:2];
+    assign reset = sw[4];        // reset = 1
+    assign local_carry = sw[15]; // is carrying = 1, put down = 0
+    assign pause = sw[14];
+    assign led = sw;             // check switch is actually on
+    
+    //local button inputs
+    logic local_left, local_right, local_up, local_down, local_chop;
+    debounce dbchop(.reset_in(reset),.clock_in(clock),.noisy_in(btnc),.clean_out(local_chop));
+    debounce dbleft(.reset_in(reset),.clock_in(clock),.noisy_in(btnl),.clean_out(local_left));
+    debounce dbright(.reset_in(reset),.clock_in(clock),.noisy_in(btnr),.clean_out(local_right));
+    debounce dbup(.reset_in(reset),.clock_in(clock),.noisy_in(btnu),.clean_out(local_up));
+    debounce dbdown(.reset_in(reset),.clock_in(clock),.noisy_in(btnd),.clean_out(local_down));
+    
+    // main controls
+    logic [2:0] comms_game_state, local_game_state, game_state;
+    logic [7:0][12:0][3:0] comms_object_grid, local_object_grid, object_grid;
+    logic [3:0][3:0] comms_time_grid, local_time_grid, time_grid;
+    logic [7:0] time_left;
+    logic [9:0] comms_point_total, local_point_total, point_total;
+    logic [3:0] comms_orders, local_orders, orders;
+    logic [3:0][4:0] comms_order_times, local_order_times, order_times;
+    logic [2:0][7:0] comms_team_name, local_team_name, team_name;
+    
+    // variables unique to FPGA
+    logic [1:0] local_direction, player1_direction, player2_direction, player3_direction, player4_direction;
+    logic [8:0] local_loc_x, player1_loc_x, player2_loc_x, player3_loc_x, player4_loc_x;
+    logic [8:0] local_loc_y, player1_loc_y, player2_loc_y, player3_loc_y, player4_loc_y;
+    logic [3:0] local_state, player1_state, player2_state, player3_state, player4_state;
    
-   // digit display
-   logic [31:0] valz;
-   assign  dp = 1'b1;  // turn off the period
-   seven_seg_controller my_controller (.clk_in(clock100), .rst_in(reset), .val_in(valz), 
-                                        .cat_out({cg, cf, ce, cd, cc, cb, ca}), .an_out(an));
+    // collision variables
+    logic [8:0] player_a_x, player_a_y, player_b_x, player_b_y, player_c_x, player_c_y;
    
-   // vga signals
-   logic [10:0] hcount_in;
-   logic [9:0] vcount_in;
-   logic vsync_in, hsync_in, blank_in;
-   xvga vga(.vclock_in(clock), .hcount_out(hcount_in), .vcount_out(vcount_in), .vsync_out(vsync_in),
-        .hsync_out(hsync_in), .blank_out(blank_in));
-   
-   //sw[1:0] = player ID
-   //sw[3:2] = num_players
-   //sw[4] = reset
-   //sw[14] = pause
-   //sw[15] = carry
-   logic [1:0] local_player_ID;
-   logic [1:0] num_players;
-   assign local_player_ID = sw[1:0]; //indicate player number, will need coordination 
-                                     // player 0 will be the primary, will do controls
-   assign num_players = sw[3:2];
-   assign reset = sw[4];  //reset = 1
-   assign local_carry = sw[15]; //is carrying = 1, put down = 0
-   assign pause = sw[14];
-   assign led = sw; //check switch is actually on
-   
-   //local button inputs
-   logic local_left, local_right, local_up, local_down, local_chop;
-   debounce dbchop(.reset_in(reset),.clock_in(clock),.noisy_in(btnc),.clean_out(local_chop));
-   debounce dbleft(.reset_in(reset),.clock_in(clock),.noisy_in(btnl),.clean_out(local_left));
-   debounce dbright(.reset_in(reset),.clock_in(clock),.noisy_in(btnr),.clean_out(local_right));
-   debounce dbup(.reset_in(reset),.clock_in(clock),.noisy_in(btnu),.clean_out(local_up));
-   debounce dbdown(.reset_in(reset),.clock_in(clock),.noisy_in(btnd),.clean_out(local_down));
-   
-   // main controls
-   logic [2:0] comms_game_state, local_game_state, game_state;
-   logic [7:0][12:0][3:0] comms_object_grid, local_object_grid, object_grid;
-   logic [3:0][3:0] comms_time_grid, local_time_grid, time_grid;
-   logic [7:0] time_left;
-   logic [9:0] comms_point_total, local_point_total, point_total;
-   logic [3:0] comms_orders, local_orders, orders;
-   logic [3:0][4:0] comms_order_times, local_order_times, order_times;
-   logic [2:0][7:0] comms_team_name, local_team_name, team_name;
-   
-   // variables unique to FPGA
-   logic [1:0] local_direction, player1_direction, player2_direction, player3_direction, player4_direction;
-   logic [8:0] local_loc_x, player1_loc_x, player2_loc_x, player3_loc_x, player4_loc_x;
-   logic [8:0] local_loc_y, player1_loc_y, player2_loc_y, player3_loc_y, player4_loc_y;
-   logic [3:0] local_state, player1_state, player2_state, player3_state, player4_state;
-   
-   //collision variables
-   logic [8:0] player_a_x, player_a_y, player_b_x, player_b_y, player_c_x, player_c_y;
-   
-   //comms
-   
-        // if main:
-            // send:
-                 // high priority: object grid (8x13x4), time_grid (4x4)
-                // low priority: game state (3), team_name(3x8), order_times (4x5), point_total(10), orders(4), 
-        
-        
-        // if secondary:
-            // receive from main: 
-                // high priority: object grid (8x13x4), time_grid (4x4)
-                // low priority: game state (3), team_name(3x8), order_times (4x5), point_total(10), orders(4), 
-
+    // comms
     logic [1:0] txstate;
     comms c (
         .clk(clock100), .rst(reset), .ja_0(ja_0), .ja_1(ja_1), .player_ID(local_player_ID),
         .local_game_state(local_game_state), .game_state_out(comms_game_state),
-        .local_object_grid(local_object_grid), .object_grid_out(comms_object_grid), .point_total(comms_point_total),
+        .local_object_grid(local_object_grid), .object_grid_out(comms_object_grid), .point_total_out(comms_point_total), .local_point_total(local_point_total),
         .local_direction(local_direction), .local_loc_x(local_loc_x), .local_loc_y(local_loc_y), .local_state(local_state),
         .player1_direction(player1_direction), .player2_direction(player2_direction), .player3_direction(player3_direction), .player4_direction(player4_direction),
         .player1_loc_x(player1_loc_x), .player2_loc_x(player2_loc_x), .player3_loc_x(player3_loc_x), .player4_loc_x(player4_loc_x),
@@ -108,23 +96,22 @@ module top_level(
     parameter FINISH = 4;
     
     always_comb begin
-        if (local_player_ID == 0) begin
-            game_state = local_game_state; //
-            object_grid = local_object_grid; //
-            time_grid = local_time_grid;
-            point_total = local_point_total;
-            orders = local_orders;
-            order_times = local_order_times;
-            team_name = local_team_name;
-        end else begin
-            game_state = comms_game_state; //
-            object_grid = comms_object_grid; //
-            time_grid = comms_time_grid;
-            point_total = comms_point_total;
-            orders = comms_orders;
-            order_times = comms_order_times;
-            team_name = comms_team_name;
-        end
+        // synced
+        object_grid = comms_object_grid;
+        point_total = comms_point_total;
+        
+        // synced only for secondaries
+        if (local_player_ID == 0)
+            game_state = local_game_state;
+        else
+            game_state = comms_game_state;
+        
+        // unsynced
+        time_grid = local_time_grid;
+        orders = local_orders;
+        order_times = local_order_times;
+        team_name = local_team_name;
+
         
      
         if (game_state == PLAY) begin //timer going, dont reset
