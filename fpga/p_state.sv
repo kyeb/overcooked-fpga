@@ -3,6 +3,7 @@
 module p_state(input reset,
               input vsync,
               input chop, carry,
+              input [2:0] game_state,
               input [7:0][12:0][3:0] object_grid,
               input [1:0] player_direction, //up, down, left, right
               input [8:0] player_loc_x,
@@ -59,6 +60,8 @@ module p_state(input reset,
                        
     always_ff @(negedge vsync) begin
         if (reset) begin
+            player_state <= P_NOTHING;
+        end else if (game_state == 0) begin
             player_state <= P_NOTHING;
         end else if (player_state == P_NOTHING) begin
             if (chop) begin

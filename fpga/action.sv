@@ -129,6 +129,16 @@ module action(input reset,
             object_grid[6][0] <= G_EXTINGUISHER;
             go <= 4'b0;
             restart <= 4'b1111;
+        end else if (game_state == WELCOME) begin
+            object_grid <= {8{{13{{4'b0}}}}};
+            object_grid[2][0] <= G_ONION_WHOLE;
+            object_grid[3][0] <= G_ONION_WHOLE;
+            object_grid[6][12] <= G_BOWL_EMPTY;
+            object_grid[0][8] <= G_POT_EMPTY;
+            object_grid[0][10] <= G_POT_EMPTY;
+            object_grid[6][0] <= G_EXTINGUISHER;
+            go <= 4'b0;
+            restart <= 4'b1111;
         end else if (game_state != PLAY) begin
             go <= 4'b0;
             fire_go <= 2'b00;

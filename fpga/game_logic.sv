@@ -22,6 +22,7 @@ module game_logic(input reset,
     
     p_state ps (.reset(reset),.vsync(vsync), .object_grid(object_grid), .chop(chop), .carry(carry),
                 .player_direction(player_direction), .player_loc_x(player_loc_x), .player_loc_y(player_loc_y),
+                .game_state(game_state),
                
                 .player_state(player_state));
                 
