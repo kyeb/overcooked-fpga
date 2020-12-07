@@ -1,5 +1,6 @@
 module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)     
-    (input [7:0][12:0][3:0] object_grid, 
+    (input pixel_clk_in,
+     input [7:0][12:0][3:0] object_grid, 
      input [10:0] x_in,hcount,
      input [9:0] y_in,vcount,
      output logic [11:0] pixel_out);
@@ -68,10 +69,14 @@ module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)
          
     // note the one clock cycle delay in pixel!
     always_ff @ (posedge pixel_clk_in) begin
-        if (grid_state == G_EMPTY) begin
-            pixel_out <= 12'h070;
-        end else if (grid_state != G_EMPTY && (hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
-            pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
+        if ((hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
+            if (x_in == 496) begin
+                pixel_out <= 12'h070;
+            end else if (grid_state == G_EMPTY) begin
+                pixel_out <= 12'hFFF;
+            end else begin
+                pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
+            end
         else begin
             pixel_out <= 12'hFFF;
         end

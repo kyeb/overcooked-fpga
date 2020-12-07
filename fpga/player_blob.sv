@@ -2,7 +2,6 @@ module player_blob
    #(parameter WIDTH = 32,     // default picture width
                HEIGHT = 32)    // default picture height
    (input pixel_clk_in,
-   input vsync,
    input [10:0] x_in,hcount_in,
    input [9:0] y_in,vcount_in,
    input [1:0] player_direction,
