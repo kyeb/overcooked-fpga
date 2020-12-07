@@ -119,8 +119,7 @@ def main(request):
     return request.Response(text=r)
 
 
-# takes player_state and returns latest board states
-# TODO append states that are from players other than player 0
+# takes player_state and returns latest board + player states
 def secondary(request):
     state = int(request.form["player_state"])
     if state < 0 or state > 2 ** 32:

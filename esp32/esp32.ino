@@ -7,7 +7,7 @@
 #define DEBUG_PRINT 1
 
 // ONLY MAIN SHOULD HAVE THIS UNCOMMENTED
-#define main
+//#define main
 
 const int BUTTON_PIN = 19;
 const int LED_PIN = 18;
@@ -160,7 +160,9 @@ void secondaryPOST(uint32_t val) {
   }
 
   // only ack if non-trivial data was sent
-  sendToFPGA(ack); // ACK that we finished POSTing
+  if (val != 0) {
+    sendToFPGA(ack); // ACK that we finished POSTing
+  }
 }
 
 void mainSendToFPGA() {
@@ -172,8 +174,6 @@ void mainSendToFPGA() {
 void secondarySendToFPGA() {
   for (int i = 0; i < 4; i++) {
     sendToFPGA(player_states[i]);
-    Serial.print("Sending player_state= ");
-    Serial.println(player_states[i]);
   }
 
   delay(1);
@@ -208,15 +208,17 @@ void readFromFPGA() {
       val = 0;
     } else {
 #ifndef main
+      FPGASerial.flush();
       secondaryPOST(val);
       secondarySendToFPGA();
 #endif
     }
-  }
+  } else {
 #ifndef main
-  secondaryPOST(0);
-  secondarySendToFPGA();
+    secondaryPOST(0);
+    secondarySendToFPGA();
 #endif
+  }
 }
 
 
@@ -226,6 +228,5 @@ void loop() {
 #ifdef main
   mainPOST();
   mainSendToFPGA();
-#else
 #endif
 }
