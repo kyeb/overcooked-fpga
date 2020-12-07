@@ -97,7 +97,7 @@ module graphics(
     // more grid logic
     always_comb begin
         // bounds of game grid
-        if (hcount > 111 && hcount < 518 && vcount > 111 && vcount < 369) begin
+        if (hcount > 111 && hcount < 528 && vcount > 111 && vcount < 369) begin
             // update the grid state if we end up on a new square of the grid
             object_pixel = grid_pixels;
         end else begin
