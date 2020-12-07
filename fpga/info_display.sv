@@ -15,7 +15,7 @@ module info_display(
     logic [7:0] object_bits, red_mapped, green_mapped, blue_mapped;
     logic [11:0] color_out;
     logic [9:0] bx = x_in + 1;
-    logic [8:0] by = y_in + 28;
+    logic [8:0] by = y_in + 1;
 
     blob cd (.width(order_time), .height(3), .x_in(bx), .y_in(by), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(color_out));
 
@@ -37,10 +37,10 @@ module info_display(
                     pixel_out <= color_out;
                 end
             end else begin
-                pixel_out <= 12'h700;
+                pixel_out <= 0;
             end
         else begin
-            pixel_out <= 12'h000;
+            pixel_out <= 0;
         end
     end
     

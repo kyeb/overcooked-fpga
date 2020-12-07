@@ -5,15 +5,14 @@ module tables #(parameter WIDTH = 437, HEIGHT = 277)
      output logic [11:0] pixel_out);
      
     logic [9:0] x_in = 'd101;
-    logic [8:0] y_in = 'd99;
+    logic [8:0] y_in = 'd101;
     
     logic [16:0] image_addr;   
     logic [7:0] image_bits, red_mapped, green_mapped, blue_mapped;
+    logic [11:0] last_pixel;
 
     // calculate rom address and read the location
     assign image_addr = (hcount_in-x_in) + (vcount_in-y_in) * WIDTH;
-
-    bg_coe bg(.clka(pixel_clk_in), .addra(image_addr), .douta(image_bits));
      
     red_coe rcm (.clka(pixel_clk_in), .addra(image_bits), .douta(red_mapped));
     green_coe gcm (.clka(pixel_clk_in), .addra(image_bits), .douta(green_mapped));
