@@ -112,8 +112,6 @@ module top_level(
         order_times = local_order_times;
         team_name = local_team_name;
 
-        
-     
         if (game_state == PLAY) begin //timer going, dont reset
             timer_go = 1;
             restart_timer <= 0;
@@ -235,7 +233,7 @@ module top_level(
         .player3_direction(player3_direction), .player3_x(player3_loc_x), .player3_y(player3_loc_y), .player3_state(player3_state), 
         .player4_direction(player4_direction), .player4_x(player4_loc_x), .player4_y(player4_loc_y), .player4_state(player4_state), 
         .hcount(hcount_in), .vcount(vcount_in), .hsync(hsync_in), .vsync(vsync_in), .blank(blank_in), .hsync_out(hsync), .vsync_out(vsync), .blank_out(blank), .pixel_out(pixel));
-    
+ 
     logic b,hs,vs;
     always_ff @(posedge clock) begin
         hs <= hsync;

@@ -127,32 +127,17 @@ module graphics(
         hsync_out = hsync;
         vsync_out = vsync;
         blank_out = blank;
-        
-        // bounds of game grid
-        case (game_state)
+     
+        if (game_state == WELCOME && welcome_screen != 0) begin
+            pixel_out = welcome_screen;
+        end else if (player_pixel != 12'hFFF) begin
+            pixel_out = player_pixel; 
+        end else if (object_pixel != 12'hFFF) begin
+            pixel_out = object_pixel;
+        end else begin
+            pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3;
+        end
             
-            START, PLAY, PAUSE, FINISH: begin
-                if (player_pixel != 12'hFFF) begin
-                    pixel_out = player_pixel; 
-                end else if (object_pixel != 12'hFFF) begin
-                    pixel_out = object_pixel;
-                end else begin
-                    pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3;
-                end
-            end
-            
-            WELCOME: begin
-                if (welcome_screen != 12'h000) begin
-                    pixel_out = welcome_screen;
-                end else if (player_pixel != 12'hFFF) begin
-                    pixel_out = player_pixel; 
-                end else if (object_pixel != 12'hFFF) begin
-                    pixel_out = object_pixel;
-                end else begin
-                    pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3;
-                end
-            end
-        endcase 
     end
     
 endmodule

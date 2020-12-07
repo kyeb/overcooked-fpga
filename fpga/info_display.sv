@@ -29,11 +29,15 @@ module info_display(
     blue_coe bcm (.clka(pixel_clk_in), .addra(object_bits), .douta(blue_mapped));
          
     always_ff @ (posedge pixel_clk_in) begin
-        if (order && (hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
-            if (color_out != 12'h070) begin
-                pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
+        if ((hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
+            if (order) begin
+                if (color_out != 12'h070) begin
+                    pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
+                end else begin
+                    pixel_out <= color_out;
+                end
             end else begin
-                pixel_out <= color_out;
+                pixel_out <= 12'h700;
             end
         else begin
             pixel_out <= 12'h000;
