@@ -26,7 +26,7 @@ module main_FPGA_control(input reset,
     parameter PAUSE = 3;
     parameter FINISH = 4;
     
-    parameter START_TIMER = 5*60;//5*vsync
+    parameter START_TIMER = 3*60;//3 sec*vsync Hz
     
     logic [3:0] w_state;
     logic [30:0] start_counter;

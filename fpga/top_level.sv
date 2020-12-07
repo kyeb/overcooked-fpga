@@ -90,7 +90,7 @@ module top_level(
     comms c (
         .clk(clock100), .rst(reset), .ja_0(ja_0), .ja_1(ja_1), .player_ID(local_player_ID),
         .local_game_state(local_game_state), .game_state_out(comms_game_state),
-        .local_object_grid(local_object_grid), .object_grid_out(comms_object_grid),
+        .local_object_grid(local_object_grid), .object_grid_out(comms_object_grid), .point_total(comms_point_total),
         .local_direction(local_direction), .local_loc_x(local_loc_x), .local_loc_y(local_loc_y), .local_state(local_state),
         .player1_direction(player1_direction), .player2_direction(player2_direction), .player3_direction(player3_direction), .player4_direction(player4_direction),
         .player1_loc_x(player1_loc_x), .player2_loc_x(player2_loc_x), .player3_loc_x(player3_loc_x), .player4_loc_x(player4_loc_x),
@@ -109,16 +109,16 @@ module top_level(
     
     always_comb begin
         if (local_player_ID == 0) begin
-            game_state = local_game_state;
-            object_grid = local_object_grid;
+            game_state = local_game_state; //
+            object_grid = local_object_grid; //
             time_grid = local_time_grid;
             point_total = local_point_total;
             orders = local_orders;
             order_times = local_order_times;
             team_name = local_team_name;
         end else begin
-            game_state = comms_game_state;
-            object_grid = comms_object_grid;
+            game_state = comms_game_state; //
+            object_grid = comms_object_grid; //
             time_grid = comms_time_grid;
             point_total = comms_point_total;
             orders = comms_orders;
