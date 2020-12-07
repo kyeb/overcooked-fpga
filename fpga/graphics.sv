@@ -92,48 +92,23 @@
     
     pixel_to_grid p2g (.pixel_x(hcount), .pixel_y(vcount), .grid_x(grid_x), .grid_y(grid_y));  
 
-    static_sprites s00 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][0]));
-    static_sprites s01 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(144), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][1]));
-    static_sprites s02 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(176), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][2]));
-    static_sprites s03 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(208), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][3]));
-    static_sprites s04 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(240), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][4]));
-    static_sprites s05 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(272), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][5]));
-    static_sprites s06 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(304), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][6]));
-    static_sprites s07 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(336), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][7]));
-    static_sprites s08 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(368), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][8]));
-    static_sprites s09 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(400), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][9]));
-    static_sprites s010 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(432), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][10]));
-    static_sprites s011 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(464), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][11]));
-    static_sprites s012 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[0][12]));
-    
-    static_sprites s10 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[1][0]));
-    static_sprites s20 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(144), .vcount(vcount), .pixel_out(grid_pixels[2][0]));
-    static_sprites s30 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(176), .vcount(vcount), .pixel_out(grid_pixels[3][0]));
-    static_sprites s40 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(208), .vcount(vcount), .pixel_out(grid_pixels[4][0]));
-    static_sprites s50 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(240), .vcount(vcount), .pixel_out(grid_pixels[5][0]));
-    static_sprites s60 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(272), .vcount(vcount), .pixel_out(grid_pixels[6][0]));
+    logic [9:0] y;
+    assign y = (((vcount - 112) >> 5) << 5) + 11;
 
-    static_sprites s112 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(112), .vcount(vcount), .pixel_out(grid_pixels[1][12]));
-    static_sprites s212 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(144), .vcount(vcount), .pixel_out(grid_pixels[2][12]));
-    static_sprites s312 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(176), .vcount(vcount), .pixel_out(grid_pixels[3][12]));
-    static_sprites s412 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(208), .vcount(vcount), .pixel_out(grid_pixels[4][12]));
-    static_sprites s512 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(240), .vcount(vcount), .pixel_out(grid_pixels[5][12]));
-    static_sprites s612 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(272), .vcount(vcount), .pixel_out(grid_pixels[6][12]));
+    static_sprites s00 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][0]));
+    static_sprites s01 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(144), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][1]));
+    static_sprites s02 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(176), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][2]));
+    static_sprites s03 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(208), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][3]));
+    static_sprites s04 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(240), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][4]));
+    static_sprites s05 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(272), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][5]));
+    static_sprites s06 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(304), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][6]));
+    static_sprites s07 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(336), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][7]));
+    static_sprites s08 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(368), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][8]));
+    static_sprites s09 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(400), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][9]));
+    static_sprites s010 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(432), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][10]));
+    static_sprites s011 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(464), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][11]));
+    static_sprites s012 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(y), .vcount(vcount), .pixel_out(grid_pixels[grid_y][12]));
     
-    static_sprites s70 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(112), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][0]));
-    static_sprites s71 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(144), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][1]));
-    static_sprites s72 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(176), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][2]));
-    static_sprites s73 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(208), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][3]));
-    static_sprites s74 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(240), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][4]));
-    static_sprites s75 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(272), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][5]));
-    static_sprites s76 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(304), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][6]));
-    static_sprites s77 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(336), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][7]));
-    static_sprites s78 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(368), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][8]));
-    static_sprites s79 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(400), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][9]));
-    static_sprites s710 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(432), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][10]));
-    static_sprites s711 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(464), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][11]));
-    static_sprites s712 (.pixel_clk_in(clock), .object_grid(object_grid), .x_in(496), .hcount(hcount), .y_in(336), .vcount(vcount), .pixel_out(grid_pixels[7][12]));
-     
     // more grid logic
     always_comb begin
         // bounds of game grid
