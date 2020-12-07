@@ -17,7 +17,7 @@ module orders_and_points (input vsync,
 //if correct order, add points, remove an order
     always_ff @(negedge vsync) begin
         if (reset) begin
-            orders <= 10'b0;
+            orders <= 4'b0;
             point_total <= 4'b0;
             order_times <= {4{{5'h1e}}};
             clear_space[1:0] <= 0;
@@ -78,13 +78,13 @@ module orders_and_points (input vsync,
         //if no orders, add an order
         end else if ((orders == 0)&&(timer_go)) begin
             orders <= 4'b1;
-            add_order_counter <= 1;
+            add_order_counter <= 32'b1;
             second_counter <= second_counter+1;
             clear_space[0] <=  0;
             clear_space[1] <=  0;
         //add order every 20 seconds unless already 4 
         end else if ((add_order_counter >= ORDER_TIME)&&(timer_go)) begin  
-            add_order_counter <= 1;
+            add_order_counter <= 32'b1;
             clear_space[0] <=  0;
             clear_space[1] <=  0;    
             if (orders == 4'b0001) begin
