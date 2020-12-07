@@ -549,14 +549,18 @@ module action(input reset,
             fire_go[1] <= 1; fire_restart[1] <= 0;
             if (object_grid[0][8] == G_EMPTY) begin
                 fire_go[1] <= 0; fire_restart[1] <= 1;
+                go[1] <= 0; restart[1] <= 1;
                 fire_state1 <= F_NONE;
             end else if (fire_left[1] == 0) begin
                 fire_state1 <= F_FIRE;
                 object_grid[0][8] <= G_FIRE;
                 fire_go[1] <= 0; fire_restart[1] <= 1;
+                go[1] <= 0; restart[1] <= 1;
             end
         end else if ((fire_state1 == F_FIRE)&&(object_grid[0][8]!=G_FIRE)) begin
                 fire_state1 <= F_NONE;
+                go[1] <= 0; restart[1] <= 1;
+                fire_go[1] <= 0; fire_restart[1] <= 1;
         end
         
         //pot on the right
@@ -582,6 +586,7 @@ module action(input reset,
             if (object_grid[0][10] == G_EMPTY) begin
                 fire_go[0] <= 0; fire_restart[0] <= 1;
                 fire_state0 <= F_NONE;
+                go[0] <= 0; restart[0] <= 1;
             end else if (fire_left[0] == 0) begin
                 fire_state0 <= F_FIRE;
                 object_grid[0][10] <= G_FIRE;
@@ -589,6 +594,8 @@ module action(input reset,
             end
         end else if ((fire_state0 == F_FIRE)&&(object_grid[0][10]!=G_FIRE)) begin
                 fire_state0 <= F_NONE;
+                go[0] <= 0; restart[0] <= 1;
+                fire_go[0] <= 0; fire_restart[0] <= 1;
         end
         
         
