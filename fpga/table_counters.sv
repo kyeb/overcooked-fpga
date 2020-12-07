@@ -21,7 +21,7 @@ module table_counter
     end
 endmodule
 
-module tables #(parameter WIDTH = 417, HEIGHT = 257)     
+module tables #(parameter WIDTH = 437, HEIGHT = 277)     
     (input pixel_clk_in,
      input [9:0] hcount_in,
      input [8:0] vcount_in,
@@ -46,7 +46,7 @@ module tables #(parameter WIDTH = 417, HEIGHT = 257)
         if ((hcount_in >= x_in && hcount_in < (x_in+WIDTH)) && (vcount_in >= y_in && vcount_in < (y_in+HEIGHT)))
             pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
         else
-            pixel_out <= 12'hFFF;
+            pixel_out <= 12'h000;
     end
      
 endmodule
