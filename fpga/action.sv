@@ -547,7 +547,10 @@ module action(input reset,
             end
         end else if (fire_state1 == F_COOKED) begin
             fire_go[1] <= 1; fire_restart[1] <= 0;
-            if (fire_left[1] == 0) begin
+            if (object_grid[0][8] == G_EMPTY) begin
+                fire_go[1] <= 0; fire_restart[1] <= 1;
+                fire_state1 <= F_NONE;
+            end else if (fire_left[1] == 0) begin
                 fire_state1 <= F_FIRE;
                 object_grid[0][8] <= G_FIRE;
                 fire_go[1] <= 0; fire_restart[1] <= 1;
@@ -576,7 +579,10 @@ module action(input reset,
             end
         end else if (fire_state0 == F_COOKED) begin
             fire_go[0] <= 1; fire_restart[0] <= 0;
-            if (fire_left[0] == 0) begin
+            if (object_grid[0][10] == G_EMPTY) begin
+                fire_go[0] <= 0; fire_restart[0] <= 1;
+                fire_state0 <= F_NONE;
+            end else if (fire_left[0] == 0) begin
                 fire_state0 <= F_FIRE;
                 object_grid[0][10] <= G_FIRE;
                 fire_go[0] <= 0; fire_restart[0] <= 1;
