@@ -1,6 +1,6 @@
 module grid_to_pixel(
-    input [2:0] grid_x,
-    input [4:0] grid_y,
+    input [3:0] grid_x,
+    input [2:0] grid_y,
     output logic [9:0] pixel_x,
     output logic [8:0] pixel_y);
     

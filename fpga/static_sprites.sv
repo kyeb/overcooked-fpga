@@ -1,8 +1,8 @@
 module static_sprites #(parameter WIDTH = 32, HEIGHT = 32)     
     (input pixel_clk_in,
      input [7:0][12:0][3:0] object_grid, 
-     input [10:0] x_in,hcount,
-     input [9:0] y_in,vcount,
+     input [9:0] x_in,hcount,
+     input [8:0] y_in,vcount,
      output logic [11:0] pixel_out);
 
     // grid object parameters
