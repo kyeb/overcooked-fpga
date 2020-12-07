@@ -100,8 +100,8 @@ module graphics(
         
     logic [11:0] welcome_screen;
     
-    blob #(.COLOR(12'h007)) welc (.height(50), .width(250), .x_in(195), .y_in(215), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(color_out));
-        
+    welcome_screen welc ();
+    
     // more grid logic
     always_comb begin
     
