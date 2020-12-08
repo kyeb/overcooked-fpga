@@ -31,16 +31,16 @@ module info_display(
     always_ff @ (posedge pixel_clk_in) begin
     
         if (order_time > 20) begin
-            color_in = 12'h005;
+            color_in = 12'h070;
         end else if (order_time > 10) begin
-            color_in = 12'hF00;
+            color_in = 12'hFF0;
         end else begin
             color_in = 12'h700;
         end
     
         if ((hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
             if (order) begin
-                if (color_out != 12'h700 && color_out != 12'hFF0 && color_out != 12'h005) begin
+                if (color_out != 12'h700 && color_out != 12'hFF0 && color_out != 12'h070) begin
                     pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
                 end else begin
                     pixel_out <= color_out;
