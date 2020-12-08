@@ -95,11 +95,7 @@ module player_blob
    ext_on_left_coe ext_on_left(.clka(pixel_clk_in), .addra(image_addr), .douta(ext_on_left_bits));
    ext_on_right_coe ext_on_right(.clka(pixel_clk_in), .addra(image_addr), .douta(ext_on_right_bits));
 
-    always_ff @(negedge vsync) begin
-    
-    end
-
-    always_comb begin
+   always_comb begin
         case (player_direction)
             P_UP: image_bits = move_up_bits;
             P_DOWN: begin  

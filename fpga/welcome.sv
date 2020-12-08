@@ -1,5 +1,5 @@
 module welcome
-   #(parameter WIDTH = 250,     // default picture width
+   #(parameter WIDTH = 275,     // default picture width
                HEIGHT = 44)    // default picture height
    (input pixel_clk_in,
     input [10:0] hcount_in,
@@ -9,7 +9,7 @@ module welcome
     logic [15:0] image_addr;   // num of bits for 256*240 ROM
     logic [7:0] image_bits, red_mapped, green_mapped, blue_mapped;
 
-    logic [10:0] x_in = 193;
+    logic [10:0] x_in = 182;
     logic [9:0] y_in = 34;
 
     // calculate rom address and read the location
