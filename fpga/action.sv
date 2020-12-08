@@ -69,8 +69,8 @@ module action(input reset,
     logic [1:0][3:0] fire_left;
     
     //timers for chopping and cooking length
-    time_remaining #(.GIVEN_TIME(5)) b3 (.vsync(vsync), .timer_go(go[3]), .restart(restart[3]), .time_left(time_grid[3]));
-    time_remaining #(.GIVEN_TIME(5)) b2 (.vsync(vsync), .timer_go(go[2]), .restart(restart[2]), .time_left(time_grid[2]));
+    time_remaining #(.GIVEN_TIME(3)) b3 (.vsync(vsync), .timer_go(go[3]), .restart(restart[3]), .time_left(time_grid[3]));
+    time_remaining #(.GIVEN_TIME(3)) b2 (.vsync(vsync), .timer_go(go[2]), .restart(restart[2]), .time_left(time_grid[2]));
     time_remaining #(.GIVEN_TIME(10)) p1 (.vsync(vsync), .timer_go(go[1]), .restart(restart[1]), .time_left(time_grid[1]));
     time_remaining #(.GIVEN_TIME(10)) p0 (.vsync(vsync), .timer_go(go[0]), .restart(restart[0]), .time_left(time_grid[0]));
     
