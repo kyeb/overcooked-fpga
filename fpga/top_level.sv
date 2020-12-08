@@ -217,10 +217,10 @@ module top_level(
     time_remaining game_time (.vsync(vsync_in),.timer_go(timer_go),.restart(restart_timer),
                    .time_left(time_left));
     
-    logic [11:0] hex_time_left;
+    logic [11:0] hex_time_left, hex_point_total;
     bin_to_decimal disp_tl (.bin(time_left), .dec(hex_time_left));
-    
-    assign valz = {1'b0, game_state, 12'b0, 2'b0, txstate, hex_time_left};
+    bin_to_decimal disp_pt (.bin(point_total), .dec(hex_point_total));
+    assign valz = {1'b0, game_state, hex_point_total , 2'b0, txstate, hex_time_left};
 
     //graphics
     logic [10:0] hcount;    // pixel on current line
