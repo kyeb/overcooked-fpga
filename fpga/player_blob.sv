@@ -95,12 +95,16 @@ module player_blob
    ext_on_left_coe ext_on_left(.clka(pixel_clk_in), .addra(image_addr), .douta(ext_on_left_bits));
    ext_on_right_coe ext_on_right(.clka(pixel_clk_in), .addra(image_addr), .douta(ext_on_right_bits));
 
+   // animation test, chopping switches between two sprites
+   logic cl; assign cl = (hcount_in == 0 && vcount_in == 0) ? ~cl : cl;
+
    always_comb begin
+        
         case (player_direction)
             P_UP: image_bits = move_up_bits;
             P_DOWN: begin  
                 case (player_state) 
-                    P_CHOPPING: image_bits = chop_down_bits;
+                    P_CHOPPING: image_bits = cl ? chop_down_bits : move_down_bits;
                     P_ONION_WHOLE: image_bits = onion_down_bits;
                     P_ONION_CHOPPED: image_bits = chopped_onion_down_bits;
                     P_POT_EMPTY: image_bits = empty_pot_down_bits;
@@ -115,7 +119,7 @@ module player_blob
             end
             P_RIGHT: begin  
                 case (player_state) 
-                    P_CHOPPING: image_bits = chop_right_bits;
+                    P_CHOPPING: image_bits = cl ? chop_right_bits : move_right_bits;
                     P_ONION_WHOLE: image_bits = onion_right_bits;
                     P_ONION_CHOPPED: image_bits = chopped_onion_right_bits;
                     P_POT_EMPTY: image_bits = empty_pot_right_bits;
@@ -130,7 +134,7 @@ module player_blob
             end
             P_LEFT: begin  
                 case (player_state) 
-                    P_CHOPPING: image_bits = chop_left_bits;
+                    P_CHOPPING: image_bits = cl ? chop_left_bits : move_left_bits;
                     P_ONION_WHOLE: image_bits = onion_left_bits;
                     P_ONION_CHOPPED: image_bits = chopped_onion_left_bits;
                     P_POT_EMPTY: image_bits = empty_pot_left_bits;
