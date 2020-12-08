@@ -13,11 +13,11 @@ module info_display(
     
     logic [11:0] image_addr;   
     logic [7:0] object_bits, red_mapped, green_mapped, blue_mapped;
-    logic [11:0] color_out;
+    logic [11:0] color_in, color_out;
     logic [9:0] bx = x_in + 1;
     logic [8:0] by = y_in + 1;
 
-    blob cd (.width(order_time), .height(3), .x_in(bx), .y_in(by), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(color_out));
+    blob cd (.color(color_in), .width(order_time), .height(3), .x_in(bx), .y_in(by), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(color_out));
 
     // calculate rom address and read the location
     assign image_addr = (hcount-x_in) + (vcount-y_in) * WIDTH;
@@ -29,9 +29,18 @@ module info_display(
     blue_coe bcm (.clka(pixel_clk_in), .addra(object_bits), .douta(blue_mapped));
          
     always_ff @ (posedge pixel_clk_in) begin
+    
+        if (order_time > 20) begin
+            color_in = 12'h005;
+        end else if (order_time > 10) begin
+            color_in = 12'hF00;
+        end else begin
+            color_in = 12'h700;
+        end
+    
         if ((hcount >= x_in && hcount < (x_in+WIDTH)) && (vcount >= y_in && vcount < (y_in+HEIGHT)))
             if (order) begin
-                if (color_out != 12'h070) begin
+                if (color_out != 12'h700 && color_out != 12'hFF0 && color_out != 12'h005) begin
                     pixel_out <= {red_mapped[7:4], green_mapped[7:4], blue_mapped[7:4]};
                 end else begin
                     pixel_out <= color_out;
