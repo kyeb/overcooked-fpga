@@ -114,7 +114,7 @@ module player_move(input reset,
         //x direction
         end else if (left) begin //left button
             player_direction <= LEFT; //can pass under, can pass over
-            if ((player_loc_x>130)&&((((player_loc_y+IMAGE_WIDTH-BOTTOM_GAP)<(player_a_y+TOP_GAP+4)) //above
+            if ((player_loc_x>133)&&((((player_loc_y+IMAGE_WIDTH-BOTTOM_GAP)<(player_a_y+TOP_GAP+4)) //above
                                     ||((player_loc_y+TOP_GAP+4)>(player_a_y+IMAGE_WIDTH-BOTTOM_GAP))) //below
                                     ||((player_loc_x+IMAGE_WIDTH-RIGHT_GAP)<(player_a_x+LEFT_GAP+4)) //left of object
                                     ||((player_loc_x+LEFT_GAP)>(player_a_x+IMAGE_WIDTH-RIGHT_GAP))) //right of object*
@@ -130,7 +130,7 @@ module player_move(input reset,
             end
         end else if (right) begin //right button
             player_direction <= RIGHT; //left, to the right, or can pass under, can pass over
-            if ((player_loc_x<466)&&((((player_loc_y+IMAGE_WIDTH-BOTTOM_GAP)<(player_a_y+TOP_GAP+4)) //above
+            if ((player_loc_x<469)&&((((player_loc_y+IMAGE_WIDTH-BOTTOM_GAP)<(player_a_y+TOP_GAP+4)) //above
                                     ||((player_loc_y+TOP_GAP+4)>(player_a_y+IMAGE_WIDTH-BOTTOM_GAP))) //below
                                     ||((player_loc_x+IMAGE_WIDTH-RIGHT_GAP)<(player_a_x+LEFT_GAP)) //left of object*
                                     ||((player_loc_x+LEFT_GAP+4)>(player_a_x+IMAGE_WIDTH-RIGHT_GAP)))
