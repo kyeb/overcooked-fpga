@@ -17,7 +17,7 @@ module info_display(
     logic [9:0] bx = x_in + 1;
     logic [8:0] by = y_in + 1;
 
-    blob cd (.color(color_in), .width(order_time), .height(3), .x_in(bx), .y_in(by), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(color_out));
+    blob cd (.color_in(color_in), .width(order_time), .height(3), .x_in(bx), .y_in(by), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(color_out));
 
     // calculate rom address and read the location
     assign image_addr = (hcount-x_in) + (vcount-y_in) * WIDTH;
