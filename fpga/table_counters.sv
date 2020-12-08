@@ -14,6 +14,8 @@ module tables #(parameter WIDTH = 437, HEIGHT = 277)
     // calculate rom address and read the location
     assign image_addr = (hcount_in-x_in) + (vcount_in-y_in) * WIDTH;
      
+    bg_coe bg (.clka(pixel_clk_in), .addra(image_addr), .douta(image_bits));
+     
     red_coe rcm (.clka(pixel_clk_in), .addra(image_bits), .douta(red_mapped));
     green_coe gcm (.clka(pixel_clk_in), .addra(image_bits), .douta(green_mapped));
     blue_coe bcm (.clka(pixel_clk_in), .addra(image_bits), .douta(blue_mapped));
