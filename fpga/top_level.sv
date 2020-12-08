@@ -20,7 +20,8 @@ module top_level(
     
     // digit display
     logic [31:0] valz;
-    assign  dp = 1'b1;  // turn off the period
+    
+    assign dp = 1'b1;  // turn off the period
     seven_seg_controller my_controller (.clk_in(clock100), .rst_in(reset), .val_in(valz), 
                                          .cat_out({cg, cf, ce, cd, cc, cb, ca}), .an_out(an));
     
@@ -216,7 +217,10 @@ module top_level(
     time_remaining game_time (.vsync(vsync_in),.timer_go(timer_go),.restart(restart_timer),
                    .time_left(time_left));
     
-    assign valz = {1'b0, game_state, 14'b0, txstate, 4'b0, time_left};
+    logic [11:0] hex_time_left;
+    bin_to_decimal disp_tl (.bin(time_left), .dec(hex_time_left));
+    
+    assign valz = {1'b0, game_state, 12'b0, 2'b0, txstate, hex_time_left};
 
     //graphics
     logic [10:0] hcount;    // pixel on current line
