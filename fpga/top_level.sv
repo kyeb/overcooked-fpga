@@ -231,7 +231,7 @@ module top_level(
     logic border = (hcount>=0 & hcount<639 & vcount>=0 & vcount<479);
     
     graphics gr (.clock(clock), .reset(reset), .team_name(team_name), .local_player_ID(local_player_ID), .num_players(num_players),
-        .game_state(game_state), .time_left(time_left), .point_total(point_total), .object_grid(object_grid), .time_grid(time_grid), .orders(orders), .order_times(order_times), 
+        .game_state(game_state), .time_left(hex_time_left), .point_total(hex_point_total), .object_grid(object_grid), .time_grid(time_grid), .orders(orders), .order_times(order_times), 
         .player1_direction(player1_direction), .player1_x(player1_loc_x), .player1_y(player1_loc_y), .player1_state(player1_state), 
         .player2_direction(player2_direction), .player2_x(player2_loc_x), .player2_y(player2_loc_y), .player2_state(player2_state), 
         .player3_direction(player3_direction), .player3_x(player3_loc_x), .player3_y(player3_loc_y), .player3_state(player3_state), 

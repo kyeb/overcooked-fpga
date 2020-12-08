@@ -11,8 +11,8 @@ module graphics(
     input logic [2:0] game_state, // welcome, game, etc
     
     // overall game
-    input [7:0] time_left,
-    input [9:0] point_total,
+    input [11:0] time_left,
+    input [11:0] point_total,
     input [7:0][12:0][3:0] object_grid, 
     input [5:0][3:0] time_grid,
     input [3:0] orders, // how many orders are currently on the screen
@@ -75,13 +75,6 @@ module graphics(
     logic [11:0] floor_pixel;
     tables tab(.pixel_clk_in(clock), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(floor_pixel));
 
-    logic [11:0] time_pixel, score_pixel;
-    blob sc (.color_in(12'hFF0), .width(32), .height(32), .x_in(50), .hcount_in(hcount), 
-        .y_in(415), .vcount_in(vcount), .pixel_out(score_pixel));
-      
-    blob tl (.color_in(12'h00F), .width(32), .height(32), .x_in(575), .hcount_in(hcount), 
-        .y_in(415), .vcount_in(vcount), .pixel_out(time_pixel));
-
     // object graphics
     logic [11:0] object_pixel, grid_pixels, info_out0, info_out1, info_out2, info_out3;
     logic [3:0] grid_x;
@@ -107,7 +100,9 @@ module graphics(
     logic [11:0] welcome_screen;
     
     welcome welc (.pixel_clk_in(clock), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(welcome_screen));
-    
+
+    logic [11:0] num_pixel;
+        
     // more grid logic
     always_comb begin
     
@@ -141,7 +136,7 @@ module graphics(
         end else if (object_pixel != 12'hFFF) begin
             pixel_out = object_pixel;
         end else begin
-            pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3 + time_pixel + score_pixel;
+            pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3 + num_pixel;
         end
             
     end

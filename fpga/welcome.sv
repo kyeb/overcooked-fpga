@@ -25,4 +25,5 @@ module welcome
         pixel_out <= {red_mapped[7:4], blue_mapped[7:4], green_mapped[7:4]}; 
         else pixel_out <= 0;
    end
+   
 endmodule
