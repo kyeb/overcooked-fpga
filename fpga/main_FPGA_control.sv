@@ -32,7 +32,7 @@ module main_FPGA_control(input reset,
     logic [30:0] start_counter;
     logic [1:0] clear_space;
     logic [1:0][3:0] check_spaces;
-    assign check_spaces[1] = object_grid[5][12];
+    assign check_spaces[1] = object_grid[3][12];
     assign check_spaces[0] = object_grid[4][12];
     
     orders_and_points op (.vsync(vsync),.reset(reset),.check_spaces(check_spaces),
