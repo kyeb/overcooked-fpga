@@ -11,8 +11,6 @@ module graphics(
     input logic [2:0] game_state, // welcome, game, etc
     
     // overall game
-    input [11:0] time_left,
-    input [11:0] point_total,
     input [7:0][12:0][3:0] object_grid, 
     input [5:0][3:0] time_grid,
     input [3:0] orders, // how many orders are currently on the screen
