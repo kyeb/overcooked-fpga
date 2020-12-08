@@ -73,8 +73,14 @@ module graphics(
 
     // table counters
     logic [11:0] floor_pixel;
-
     tables tab(.pixel_clk_in(clock), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(floor_pixel));
+
+    logic [11:0] time_pixel, score_pixel;
+    blob sc (.color_in(12'hFF0), .width(32), .height(32), .x_in(50), .hcount_in(hcount), 
+        .y_in(415), .vcount_in(vcount), .pixel_out(score_pixel));
+      
+    blob tl (.color_in(12'h00F), .width(32), .height(32), .x_in(575), .hcount_in(hcount), 
+        .y_in(415), .vcount_in(vcount), .pixel_out(time_pixel));
 
     // object graphics
     logic [11:0] object_pixel, grid_pixels, info_out0, info_out1, info_out2, info_out3;
@@ -135,7 +141,7 @@ module graphics(
         end else if (object_pixel != 12'hFFF) begin
             pixel_out = object_pixel;
         end else begin
-            pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3;
+            pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3 + time_pixel + score_pixel;
         end
             
     end

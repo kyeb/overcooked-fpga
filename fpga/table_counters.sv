@@ -5,7 +5,7 @@ module tables #(parameter WIDTH = 437, HEIGHT = 277)
      output logic [11:0] pixel_out);
      
     logic [9:0] x_in = 'd101;
-    logic [8:0] y_in = 'd101;
+    logic [8:0] y_in = 'd103;
     
     logic [16:0] image_addr;   
     logic [7:0] image_bits, red_mapped, green_mapped, blue_mapped;

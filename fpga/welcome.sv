@@ -9,8 +9,8 @@ module welcome
     logic [15:0] image_addr;   // num of bits for 256*240 ROM
     logic [7:0] image_bits, red_mapped, green_mapped, blue_mapped;
 
-    logic [10:0] x_in = 197;
-    logic [9:0] y_in = 109;
+    logic [10:0] x_in = 193;
+    logic [9:0] y_in = 34;
 
     // calculate rom address and read the location
     assign image_addr = (hcount_in-x_in) + (vcount_in-y_in) * WIDTH;
