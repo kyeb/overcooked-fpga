@@ -551,7 +551,7 @@ module action(input reset,
             end
         end else if (fire_state1 == F_COOKED) begin
             fire_go[1] <= 1; fire_restart[1] <= 0;
-            if (object_grid[0][8] == G_EMPTY) begin
+            if ((object_grid[0][8] == G_EMPTY)||(object_grid[0][8] == G_POT_EMPTY)) begin
                 fire_go[1] <= 0; fire_restart[1] <= 1;
                 go[1] <= 0; restart[1] <= 1;
                 fire_state1 <= F_NONE;
@@ -598,7 +598,7 @@ module action(input reset,
         end else if (fire_state0 == F_COOKED) begin
             fire_go[0] <= 1; fire_restart[0] <= 0;
             //if pot is removed, restart timer
-            if (object_grid[0][10] == G_EMPTY) begin
+            if ((object_grid[0][10] == G_EMPTY)||(object_grid[0][10] == G_POT_EMPTY)) begin
                 fire_go[0] <= 0; fire_restart[0] <= 1;
                 fire_state0 <= F_NONE;
                 go[0] <= 0; restart[0] <= 1;
