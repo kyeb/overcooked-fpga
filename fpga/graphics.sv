@@ -101,8 +101,6 @@ module graphics(
     
     welcome welc (.pixel_clk_in(clock), .hcount_in(hcount), .vcount_in(vcount), .pixel_out(welcome_screen));
 
-    logic [11:0] num_pixel;
-        
     // more grid logic
     always_comb begin
     
@@ -136,7 +134,7 @@ module graphics(
         end else if (object_pixel != 12'hFFF) begin
             pixel_out = object_pixel;
         end else begin
-            pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3 + num_pixel;
+            pixel_out = floor_pixel + info_out0 + info_out1 + info_out2 + info_out3;
         end
             
     end
