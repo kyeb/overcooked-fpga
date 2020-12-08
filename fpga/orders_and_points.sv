@@ -2,6 +2,7 @@ module orders_and_points (input vsync,
                           input reset,
                           input [1:0][3:0] check_spaces,
                           input timer_go,
+                          input [2:0] game_state,
                           output logic [1:0] clear_space,
                           output logic [9:0] point_total,
                           output logic [3:0] orders,
@@ -16,7 +17,7 @@ module orders_and_points (input vsync,
 //check order spots
 //if correct order, add points, remove an order
     always_ff @(negedge vsync) begin
-        if (reset) begin
+        if ((reset)||(game_state==0)) begin
             orders <= 4'b0;
             point_total <= 4'b0;
             order_times <= {4{{5'h1e}}};
