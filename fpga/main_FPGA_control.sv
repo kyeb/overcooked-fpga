@@ -35,7 +35,7 @@ module main_FPGA_control(input reset,
     assign check_spaces[1] = object_grid[3][12];
     assign check_spaces[0] = object_grid[4][12];
     
-    orders_and_points op (.vsync(vsync),.reset(reset),.check_spaces(check_spaces),
+    orders_and_points op (.vsync(vsync),.reset(reset),.check_spaces(check_spaces),.game_state(game_state),
                           .timer_go(timer_go),
                           
                           .clear_space(clear_space), .point_total(point_total),.orders(orders),.order_times(order_times));

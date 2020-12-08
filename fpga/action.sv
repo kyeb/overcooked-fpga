@@ -530,36 +530,44 @@ module action(input reset,
         //pot on the left
         if (reset) begin
             fire_state1 <= F_NONE;
-            go[1] <= 0; restart[1] <= 1;
-            fire_go[1] <= 0; fire_restart[1] <= 1;
+            go[1] <= 0; restart[1] <= 1; //restart cook time
+            fire_go[1] <= 0; fire_restart[1] <= 1; //restart combustion time
+        //if the space becomes empty, or pot is empty, no fire, reset counters
         end else if ((object_grid[0][8] == G_EMPTY)||(object_grid[0][8] == G_POT_EMPTY)) begin
             fire_go[1] <= 0; fire_restart[1] <= 1;
             go[1] <= 0; restart[1] <= 1;
-            fire_state0 <= F_NONE;
+            fire_state1 <= F_NONE;
+        // if an uncooked pot is place on stove, start cook timer
         end else if ((fire_state1 == F_NONE)&&(object_grid[0][8] == G_POT_RAW)) begin
             fire_state1 <= F_RAW;
             go[1] <= 0; restart[1] <= 1;
+        // count cook timer, pot is cooking
         end else if (fire_state1 == F_RAW) begin
             go[1] <= 1; restart[1] <= 0;
+            //if pot is removed, return to begining
             if (object_grid[0][8] == G_EMPTY) begin
                 go[1] <= 0; restart[1] <= 1;
                 fire_state1 <= F_NONE;
-            end else if (time_grid[1] == 0) begin
+            //if cook time is ended, move to fire danger
+            end else if (time_grid[1] == 0) begin ///////////////////
                 fire_state1 <= F_COOKED;
                 object_grid[0][8] <= G_POT_COOKED;
                 fire_go[1] <= 0; fire_restart[1] <= 1;
             end
+        //start combustion timer
         end else if (fire_state1 == F_COOKED) begin
             fire_go[1] <= 1; fire_restart[1] <= 0;
-            if (object_grid[0][8] == G_EMPTY) begin
+            //if pot is removed, restart timer
+            if ((object_grid[0][8] == G_EMPTY)||(object_grid[0][8] == G_POT_EMPTY)) begin
                 fire_go[1] <= 0; fire_restart[1] <= 1;
-                go[1] <= 0; restart[1] <= 1;
                 fire_state1 <= F_NONE;
+                go[1] <= 0; restart[1] <= 1;
+            //combust when timer ends
             end else if (fire_left[1] == 0) begin
                 fire_state1 <= F_FIRE;
                 object_grid[0][8] <= G_FIRE;
-                fire_go[1] <= 0; fire_restart[1] <= 1;
                 go[1] <= 0; restart[1] <= 1;
+                fire_go[1] <= 0; fire_restart[1] <= 1;
             end
         end else if ((fire_state1 == F_FIRE)&&(object_grid[0][8]!=G_FIRE)) begin
                 fire_state1 <= F_NONE;
@@ -598,7 +606,7 @@ module action(input reset,
         end else if (fire_state0 == F_COOKED) begin
             fire_go[0] <= 1; fire_restart[0] <= 0;
             //if pot is removed, restart timer
-            if (object_grid[0][10] == G_EMPTY) begin
+            if ((object_grid[0][10] == G_EMPTY)||(object_grid[0][10] == G_POT_EMPTY)) begin
                 fire_go[0] <= 0; fire_restart[0] <= 1;
                 fire_state0 <= F_NONE;
                 go[0] <= 0; restart[0] <= 1;
